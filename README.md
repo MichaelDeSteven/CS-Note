@@ -1,3 +1,6 @@
+# 说明
+主要刷题平台是acwing与leetcode，内容涵盖了常用的数据结构和算法，题单适合初级竞赛和笔试难度
+
 # 目录
 
 ### [前言](https://github.com/MichaelDeSteven/DataStruct-And-Algorithm/blob/master/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%80%BB%E7%BB%93.md#%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%80%BB%E7%BB%93)
