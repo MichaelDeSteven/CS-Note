@@ -5,7 +5,7 @@
 
 using namespace std;
 const int N = 100010, M = 5e6;
-int n, d[N]; // d[i]表示根节点到i路径的异或值, d[i]^d[j]表示
+int n, d[N]; // d[i]表示根节点到i路径的异或值, 则d[i]^d[j]表示i到j路径的异或值
 int son[M][2], cnt[M], inx;
 int ne[2*N], e[2*N], w[2*N], h[2*N], idx;
 
