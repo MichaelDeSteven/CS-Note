@@ -5,37 +5,35 @@
 #include<queue>
 
 using namespace std;
-
+const int N = 1010;
 typedef pair<int, int> PII;
-#define INF 0x3f3f3f3f
-int n;
+int a[N], b[N], c[N], n, m;
+
+void merge() {
+    priority_queue<PII, vector<PII>, greater<PII>> q;
+    for (int i = 1; i <= n; i++) q.push({a[1] + b[i], 1});
+    for (int i = 1; i <= n; i++) {
+        auto t = q.top();
+        q.pop();
+        c[i] = t.first, q.push({a[t.second + 1] + t.first - a[t.second], t.second + 1});
+    }
+    memcpy(a, c, sizeof c);
+}
+
 int main() {
-    while (scanf("%d", &n) != EOF) {
-        vector<PII> vec;
-        priority_queue<PII, vector<PII>, greater<PII>> q;
-        int cnt = 0;
-        for (int i = 0; i < n; i++) {
-            int x, y;
-            cin >> x >> y;
-            vec.push_back({y, x});
+    int t;
+    cin >> t;
+    while (t--) {
+        cin >> m >> n;
+        for (int i = 1; i <= n; i++) cin >> a[i];
+        sort(a + 1, a + 1 + n);
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j <= n; j++) cin >> b[j];
+            merge();
         }
-        sort(vec.begin(), vec.end());
-        for (auto t : vec) {
-            q.push({t.second, t.first});
-            if (t.first < q.size()) q.pop();
-        }
-        int res = 0;
-        while (!q.empty()) {
-            auto t = q.top();
-            q.pop();
-            res += t.first;
-        }
-        cout << res << endl;
+        for (int i = 1; i <= n; i++) cout << a[i] << ' ';
+        cout << endl;
     }
     
     return 0;
 }
-
-// 堆顶维护每天要买的商品，按过期从小到大排序，再按利润从小到大
-// 将当前商品加入堆，若该过期时间大于或等于集合大小说明集合所有元素均能卖完
-// 出堆的一定都是要过期且价值低的物品
