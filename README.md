@@ -29,7 +29,7 @@
 
 ### [并查集](https://github.com/MichaelDeSteven/DataStruct-And-Algorithm/blob/master/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%80%BB%E7%BB%93.md#%E5%B9%B6%E6%9F%A5%E9%9B%86)
 
-### [字典树](https://github.com/MichaelDeSteven/DataStruct-And-Algorithm/blob/master/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%80%BB%E7%BB%93.md#%E5%B9%B6%E6%9F%A5%E9%9B%86)
+### [字典树](https://github.com/MichaelDeSteven/DataStruct-And-Algorithm/blob/master/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%80%BB%E7%BB%93.md#%E5%AD%97%E5%85%B8%E6%A0%91)
 
 ### [位运算、递推、快速幂](https://github.com/MichaelDeSteven/DataStruct-And-Algorithm/blob/master/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%80%BB%E7%BB%93.md#%E4%BD%8D%E8%BF%90%E7%AE%97%E9%80%92%E6%8E%A8%E5%BF%AB%E9%80%9F%E5%B9%82)
 
