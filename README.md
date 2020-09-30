@@ -39,3 +39,5 @@
 ### [图论](https://github.com/MichaelDeSteven/DataStruct-And-Algorithm/blob/master/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%80%BB%E7%BB%93.md#%E5%9B%BE%E8%AE%BA)
 
 ### [动态规划](https://github.com/MichaelDeSteven/DataStruct-And-Algorithm/blob/master/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%80%BB%E7%BB%93.md#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92)
+
+### [树状数组、线段树](https://github.com/MichaelDeSteven/DataStruct-And-Algorithm/blob/master/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%80%BB%E7%BB%93.md#%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E4%B8%8E%E7%BA%BF%E6%AE%B5%E6%A0%91)
