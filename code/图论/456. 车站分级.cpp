@@ -69,3 +69,63 @@ int main() {
     cout << ans << endl;
     return 0;
 }
+
+// 邻接矩阵写法
+#include<bits/stdc++.h>
+
+using namespace std;
+const int N = 1010, M = 1e6;
+int g[N][N];
+int st[N], is[N], indeg[N], n, m;
+
+void topsort() {
+    queue<int> q;
+    for (int i = 1; i <= n; i++)
+        if (!indeg[i]) q.push(i);
+        
+    int cnt = 0;
+    while (!q.empty()) {
+        int sz = q.size();
+        for (int i = 1; i <= sz; i++) {
+            auto t = q.front();
+            q.pop();
+            for (int j = 1; j <= n; j++) {
+                if (g[t][j]) {
+                    g[t][j] = 0;
+                    if (--indeg[j] == 0) q.push(j);
+                }
+            }
+        }
+        cnt++;
+    }
+    cout << cnt << endl;
+}
+
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= m; i++) {
+        int t, k;
+        scanf("%d", &t);
+        memset(is, 0, sizeof is);
+        for (int j = 1; j <= t; j++) {
+            scanf("%d", &k);
+            st[j] = k, is[k] = true;
+        }
+        
+        for (int j = st[1]; j <= st[t]; j++) {
+            if (!is[j]) {
+                for (int k = 1; k <= t; k++) {
+                    if (!g[st[k]][j]) {
+                        g[st[k]][j] = 1;
+                        indeg[j]++;
+                    }
+                }
+            }
+        }
+    }
+    
+    topsort();
+    
+    return 0;
+    
+}
