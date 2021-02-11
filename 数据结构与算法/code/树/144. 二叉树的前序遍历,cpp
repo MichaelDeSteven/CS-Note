@@ -1,0 +1,80 @@
+// 递归版
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> res;
+    void dfs(TreeNode* root) {
+        if (!root) return;
+        res.push_back(root->val);
+        dfs(root->left);
+        dfs(root->right);
+    }
+    vector<int> preorderTraversal(TreeNode* root) {
+        dfs(root);
+        return res;
+    }
+};
+
+
+// 非递归版1
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> res;
+        stack<TreeNode*> stk;
+        if (root) stk.push(root);
+        while (!stk.empty()) {
+            TreeNode* t = stk.top();
+            stk.pop();
+            res.push_back(t->val);
+            if (t->right) stk.push(t->right);
+            if (t->left) stk.push(t->left);
+        }
+        return res;
+    }
+};
+
+// 非递归版2
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> res;
+        stack<TreeNode*> stk;
+        while (root || !stk.empty()) {
+            while (root) {
+                res.push_back(root->val);
+                stk.push(root);
+                root = root->left;
+            }
+            root = stk.top()->right;
+            stk.pop();
+        }
+        return res;
+    }
+};
