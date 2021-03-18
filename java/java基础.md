@@ -22,9 +22,9 @@
 
 public：对所有类可见
 
-protected：对同一包内所有类和子类都可见
+protected：对同一包内所有类以及所有子类都可见
 
-default：对同一包内所有内可见
+default：对同一包内所有类和子类可见
 
 private：仅当前类
 
@@ -252,13 +252,59 @@ public final void wait() throws InterruptedException
 
 **equals**
 
+* 用来判断两个对象是否相等，默认实现是判断两个对象的内存地址是否相等，如果要判断内容则需要重写该方法
+* Java语言规范要求equals方法具有下面的特点
+* 自反性，即x.equals(x) == true
+* 对称性，即x.equals(y) == true 那么就有y.equals(x) = true
+* 传递性，即x.equals(y) == true，y.equals(z) == true 那么就有x.equals(z) == true
+* 一致性，如果对象要比较的内容没有被修改，那么每次使用equals方法都应该返回相同的值
+
+
+
 **hashCode**
+
+* 返回对象的哈希值（内存中的地址）
+* 一般要与equals一起重写
+
+
 
 **toString**
 
+* 默认打印实例的类名+无符号的十六进制的hashcode，子类都应该重写toString，方便查看对象的信息和调试
+
 **clone**
 
+* 创建并返回一个对象的拷贝，clone默认浅拷贝
 
+
+
+**getClass**
+
+* 获取Class对象
+
+
+
+**finalize**
+
+* 当决定回收该对象时，就会调用该方法，由于finalize并不保证对象的回收，可能导致性能、死锁、挂起问题，所以JDK9被废弃
+
+
+
+**wait**
+
+* 使当前线程等待，直到被唤醒，需要获取对象锁，否则会抛出illegalMonitorStateException异常
+
+
+
+**notify**
+
+* 唤醒一个在对象锁等待的线程，唤醒的策略有具体的虚拟机实现
+
+
+
+**notifyAll**
+
+* 唤醒所有在对象锁等待的线程
 
 
 
@@ -486,19 +532,101 @@ method.invoke(clazz.newInstance());
 
 
 
+### 介绍
 
-
-## 网络编程
-
-
-
+![](C:\Users\Steven\Desktop\CS-Note\java\pic\annotation.jpg)
 
 
 
+* @Override：检查是否为重写方法，如果发现其父类或者接口没有该方法，则编译报错
+* @Deprecated：表示过时的方法
+* @SuppressWarning：表示忽略注解中声明的警告
+* @Retention：表示这个注释怎么保存，是只在代码中，还是编入的class文件中，或者是在运行时可以通过反射访问
+* @Documented：标记这些注解是否包含在用户文档中
+* @Target：标记这个Java注解应该是哪种Java成员
+* @Inherited：标记这个注解是继承哪个注解类
 
-## Java版本特性
 
 
+```java
+package java.lang.annotation;
+public interface Annotation {
+
+    boolean equals(Object obj);
+
+    int hashCode();
+
+    String toString();
+
+    Class<? extends Annotation> annotationType();
+}
+```
+
+
+
+```java
+package java.lang.annotation;
+
+public enum ElementType {
+    TYPE,               /* 类、接口（包括注释类型）或枚举声明  */
+
+    FIELD,              /* 字段声明（包括枚举常量）  */
+
+    METHOD,             /* 方法声明  */
+
+    PARAMETER,          /* 参数声明  */
+
+    CONSTRUCTOR,        /* 构造方法声明  */
+
+    LOCAL_VARIABLE,     /* 局部变量声明  */
+
+    ANNOTATION_TYPE,    /* 注释类型声明  */
+
+    PACKAGE             /* 包声明  */
+}
+```
+
+
+
+```java
+package java.lang.annotation;
+public enum RetentionPolicy {
+    SOURCE,            /* Annotation信息仅存在于编译器处理期间，编译器处理完之后就没有该Annotation信息了  */
+
+    CLASS,             /* 编译器将Annotation存储于类对应的.class文件中。默认行为  */
+
+    RUNTIME            /* 编译器将Annotation存储于class文件中，并且可由JVM读入 */
+}
+```
+
+
+
+### 作用
+
+* 注解是附加在代码的一些元信息，用于一些工具在编译或运行时进行解析和使用，起到了说明和配置的功能。注解不会影响代码的实际逻辑
+* 比如@Override起到了标注重写方法的作用，同时如果父类不存在该方法，编译时会报错
+* 注解还可以用来生成文档
+* 实现了配置文件功能
+
+
+
+
+
+### 原理
+
+* 本质是一个继承了Annotation的特殊接口，其具体实现类是Java运行时生成的动态代理类，通过反射获取注解时，返回的是Java运行时生成的动态代理对象$Proxy1。通过代理对象调用自定义注解的方法，最终调用AnnotationInvocationHandler的invoke方法，该方法会从memberValues这个Map中索引出对应的值。memberValues的来源是Java常量池
+
+
+
+
+
+
+
+
+
+
+
+[Java 注解（Annotation）](https://www.runoob.com/w3cnote/java-annotation.html)
 
 
 
@@ -2100,6 +2228,12 @@ static <K,V> TreeNode<K,V> balanceDeletion(TreeNode<K,V> root,
 
 
 
+# // TODO HashMap1.7 HashTable
+
+
+
+
+
 [JDK8 HashMap源码行级解析](https://www.cnblogs.com/allmignt/p/12353727.html#ijS57sM7)
 
 
@@ -2356,6 +2490,270 @@ public interface Set<E> extends Collection<E> {
 
 
 
+
+
+
+
+
+## Java IO
+
+
+
+### 文件操作
+
+```java
+public class File
+    implements Serializable, Comparable<File>
+{
+    // 给出相对路径
+    public String getPath() {
+        return path;
+    }
+    
+    // 给出项目目录+文件名的路径
+    public String getAbsolutePath() {
+        return fs.resolve(this);
+    }
+    
+    // 列举所有文件
+    public File[] listFiles() {}
+    
+    // 给出文件名
+    public String getName() {}
+    
+    // 判断是否为文件
+    public boolean isFile() {}
+}
+```
+
+
+
+
+
+
+
+
+
+### 字节操作
+
+![](C:\Users\Steven\Desktop\CS-Note\java\pic\IO.png)
+
+**字节和字符？**
+
+* 一个字符由多个字节组成（一个byte为1个字节，一个char为两个字节）
+
+* 字节主要用于处理二进制，字符是用来处理文本和字符串（编码是将字符变成字节，常见的编码方式有UTF-8、GBK）
+
+* 由于UTF-8中，中文字符占3位，英文字符占1位，为了能够让一个char保存一个中文或一个英文，因此char采用了UTF-16BE编码（Big Endian大端模式，也称为网络序，将低字节放在高地址）
+
+* 处理字节的IO类有InputStream、OutputStream，处理字符的IO类有Reader、Writer
+
+
+
+**装饰者模式**
+
+Java IO采用了大量的装饰者模式来实现各个类，装饰者模式的目的是为了增强IO流的功能
+
+* InputStream为抽象组件
+* FileInputStream是InputStream的子类，是具体组件
+* FilterInputStream是InputStream的抽象装饰者
+* BufferedInputStream是FilterInputStream的子类，是具体装饰者，它为FileInputStream提供了缓存的功能
+
+
+
+### 字符操作
+
+* InputStreamReader实现从字节流解码为字符流
+* OutputStreamWriter实现从字符流编码为字节流
+
+
+
+
+
+
+
+### 对象操作
+
+**概念**
+
+* 序列化：将一个对象转化为字节流（ObjectOutputStream.writeObject()）
+* 反序列化：将一个字节流转化为一个对象（ObjectInputStrea.readObject()）
+
+
+
+**Serializable**
+
+序列化的类需要实现Serializable接口，该接口为标识接口，没有任何方法，不实现该接口，序列化时会出现SerializationException异常
+
+
+
+**transient**
+
+使用了该关键字的属性序列化对象后，该属性不会被序列化，用于保证某些对象的属性是临时保存在内存，而不能被序列化，ArrayList中的elementDate数组也是被transient所修饰，因为该数组是动态拓展的，并不是所有空间都会被使用
+
+
+
+### 网络操作
+
+Java常用的网络操作有
+
+* InetAddress：表明网络地址
+* Socket：套接字连接
+* Datagram：数据报通信
+* URL：统一资源定位符
+
+
+
+
+
+**Socket**
+
+![](C:\Users\Steven\Desktop\CS-Note\java\pic\socket.png)
+
+**服务端使用Socket**
+
+```java
+// 开启ServerSocket
+ServerSocket ss = new ServerSocket(port)
+// 进入监听，该步骤会进入阻塞
+Socket s = ss.accept()
+
+// 有客户端连接，使用输入流将信息写入，IO读写也会进入阻塞
+s.getInputStream()
+```
+
+
+
+**客户端使用Socket**
+
+```java
+// 表明服务器地址和端口，并尝试连接
+Socket s = new Socket(host, port)
+
+// 连接成功后，向服务器发送数据
+s.getOutStream()
+```
+
+
+
+
+
+
+
+### NIO
+
+同步和异步？阻塞和非阻塞？
+
+* 同步和异步是指进程与内核之间的交互，如果数据没有准备好，则进程需要等待直到数据准备好为止，这个过程就叫做同步，而异步进程并不需要去等待，如果数据准备好了之后那么就由内核去通知进程
+* 阻塞和非阻塞是指进程就已就绪的数据进行的IO操作采取的不同措施，阻塞是指读写时进程会一直等待，而非阻塞方式下，函数会返回一个值，程序就可以继续运行
+
+
+
+Java在JDK1.4引入了NIO（New IO），它的IO模型是非阻塞IO模型，弥补了传统IO的不足，提供了高速、面向块的IO
+
+
+
+**流和块的概念**
+
+* IO和NIO最大的区别就是数据传输和打包的方式，传统IO是以流形式来处理数据，而NIO是以块的形式来处理数据
+* 面向流的IO一次处理一个字节的数据，因此面向流的IO速度慢
+* 面向块的IO一次处理一个数据块，按块的方式处理数据显然比按流的方式处理数据要快，但是编程实现却没有传统IO的优雅和简单
+
+
+
+
+
+**通道与缓冲区**
+
+通道可以用来读取或者写入数据，通道与流不同的是，流只能在一个方向移动，而通道可以同时读写，常见的通道类
+
+* FileChannel：从文件读取数据
+* SocketChannel：通过TCP读取网络数据
+* ServerSocketChannel：可以监听新进来的TCP连接，并为每一个连接建立一个SocketChannel
+
+
+
+通道读写的数据都保存在了缓冲区，不能直接对通道读写数据，而是对缓冲区进行读写，缓冲区实质是一个数组，包括了以下类型
+
+* IntBuffer
+* ByteBuffer
+* FloatBuffer
+* DoubleBuffer
+* CharBuffer
+* LongBuffer
+* ShortBuffer
+
+
+
+使用步骤
+
+* 从IO流中获取Channel
+* 创建Buffer
+* 将数据从Channel读取到ByteBuffer
+
+
+
+缓冲区状态变量
+
+* capacity：最大容量，始终不变
+* position：当前已经读写的字节数
+* limit：当前还可以读写的字节数
+
+```java
+// 初始化，此时position = 0， limit = capacity
+ByteBuffer bb = ByteBuffer.allocate(capacity);
+
+// 读写操作，position = n，limit没变
+// limit = position， position = 0
+bb.flip();
+
+// position = 0， limit = capacity
+bb.clear();
+```
+
+
+
+
+
+
+
+**选择器**
+
+什么是选择器？
+
+* Java的NIO是属于同步非阻塞模型，这种方式下，用户发起IO操作后会返回做别的事情，这就是非阻塞，同时还需要去不断询问IO操作是否完成，NIO实现了IO多路复用的Reator模型
+
+* 所谓Reator模型是事件处理的一种模式，它要求了主线程只负责监听文件描述符上是否有事件发生，有的话就立即将该事件通知给工作线程，主线程并不做实质性的工作，读写数据、接收连接、处理客户请求都是在工作线程中完成的
+
+* 而选择器Selector充当了询问的角色，Selector通过轮询的方式去监听多个通道Channel，通过配置监听通道Channel为非阻塞，当Channel事件未到达时，就会不进入阻塞状态而是继续轮询其它Channel，找到IO事件已经到达的Channel，从而实现一个线程监听多个事件
+
+  
+
+
+
+为什么使用选择器？应用场景
+
+* 相比于传统IO来说，NIO最大的优点就是一个线程能处理多个事件，而不是一个线程处理一个事件
+* 适用于IO密集型的应用，当有用户有多个IO请求时，NIO的非阻塞特性能够发挥优势
+
+
+
+怎么使用？
+
+* 创建选择器
+* 将通道注册到选择器上，同时注册事件
+* 监听事件
+* 判断事件以及处理对应的事件
+
+
+
+
+
+
+
+
+
+## Java版本特性
 
 
 
