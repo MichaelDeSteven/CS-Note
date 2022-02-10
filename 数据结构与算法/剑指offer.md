@@ -1315,21 +1315,43 @@ public:
 class Solution {
 public:
     vector<int> spiralOrder(vector<vector<int>>& matrix) {
-        if (!matrix.size() || !matrix[0].size()) return {};
+        if (matrix.size() == 0 || matrix[0].size() == 0) return {};
         int n = matrix.size(), m = matrix[0].size();
+        int left_bound = 0, right_bound = m - 1, buttom_bound = n - 1, up_bound = 0;
         vector<int> res;
-        int r = m - 1, d = n - 1, l = 0, u = 0; 
-        // 右-下-左-上
-        while (true) {
-            for (int i = l; i <= r; i++) res.push_back(matrix[u][i]);
-            if (++u > d) break;
-            for (int i = u; i <= d; i++) res.push_back(matrix[i][r]);
-            if (--r < l) break;
-            for (int i = r; i >= l; i--) res.push_back(matrix[d][i]);
-            if (--d < u) break;
-            for (int i = d; i >= u; i--) res.push_back(matrix[i][l]);
-            if (++l > r) break;
-        }
+        int cnt = 0, dir = 0, u = 0, v = 0;
+        int dx[4] = {0, 1, 0, -1}, dy[4] = {1, 0, -1, 0};
+        while (cnt < n * m) {
+            res.push_back(matrix[u][v]);
+            cnt++;
+            switch (dir) {
+                case 0:
+                    if (v == right_bound) {
+                        up_bound++;
+                        dir = (dir + 1) % 4;
+                    } 
+                    break;
+                case 1:
+                    if (u == buttom_bound) {
+                        right_bound--;
+                        dir = (dir + 1) % 4;
+                    }
+                    break;
+                case 2:
+                    if (v == left_bound) {
+                        buttom_bound--;
+                        dir = (dir + 1) % 4;
+                    }
+                    break;
+                case 3:
+                    if (u == up_bound) {
+                        left_bound++;
+                        dir = (dir + 1) % 4;
+                    }
+                    break;
+            }
+            u += dx[dir], v += dy[dir];
+        } 
         return res;
     }
 };
@@ -2858,6 +2880,11 @@ public:
 
 * 位运算性质
 
+1. 将数组的值全部异或得到c=a^b
+2. 由于a、b是不相同的数字，那么必定至少存在某一位不为1的情况
+3. 找到最低的那一位记作h
+4. 遍历数组，将数组分成a、b两组，h与数组的值进行与运算，数字出现两次的一定会被分到同一组，并且数字只出现一次的一定会被分到不同的组，出现两次的数字异或等于0，异或后两个组的结果分别为a、b
+
 时间复杂度：$O(n)$
 
 空间复杂度：$O(1)$
@@ -2899,15 +2926,20 @@ public:
 class Solution {
 public:
     int singleNumber(vector<int>& nums) {
-        int cnt[110] = {0}, res = 0;
+        int cnt[33] = {0};
         for (auto t : nums) {
-            for (int i = 31; i >= 0; i--) {
+            int i = 0;
+            while (t) {
                 cnt[i] += t & 1;
                 t >>= 1;
+                i++;
             }
         }
-        for (int i = 31; i >= 0; i--) {
-            if (cnt[i] % 3) res += 1 << (31 - i); 
+        int res = 0;
+        for (int i = 0; i < 33; i++) {
+            if (cnt[i] % 3) {
+                res = (1 << i) + res;
+            }
         }
         return res;
     }
@@ -3303,9 +3335,23 @@ class Solution {
 
 * 数学公式
 
-时间复杂度：$O(n^2)$
+时间复杂度：$O(n)$
 
-空间复杂度：$O(n)$
+空间复杂度：$O(1)$
+
+**推理过程**
+
+* 每次都是固定向前移动m个位置
+* 从最后只剩下两个人开始反推即可得到这个数字在之前每个轮次的位置
+
+**例**
+
+n=5，m=3
+
+* 最后只剩下两个人时，存活下来的人下标=(0+3)%2=1
+* 最后剩下三个人时，存活下来的人下标=(1+3)%3=1
+* 最后剩下四个人时，存活下来的人下标=(1+3)%4=0
+* 最后剩下五个人时，存活下来的人下标=(0+3)%5=3
 
 ```cpp
 class Solution {
@@ -3389,6 +3435,28 @@ public:
 
 ### 不用加减乘除做加法
 
+* 位运算（异或+与运算）
+
+考虑不进位的情况（如0110+1001=1111），显然使用异或
+
+考虑进位的情况（如0110+0110=> (0110&0110) << 1），显然使用与
+
+再分别将进位和不进位的结果相加（即重复上述两个步骤）
+
+```c++
+class Solution {
+public:
+    int add(int a, int b) {
+        while (b) {
+            int c = (unsigned)(a & b) << 1;
+            a ^= b;
+            b = c;
+        }
+        return a;
+    }
+};
+```
+
 
 
 [不用加减乘除做加法](https://leetcode-cn.com/problems/bu-yong-jia-jian-cheng-chu-zuo-jia-fa-lcof)
@@ -3398,6 +3466,37 @@ public:
 
 
 ### 构建乘积数组
+
+* 前缀和思想
+
+构建的B数组，B[i] = A[0]XA[1]X...Xa[i - 1]Xa[i + 1]X...Xa[n]
+
+A[0]XA[1]X...Xa[i - 1]这一部分从0开始遍历，使用cnt记录前缀乘积
+
+* 假设数组下标从1开始，初始阶段i = 1, cnt[0]=1, res[1] = 1
+* i>=2, i-1时， res[i] = cnt[i - 2], cnt[i-1] = A[1]XA[0]X...XA[i-1]
+* i>=1, i时，res[i] = cnt[i - 1], cnt[i] = cnt[i-1]XA[i]
+* 同样的思路按逆序再累乘一次得到乘积数组
+
+```go
+class Solution {
+public:
+    vector<int> constructArr(vector<int>& a) {
+        vector<int> res(a.size(), 1);
+        int cnt = 1;
+        for (int i = 0; i < a.size(); i++) {
+            res[i] *= cnt;
+            cnt *= a[i];
+        }
+        cnt = 1;
+        for (int i = a.size() - 1; i >= 0; i--) {
+            res[i] *= cnt;
+            cnt *= a[i];
+        }
+        return res;
+    }
+};
+```
 
 
 
@@ -3409,6 +3508,48 @@ public:
 
 ### 把字符串转换成整数
 
+* 模拟
+* 首先找到第一个非空字符，如果不为+或者-或者数字字符则直接返回0
+* 如果为-则标记整数为负
+* 然后一直往后遍历，直到为非数字字符
+  * 溢出处理，由于大于INT_MAX返回INT_MAX，小于INT_MIN返回INT_MIN，因此可以同时处理正负
+  * 如果当前整数绝对值大于INT_MAX / 10那么一定移除，根据符号标记返回INT_MIN或者INT_MIN
+  * 如果当前整数绝对值等于INT_MAX / 10，那么如果大于7，正数一定溢出，如果是负数，要么为INT_MIN，要么溢出（也是返回INT_MIN）
+
+
+
+```c++
+class Solution {
+public:
+    int strToInt(string str) {
+        int start = 0, n = str.size();
+        while (start < n && str[start] == ' ') {
+            start++;
+        }
+        if (str[start] != '+' && str[start] != '-' && !isdigit(str[start])) {
+            return 0;
+        }
+        int res = 0;
+        bool digit = false, neg = false;
+        if (str[start] == '+') {
+            start++;
+        } else if (str[start] == '-') {
+            neg = true;
+            start++;
+        }
+
+        while (start < n && isdigit(str[start])) {
+            int dig = str[start++] - '0';
+            if ((res > INT_MAX / 10) || 
+            (res == INT_MAX / 10 && dig > 7)) return neg ? INT_MIN : INT_MAX;
+            res = res * 10 + dig;
+        }
+        if (neg) res *= -1;
+        return res;
+    }
+};
+```
+
 
 
 [把字符串转换成整数](https://leetcode-cn.com/problems/ba-zi-fu-chuan-zhuan-huan-cheng-zheng-shu-lcof)
@@ -3418,6 +3559,31 @@ public:
 
 
 ### 二叉搜索树的最近公共祖先
+
+* 递归+BST性质
+
+  * 如果p、q的值满足一个大于根节点、一个小于根节点，那么根就为它们的公共祖先
+  * 如果p、q的值小于根节点，说明公共祖先一定在左子树里
+  * 如果p、q的值大于根节点，说明公共祖先一定在右子树里
+  * 特殊情况是根节点等于p或者q的值，这种情况下p是q的祖先或q是p的祖先
+
+  
+
+```c++
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if (!root) return NULL;
+        if (root->val == p->val) return p;
+        if (root->val == q->val) return q;
+        if (root->val > max(p->val, q->val)) return lowestCommonAncestor(root->left, p, q);
+        if (root->val < min(p->val, q->val)) return lowestCommonAncestor(root->right, p, q);
+        return root;
+    }
+};
+```
+
+
 
 
 
@@ -3430,6 +3596,29 @@ public:
 
 
 ### 二叉树的最近公共祖先
+
+* 递归
+  * 类似后序遍历，先递归左右子树，根据左右子树返回的值进行判断
+  * 如果根节点的值等于p或者q，则返回根节点
+  * 否则判断左右子树的返回值，如果左右子树的值均不为空，说明左右子树分别有p和q节点，根节点即为公共祖先，返回根节点
+  * 否则从左右子树先返回有值的
+
+
+
+```c++
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if (!root) return NULL;
+        if (root->val == p->val) return p;
+        if (root->val == q->val) return q;
+        TreeNode* ll = lowestCommonAncestor(root->left, p, q), *rr = lowestCommonAncestor(root->right, p, q);
+        if (ll && rr) return root;
+        if (ll) return ll;
+        return rr;
+    }
+};
+```
 
 
 
