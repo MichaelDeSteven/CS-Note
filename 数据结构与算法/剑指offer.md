@@ -1851,39 +1851,31 @@ public:
  */
 class Codec {
 public:
-    string path;
-    void dfs_s(TreeNode* root) {
-        if (!root) {
-            path += "#,";
-            return;
-        }
-        path += to_string(root->val) + ",";
-        dfs_s(root->left);
-        dfs_s(root->right);
-    }
     // Encodes a tree to a single string.
     string serialize(TreeNode* root) {
-        dfs_s(root);
-        return path;
+        if (root == NULL) return "n";
+        string res = to_string(root->val);
+        res += " " + serialize(root->left);
+        res += " " + serialize(root->right);
+        return res;
     }
 
-    TreeNode* dfs_d(string& data, int& u) {
-        if (data[u] == '#') {
-            u += 2;
-            return NULL;
-        }
-        int t = u;
-        while (u < data.size() && data[u] != ',') u++;
-        TreeNode* root = new TreeNode(stoi(data.substr(t, u - t)));
-        u++;
-        root->left = dfs_d(data, u);
-        root->right = dfs_d(data, u);
+    TreeNode* dfs(string& data, int& inx) {
+        if (inx >= data.size()) return NULL;
+        string s = "";
+        while (inx < data.size() && data[inx] != ' ') s += data[inx++];
+        inx++;
+        if (s[0] == 'n') return NULL;
+        TreeNode* root = new TreeNode(atoi(s.c_str()));
+        root->left = dfs(data, inx);
+        root->right = dfs(data, inx);
         return root;
     }
+
     // Decodes your encoded data to tree.
     TreeNode* deserialize(string data) {
-        int u = 0;
-        return dfs_d(data, u);
+        int inx = 0;
+        return dfs(data, inx);
     }
 };
 
