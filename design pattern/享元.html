@@ -1,0 +1,851 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="baidu-site-verification" content="3aFsC6yMzO" />
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico">
+
+    <title> 重学 Java 设计模式：实战享元模式「基于Redis秒杀，提供活动与库存信息查询场景」 - bugstack虫洞栈 </title>
+    <meta name="keywords" content="Java、Netty、设计模式、Javassist、ASM、Byte-buddy、DDD领域驱动设计、Spring、Mybatis、算法、源码分析">
+    <meta name="description"
+          content="你知道程序员的上下文是什么吗？除了被动的接受学习外，如何让自己可以知前因懂后果的设计和开发，是程序员发展道路上最重要的事情，也是编程开发最重要的价值。保持学习，提升自己！">
+
+    <link rel="canonical" href="https://bugstack.cn/itstack-demo-design/2020/06/14/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F.html">
+    <link rel="alternate" type="application/rss+xml" title="bugstack虫洞栈 | 沉淀、分享、成长，让自己和他人都能有所收获" href="https://bugstack.cn/feed.xml">
+
+    <!-- Third-Party CSS -->
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/octicons/octicons/octicons.css">
+    <link rel="stylesheet" href="/bower_components/hover/css/hover-min.css">
+    <link rel="stylesheet" href="/bower_components/primer-markdown/dist/user-content.min.css">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" href="/assets/css/gitalk.css">
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="/assets/css/common.css">
+
+    <!-- CSS set in page -->
+    
+
+    <!-- CSS set in layout -->
+    
+    <link rel="stylesheet" href="/assets/css/sidebar-post-nav.css">
+    
+
+    <!-- https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css -->
+    <link rel="stylesheet" type="text/css" href="https://bugstack.cn/assets/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/lock.js"></script>
+
+</head>
+
+
+    <body>
+
+    <header class="site-header">
+    <div class="site-header-topbar">
+        <div class="container">
+            <div class="topbar-menu">
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki"
+                       target="_blank"
+                       title="GitHub">
+                        GitHub
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki/%E5%80%BC%E5%BE%97%E4%B8%80%E7%9C%8B%E7%9A%84%E5%A5%BD%E4%B9%A6"
+                       target="_blank"
+                       title="电子书">
+                        电子书
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack/interview.html"
+                       target="_self"
+                       title="面试">
+                        面试
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack-code-life/itstack-code-life.html"
+                       target="_self"
+                       title="故事">
+                        故事
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/link.html"
+                       target="_self"
+                       title="友链">
+                        友链
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/about.html"
+                       target="_self"
+                       title="关于">
+                        关于
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <a id="site-header-brand" href="/" title="bugstack虫洞栈">
+            <span class="octicon octicon-smiley"></span>
+            bugstack虫洞栈
+        </a>
+        <nav class="site-header-nav" role="navigation">
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target=""
+                   title="首页">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="Java/Spring">
+                    Java/Spring
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-any/itstack-demo-any.html" 
+                           target=""
+                     >编程基础</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-code.html" 
+                           target=""
+                     >源码分析</a></li>
+                    
+                    <li><a href="/itstack-demo-algorithm/itstack-demo-algorithm.html" 
+                           target=""
+                     >野路子搞算法</a></li>
+                    
+                    <li><a href="/itstack-demo-springcloud/itstack-demo-springcloud.html" 
+                           target=""
+                     >Spring Cloud</a></li>
+                    
+                    <li><a href="/itstack-demo-jvm/itstack-demo-jvm.html" 
+                           target=""
+                     >用Java实现JVM</a></li>
+                    
+                    <li><a href="/itstack-demo-drools/itstack-demo-drools.html" 
+                           target=""
+                     >Drools·规则引擎</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/itstack-demo-netty/itstack-demo-netty.html"
+                   target="_self"
+                   title="Netty4.x专题">
+                    Netty4.x专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-1.html" 
+                           target=""
+                     >基础入门篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-2.html" 
+                           target=""
+                     >中级拓展篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-3.html" 
+                           target=""
+                     >高级应用篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-4.html" 
+                           target=""
+                     >源码分析篇</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="架构师专题">
+                    架构师专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-ark-middleware/itstack-ark-middleware.html" 
+                           target=""
+                     >中间件开发</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-bytecode.html" 
+                           target=""
+                     >字节码编程</a></li>
+                    
+                    <li><a href="/itstack-demo-agent/itstack-demo-agent.html" 
+                           target=""
+                     >调用链路监控</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-design.html" 
+                           target=""
+                     >实战设计模式</a></li>
+                    
+                    <li><a href="/itstack-demo-ddd/itstack-demo-ddd.html" 
+                           target=""
+                     >领域驱动设计</a></li>
+                    
+                    <li><a href="/itstack-demo-frame/itstack-demo-frame.html" 
+                           target=""
+                     >架构框架搭建</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/archives.html"
+                   target="_self"
+                   title="Archives">
+                    Archives
+                </a>
+                
+            </div>
+            
+        </nav>
+    </div>
+</header>
+
+
+        <div class="content">
+            <section class="jumbotron geopattern" data-pattern-id="重学 Java 设计模式：实战享元模式「基于Redis秒杀，提供活动与库存信息查询场景」">
+    <div class="container">
+        <div id="jumbotron-meta-info">        
+            <h1>重学 Java 设计模式：实战享元模式「基于Redis秒杀，提供活动与库存信息查询场景」</h1>
+            <span class="meta-info">
+                
+                
+                <span class="octicon octicon-calendar"></span> 2020/06/14
+                
+            </span>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function(){
+
+        $('.geopattern').each(function(){
+            $(this).geopattern($(this).data('pattern-id'));
+        });
+
+    });
+</script>
+<article class="post container need"  itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="row">
+
+        
+        <div class="col-md-9 markdown-body">
+
+            <p>作者：小傅哥
+<br />博客：<a href="https://bugstack.cn">https://bugstack.cn</a></p>
+
+<blockquote>
+  <p>沉淀、分享、成长，让自己和他人都能有所收获！😄</p>
+</blockquote>
+
+<h2 id="一前言">一、前言</h2>
+
+<p><code class="highlighter-rouge">程序员👨‍💻‍的上下文是什么？</code></p>
+
+<p>很多时候一大部分编程开发的人员都只是关注于功能的实现，只要自己把这部分需求写完就可以了，有点像被动的交作业。这样的问题一方面是由于很多新人还不了解程序员的职业发展，还有一部分是对于编程开发只是工作并非兴趣。但在程序员的发展来看，如果不能很好的处理上文(<code class="highlighter-rouge">产品</code>)，下文(<code class="highlighter-rouge">测试</code>)，在这样不能很好的了解业务和产品发展，也不能编写出很有体系结构的代码，日久天长，1到3年、3到5年，就很难跨越一个个技术成长的分水岭。</p>
+
+<p><code class="highlighter-rouge">拥有接受和学习新知识的能力</code></p>
+
+<p>你是否有感受过小时候在什么都还不会的时候接受知识的能力很强，但随着我们开始长大后，慢慢学习能力、处事方式、性格品行，往往会固定。一方面是形成了各自的性格特征，一方面是圈子已经固定。但也正因为这样的故步，而很少愿意听取别人的意见，就像即使看到了一整片内容，在视觉盲区下也会过掉到80%，就在眼前也看不见，也因此导致了能力不再有较大的提升。</p>
+
+<p><code class="highlighter-rouge">编程能力怎样会成长的最快</code></p>
+
+<p>工作内容往往有些像在工厂🏭拧螺丝，大部分内容是重复的，也可以想象过去的一年你有过多少创新和学习了新的技能。那么这时候一般为了多学些内容会买一些技术书籍，但！技术类书籍和其他书籍不同，只要不去用看了也就只是轻描淡写，很难接纳和理解。就像设计模式，虽然可能看了几遍，但是在实际编码中仍然很少会用，大部分原因还是没有认认真真的跟着实操。事必躬亲才是学习编程的最好是方式。</p>
+
+<h2 id="二开发环境">二、开发环境</h2>
+
+<ol>
+  <li>JDK 1.8</li>
+  <li>Idea + Maven</li>
+  <li>涉及工程三个，可以通过关注<strong>公众号</strong>：<a href="https://bugstack.cn/assets/images/qrcode.png"><code class="highlighter-rouge">bugstack虫洞栈</code></a>，回复<code class="highlighter-rouge">源码下载</code>获取(打开获取的链接，找到序号18)</li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th>工程</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>itstack-demo-design-11-01</td>
+      <td>使用一坨代码实现业务需求</td>
+    </tr>
+    <tr>
+      <td>itstack-demo-design-11-02</td>
+      <td>通过设计模式优化代码结构，减少内存使用和查询耗时</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="三享元模式介绍">三、享元模式介绍</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-11-01.png" alt="享元模式，图片来自 refactoringguru.cn" /></p>
+
+<p>享元模式，主要在于共享通用对象，减少内存的使用，提升系统的访问效率。而这部分共享对象通常比较耗费内存或者需要查询大量接口或者使用数据库资源，因此统一抽离作为共享对象使用。</p>
+
+<p>另外享元模式可以分为在服务端和客户端，一般互联网H5和Web场景下大部分数据都需要服务端进行处理，比如数据库连接池的使用、多线程线程池的使用，除了这些功能外，还有些需要服务端进行包装后的处理下发给客户端，因为服务端需要做享元处理。但在一些游戏场景下，很多都是客户端需要进行渲染地图效果，比如；树木、花草、鱼虫，通过设置不同元素描述使用享元公用对象，减少内存的占用，让客户端的游戏更加流畅。</p>
+
+<p>在享元模型的实现中需要使用到享元工厂来进行管理这部分独立的对象和共享的对象，避免出现线程安全的问题。</p>
+
+<h2 id="四案例场景模拟">四、案例场景模拟</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-11-02.png" alt="场景模拟；秒杀场景下商品查询" /></p>
+
+<p><strong>在这个案例中我们模拟在商品秒杀场景下使用享元模式查询优化</strong></p>
+
+<p>你是否经历过一个商品下单的项目从最初的日均十几单到一个月后每个时段秒杀量破十万的项目。一般在最初如果没有经验的情况下可能会使用数据库行级锁的方式下保证商品库存的扣减操作，但是随着业务的快速发展秒杀的用户越来越多，这个时候数据库已经扛不住了，一般都会使用redis的分布式锁来控制商品库存。</p>
+
+<p>同时在查询的时候也不需要每一次对不同的活动查询都从库中获取，因为这里除了库存以外其他的活动商品信息都是固定不变的，以此这里一般大家会缓存到内存中。</p>
+
+<p>这里我们模拟使用享元模式工厂结构，提供活动商品的查询。活动商品相当于不变的信息，而库存部分属于变化的信息。</p>
+
+<h2 id="五用一坨坨代码实现">五、用一坨坨代码实现</h2>
+
+<p><code class="highlighter-rouge">逻辑很简单，就怕你写乱。一片片的固定内容和变化内容的查询组合，CV的哪里都是！</code></p>
+
+<p>其实这部分逻辑的查询在一般情况很多程序员都是先查询固定信息，在使用过滤的或者添加if判断的方式补充变化的信息，也就是库存。这样写最开始并不会看出来有什么问题，但随着方法逻辑的增加，后面就越来越多重复的代码。</p>
+
+<h3 id="1-工程结构">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mo">01</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">└──</span> <span class="n">main</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+                <span class="err">└──</span> <span class="nc">ActivityController</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<ul>
+  <li>以上工程结构比较简单，之后一个控制类用于查询活动信息。</li>
+</ul>
+
+<h3 id="2-代码实现">2. 代码实现</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 博客：https://bugstack.cn - 沉淀、分享、成长，让自己和他人都能有所收获！
+ * 公众号：bugstack虫洞栈
+ * Create by 小傅哥(fustack) @2020
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ActivityController</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nc">Activity</span> <span class="nf">queryActivityInfo</span><span class="o">(</span><span class="nc">Long</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// 模拟从实际业务应用从接口中获取活动信息</span>
+        <span class="nc">Activity</span> <span class="n">activity</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Activity</span><span class="o">();</span>
+        <span class="n">activity</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="mi">10001L</span><span class="o">);</span>
+        <span class="n">activity</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">"图书嗨乐"</span><span class="o">);</span>
+        <span class="n">activity</span><span class="o">.</span><span class="na">setDesc</span><span class="o">(</span><span class="s">"图书优惠券分享激励分享活动第二期"</span><span class="o">);</span>
+        <span class="n">activity</span><span class="o">.</span><span class="na">setStartTime</span><span class="o">(</span><span class="k">new</span> <span class="nc">Date</span><span class="o">());</span>
+        <span class="n">activity</span><span class="o">.</span><span class="na">setStopTime</span><span class="o">(</span><span class="k">new</span> <span class="nc">Date</span><span class="o">());</span>
+        <span class="n">activity</span><span class="o">.</span><span class="na">setStock</span><span class="o">(</span><span class="k">new</span> <span class="nc">Stock</span><span class="o">(</span><span class="mi">1000</span><span class="o">,</span><span class="mi">1</span><span class="o">));</span>
+        <span class="k">return</span> <span class="n">activity</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里模拟的是从接口中查询活动信息，基本也就是从数据库中获取所有的商品信息和库存。有点像最开始写的商品销售系统，数据库就可以抗住购物量。</li>
+  <li>当后续因为业务的发展需要扩展代码将库存部分交给redis处理，那么就需要从redis中获取活动的库存，而不是从库中，否则将造成数据不统一的问题。</li>
+</ul>
+
+<h2 id="六享元模式重构代码">六、享元模式重构代码</h2>
+
+<p><code class="highlighter-rouge">接下来使用享元模式来进行代码优化，也算是一次很小的重构。</code></p>
+
+<p>享元模式一般情况下使用此结构在平时的开发中并不太多，除了一些线程池、数据库连接池外，再就是游戏场景下的场景渲染。另外这个设计的模式思想是减少内存的使用提升效率，与我们之前使用的<strong>原型模式</strong>通过克隆对象的方式生成复杂对象，减少rpc的调用，都是此类思想。</p>
+
+<h3 id="1-工程结构-1">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mo">02</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">├──</span> <span class="n">main</span>
+    <span class="err">│</span>   <span class="err">└──</span> <span class="n">java</span>
+    <span class="err">│</span>       <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+    <span class="err">│</span>           <span class="err">├──</span> <span class="n">util</span>
+    <span class="err">│</span>           <span class="err">│</span>	<span class="err">└──</span> <span class="nc">RedisUtils</span><span class="o">.</span><span class="na">java</span>	
+    <span class="err">│</span>           <span class="err">├──</span> <span class="nc">Activity</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">├──</span> <span class="nc">ActivityController</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">├──</span> <span class="nc">ActivityFactory</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">└──</span> <span class="nc">Stock</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">└──</span> <span class="n">test</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">test</span>
+                <span class="err">└──</span> <span class="nc">ApiTest</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<p><strong>享元模式模型结构</strong></p>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-11-03.png" alt="享元模式模型结构" /></p>
+
+<ul>
+  <li>以上是我们模拟查询活动场景的类图结构，左侧构建的是享元工厂，提供固定活动数据的查询，右侧是Redis存放的库存数据。</li>
+  <li>最终交给活动控制类来处理查询操作，并提供活动的所有信息和库存。因为库存是变化的，所以我们模拟的<code class="highlighter-rouge">RedisUtils</code>中设置了定时任务使用库存。</li>
+</ul>
+
+<h3 id="2-代码实现-1">2. 代码实现</h3>
+
+<h4 id="21-活动信息">2.1 活动信息</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 博客：https://bugstack.cn - 沉淀、分享、成长，让自己和他人都能有所收获！
+ * 公众号：bugstack虫洞栈
+ * Create by 小傅哥(fustack) @2020
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Activity</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">Long</span> <span class="n">id</span><span class="o">;</span>        <span class="c1">// 活动ID</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>    <span class="c1">// 活动名称</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">desc</span><span class="o">;</span>    <span class="c1">// 活动描述</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">startTime</span><span class="o">;</span> <span class="c1">// 开始时间</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">stopTime</span><span class="o">;</span>  <span class="c1">// 结束时间</span>
+    <span class="kd">private</span> <span class="nc">Stock</span> <span class="n">stock</span><span class="o">;</span>    <span class="c1">// 活动库存</span>
+    
+    <span class="c1">// ...get/set</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里的对象类比较简单，只是一个活动的基础信息；id、名称、描述、时间和库存。</li>
+</ul>
+
+<h4 id="22-库存信息">2.2 库存信息</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Stock</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">total</span><span class="o">;</span> <span class="c1">// 库存总量</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">used</span><span class="o">;</span>  <span class="c1">// 库存已用</span>
+    
+    <span class="c1">// ...get/set</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里是库存数据我们单独提供了一个类进行保存数据。</li>
+</ul>
+
+<h4 id="23-享元工厂">2.3 享元工厂</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 博客：https://bugstack.cn - 沉淀、分享、成长，让自己和他人都能有所收获！
+ * 公众号：bugstack虫洞栈
+ * Create by 小傅哥(fustack) @2020
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ActivityFactory</span> <span class="o">{</span>
+
+    <span class="kd">static</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">Long</span><span class="o">,</span> <span class="nc">Activity</span><span class="o">&gt;</span> <span class="n">activityMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">Long</span><span class="o">,</span> <span class="nc">Activity</span><span class="o">&gt;();</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">Activity</span> <span class="nf">getActivity</span><span class="o">(</span><span class="nc">Long</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Activity</span> <span class="n">activity</span> <span class="o">=</span> <span class="n">activityMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">activity</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// 模拟从实际业务应用从接口中获取活动信息</span>
+            <span class="n">activity</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Activity</span><span class="o">();</span>
+            <span class="n">activity</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="mi">10001L</span><span class="o">);</span>
+            <span class="n">activity</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">"图书嗨乐"</span><span class="o">);</span>
+            <span class="n">activity</span><span class="o">.</span><span class="na">setDesc</span><span class="o">(</span><span class="s">"图书优惠券分享激励分享活动第二期"</span><span class="o">);</span>
+            <span class="n">activity</span><span class="o">.</span><span class="na">setStartTime</span><span class="o">(</span><span class="k">new</span> <span class="nc">Date</span><span class="o">());</span>
+            <span class="n">activity</span><span class="o">.</span><span class="na">setStopTime</span><span class="o">(</span><span class="k">new</span> <span class="nc">Date</span><span class="o">());</span>
+            <span class="n">activityMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">activity</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">activity</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里提供的是一个享元工厂🏭，通过<code class="highlighter-rouge">map</code>结构存放已经从库表或者接口中查询到的数据，存放到内存中，用于下次可以直接获取。</li>
+  <li>这样的结构一般在我们的编程开发中还是比较常见的，当然也有些时候为了分布式的获取，会把数据存放到redis中，可以按需选择。</li>
+</ul>
+
+<h4 id="24-模拟redis类">2.4 模拟Redis类</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 博客：https://bugstack.cn - 沉淀、分享、成长，让自己和他人都能有所收获！
+ * 公众号：bugstack虫洞栈
+ * Create by 小傅哥(fustack) @2020
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RedisUtils</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">ScheduledExecutorService</span> <span class="n">scheduledExecutorService</span> <span class="o">=</span> <span class="nc">Executors</span><span class="o">.</span><span class="na">newScheduledThreadPool</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+
+    <span class="kd">private</span> <span class="nc">AtomicInteger</span> <span class="n">stock</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AtomicInteger</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+
+    <span class="kd">public</span> <span class="nf">RedisUtils</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">scheduledExecutorService</span><span class="o">.</span><span class="na">scheduleAtFixedRate</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+            <span class="c1">// 模拟库存消耗</span>
+            <span class="n">stock</span><span class="o">.</span><span class="na">addAndGet</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+        <span class="o">},</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">100000</span><span class="o">,</span> <span class="nc">TimeUnit</span><span class="o">.</span><span class="na">MICROSECONDS</span><span class="o">);</span>
+
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getStockUsed</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">stock</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里处理模拟<code class="highlighter-rouge">redis</code>的操作工具类外，还提供了一个定时任务用于模拟库存的使用，这样方面我们在测试的时候可以观察到库存的变化。</li>
+</ul>
+
+<h4 id="24-活动控制类">2.4 活动控制类</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 博客：https://bugstack.cn - 沉淀、分享、成长，让自己和他人都能有所收获！
+ * 公众号：bugstack虫洞栈
+ * Create by 小傅哥(fustack) @2020
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ActivityController</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">RedisUtils</span> <span class="n">redisUtils</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RedisUtils</span><span class="o">();</span>
+
+    <span class="kd">public</span> <span class="nc">Activity</span> <span class="nf">queryActivityInfo</span><span class="o">(</span><span class="nc">Long</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Activity</span> <span class="n">activity</span> <span class="o">=</span> <span class="nc">ActivityFactory</span><span class="o">.</span><span class="na">getActivity</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+        <span class="c1">// 模拟从Redis中获取库存变化信息</span>
+        <span class="nc">Stock</span> <span class="n">stock</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Stock</span><span class="o">(</span><span class="mi">1000</span><span class="o">,</span> <span class="n">redisUtils</span><span class="o">.</span><span class="na">getStockUsed</span><span class="o">());</span>
+        <span class="n">activity</span><span class="o">.</span><span class="na">setStock</span><span class="o">(</span><span class="n">stock</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">activity</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>在活动控制类中使用了享元工厂获取活动信息，查询后将库存信息在补充上。因为库存信息是变化的，而活动信息是固定不变的。</li>
+  <li>最终通过统一的控制类就可以把完整包装后的活动信息返回给调用方。</li>
+</ul>
+
+<h3 id="3-测试验证">3. 测试验证</h3>
+
+<h4 id="31-编写测试类">3.1 编写测试类</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ApiTest</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">ApiTest</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="kd">private</span> <span class="nc">ActivityController</span> <span class="n">activityController</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ActivityController</span><span class="o">();</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_queryActivityInfo</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">idx</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="nc">Long</span> <span class="n">req</span> <span class="o">=</span> <span class="mi">10001L</span><span class="o">;</span>
+            <span class="nc">Activity</span> <span class="n">activity</span> <span class="o">=</span> <span class="n">activityController</span><span class="o">.</span><span class="na">queryActivityInfo</span><span class="o">(</span><span class="n">req</span><span class="o">);</span>
+            <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{} {}"</span><span class="o">,</span> <span class="n">req</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">activity</span><span class="o">));</span>
+            <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1200</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里我们通过活动查询控制类，在<code class="highlighter-rouge">for</code>循环的操作下查询了十次活动信息，同时为了保证库存定时任务的变化，加了睡眠操作，实际的开发中不会有这样的睡眠。</li>
+</ul>
+
+<h4 id="32-测试结果">3.2 测试结果</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">22</span><span class="o">:</span><span class="mi">35</span><span class="o">:</span><span class="mf">20.285</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">i</span><span class="o">..</span><span class="na">t</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="mi">10001</span> <span class="o">{</span><span class="s">"desc"</span><span class="o">:</span><span class="s">"图书优惠券分享激励分享活动第二期"</span><span class="o">,</span><span class="s">"id"</span><span class="o">:</span><span class="mi">10001</span><span class="o">,</span><span class="s">"name"</span><span class="o">:</span><span class="s">"图书嗨乐"</span><span class="o">,</span><span class="s">"startTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">,</span><span class="s">"stock"</span><span class="o">:{</span><span class="s">"total"</span><span class="o">:</span><span class="mi">1000</span><span class="o">,</span><span class="s">"used"</span><span class="o">:</span><span class="mi">1</span><span class="o">},</span><span class="s">"stopTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">35</span><span class="o">:</span><span class="mf">21.634</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">i</span><span class="o">..</span><span class="na">t</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="mi">10001</span> <span class="o">{</span><span class="s">"desc"</span><span class="o">:</span><span class="s">"图书优惠券分享激励分享活动第二期"</span><span class="o">,</span><span class="s">"id"</span><span class="o">:</span><span class="mi">10001</span><span class="o">,</span><span class="s">"name"</span><span class="o">:</span><span class="s">"图书嗨乐"</span><span class="o">,</span><span class="s">"startTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">,</span><span class="s">"stock"</span><span class="o">:{</span><span class="s">"total"</span><span class="o">:</span><span class="mi">1000</span><span class="o">,</span><span class="s">"used"</span><span class="o">:</span><span class="mi">18</span><span class="o">},</span><span class="s">"stopTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">35</span><span class="o">:</span><span class="mf">22.838</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">i</span><span class="o">..</span><span class="na">t</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="mi">10001</span> <span class="o">{</span><span class="s">"desc"</span><span class="o">:</span><span class="s">"图书优惠券分享激励分享活动第二期"</span><span class="o">,</span><span class="s">"id"</span><span class="o">:</span><span class="mi">10001</span><span class="o">,</span><span class="s">"name"</span><span class="o">:</span><span class="s">"图书嗨乐"</span><span class="o">,</span><span class="s">"startTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">,</span><span class="s">"stock"</span><span class="o">:{</span><span class="s">"total"</span><span class="o">:</span><span class="mi">1000</span><span class="o">,</span><span class="s">"used"</span><span class="o">:</span><span class="mi">30</span><span class="o">},</span><span class="s">"stopTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">35</span><span class="o">:</span><span class="mf">24.042</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">i</span><span class="o">..</span><span class="na">t</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="mi">10001</span> <span class="o">{</span><span class="s">"desc"</span><span class="o">:</span><span class="s">"图书优惠券分享激励分享活动第二期"</span><span class="o">,</span><span class="s">"id"</span><span class="o">:</span><span class="mi">10001</span><span class="o">,</span><span class="s">"name"</span><span class="o">:</span><span class="s">"图书嗨乐"</span><span class="o">,</span><span class="s">"startTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">,</span><span class="s">"stock"</span><span class="o">:{</span><span class="s">"total"</span><span class="o">:</span><span class="mi">1000</span><span class="o">,</span><span class="s">"used"</span><span class="o">:</span><span class="mi">42</span><span class="o">},</span><span class="s">"stopTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">35</span><span class="o">:</span><span class="mf">25.246</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">i</span><span class="o">..</span><span class="na">t</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="mi">10001</span> <span class="o">{</span><span class="s">"desc"</span><span class="o">:</span><span class="s">"图书优惠券分享激励分享活动第二期"</span><span class="o">,</span><span class="s">"id"</span><span class="o">:</span><span class="mi">10001</span><span class="o">,</span><span class="s">"name"</span><span class="o">:</span><span class="s">"图书嗨乐"</span><span class="o">,</span><span class="s">"startTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">,</span><span class="s">"stock"</span><span class="o">:{</span><span class="s">"total"</span><span class="o">:</span><span class="mi">1000</span><span class="o">,</span><span class="s">"used"</span><span class="o">:</span><span class="mi">54</span><span class="o">},</span><span class="s">"stopTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">35</span><span class="o">:</span><span class="mf">26.452</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">i</span><span class="o">..</span><span class="na">t</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="mi">10001</span> <span class="o">{</span><span class="s">"desc"</span><span class="o">:</span><span class="s">"图书优惠券分享激励分享活动第二期"</span><span class="o">,</span><span class="s">"id"</span><span class="o">:</span><span class="mi">10001</span><span class="o">,</span><span class="s">"name"</span><span class="o">:</span><span class="s">"图书嗨乐"</span><span class="o">,</span><span class="s">"startTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">,</span><span class="s">"stock"</span><span class="o">:{</span><span class="s">"total"</span><span class="o">:</span><span class="mi">1000</span><span class="o">,</span><span class="s">"used"</span><span class="o">:</span><span class="mi">66</span><span class="o">},</span><span class="s">"stopTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">35</span><span class="o">:</span><span class="mf">27.655</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">i</span><span class="o">..</span><span class="na">t</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="mi">10001</span> <span class="o">{</span><span class="s">"desc"</span><span class="o">:</span><span class="s">"图书优惠券分享激励分享活动第二期"</span><span class="o">,</span><span class="s">"id"</span><span class="o">:</span><span class="mi">10001</span><span class="o">,</span><span class="s">"name"</span><span class="o">:</span><span class="s">"图书嗨乐"</span><span class="o">,</span><span class="s">"startTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">,</span><span class="s">"stock"</span><span class="o">:{</span><span class="s">"total"</span><span class="o">:</span><span class="mi">1000</span><span class="o">,</span><span class="s">"used"</span><span class="o">:</span><span class="mi">78</span><span class="o">},</span><span class="s">"stopTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">35</span><span class="o">:</span><span class="mf">28.859</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">i</span><span class="o">..</span><span class="na">t</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="mi">10001</span> <span class="o">{</span><span class="s">"desc"</span><span class="o">:</span><span class="s">"图书优惠券分享激励分享活动第二期"</span><span class="o">,</span><span class="s">"id"</span><span class="o">:</span><span class="mi">10001</span><span class="o">,</span><span class="s">"name"</span><span class="o">:</span><span class="s">"图书嗨乐"</span><span class="o">,</span><span class="s">"startTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">,</span><span class="s">"stock"</span><span class="o">:{</span><span class="s">"total"</span><span class="o">:</span><span class="mi">1000</span><span class="o">,</span><span class="s">"used"</span><span class="o">:</span><span class="mi">90</span><span class="o">},</span><span class="s">"stopTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">35</span><span class="o">:</span><span class="mf">30.063</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">i</span><span class="o">..</span><span class="na">t</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="mi">10001</span> <span class="o">{</span><span class="s">"desc"</span><span class="o">:</span><span class="s">"图书优惠券分享激励分享活动第二期"</span><span class="o">,</span><span class="s">"id"</span><span class="o">:</span><span class="mi">10001</span><span class="o">,</span><span class="s">"name"</span><span class="o">:</span><span class="s">"图书嗨乐"</span><span class="o">,</span><span class="s">"startTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">,</span><span class="s">"stock"</span><span class="o">:{</span><span class="s">"total"</span><span class="o">:</span><span class="mi">1000</span><span class="o">,</span><span class="s">"used"</span><span class="o">:</span><span class="mi">102</span><span class="o">},</span><span class="s">"stopTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">35</span><span class="o">:</span><span class="mf">31.268</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">i</span><span class="o">..</span><span class="na">t</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="mi">10001</span> <span class="o">{</span><span class="s">"desc"</span><span class="o">:</span><span class="s">"图书优惠券分享激励分享活动第二期"</span><span class="o">,</span><span class="s">"id"</span><span class="o">:</span><span class="mi">10001</span><span class="o">,</span><span class="s">"name"</span><span class="o">:</span><span class="s">"图书嗨乐"</span><span class="o">,</span><span class="s">"startTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">,</span><span class="s">"stock"</span><span class="o">:{</span><span class="s">"total"</span><span class="o">:</span><span class="mi">1000</span><span class="o">,</span><span class="s">"used"</span><span class="o">:</span><span class="mi">114</span><span class="o">},</span><span class="s">"stopTime"</span><span class="o">:</span><span class="mi">1592130919931</span><span class="o">}</span>
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<ul>
+  <li>可以仔细看下<code class="highlighter-rouge">stock</code>部分的库存是一直在变化的，其他部分是活动信息，是固定的，所以我们使用享元模式来将这样的结构进行拆分。</li>
+</ul>
+
+<h2 id="七总结">七、总结</h2>
+
+<ul>
+  <li>关于享元模式的设计可以着重学习享元工厂的设计，在一些有大量重复对象可复用的场景下，使用此场景在服务端减少接口的调用，在客户端减少内存的占用。是这个设计模式的主要应用方式。</li>
+  <li>另外通过<code class="highlighter-rouge">map</code>结构的使用方式也可以看到，使用一个固定id来存放和获取对象，是非常关键的点。而且不只是在享元模式中使用，一些其他工厂模式、适配器模式、组合模式中都可以通过map结构存放服务供外部获取，减少ifelse的判断使用。</li>
+  <li>当然除了这种设计的减少内存的使用优点外，也有它带来的缺点，在一些复杂的业务处理场景，很不容易区分出内部和外部状态，就像我们活动信息部分与库存变化部分。如果不能很好的拆分，就会把享元工厂设计的非常混乱，难以维护。</li>
+</ul>
+
+
+
+            <div>
+   <div align="center" class="copyright">
+	   <div class="cmower">bugstack虫洞栈</div>
+	   <div class="brief">沉淀、分享、成长，让自己和他人都能有所收获</div>
+       <img src="/assets/images/qrcode.png" >
+	   <div class="saoma">微信扫描二维码，关注我的公众号</div>
+   </div>
+   <p align="center" style="margin-top: 15px; font-size: 11px;color: #cc0000;">
+       <strong>（转载本站文章请注明作者和出处 <a href="https://bugstack.cn">微信公众号：bugstack虫洞栈 | 作者：小傅哥</a>）</strong>
+   </p>
+</div>
+
+
+            <!-- Comments -->
+            <div class="comment">
+             
+
+  
+    <a href="#" class="show_disqus_comment" onclick="return false;">Show Disqus Comments</a>
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_config = function () {
+        this.page.url = 'https://bugstack.cn/itstack-demo-design/2020/06/14/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F.html';
+        this.page.identifier = '/itstack-demo-design/2020/06/14/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F.html';
+        this.page.title = '重学 Java 设计模式：实战享元模式「基于Redis秒杀，提供活动与库存信息查询场景」';
+    };
+    var disqus_loaded = false;
+    $(function() {
+        $('.show_disqus_comment').on('click', function() { // DON'T EDIT BELOW THIS LINE
+            $(this).html('加载中...');
+            var that = this;
+            if (!disqus_loaded) {
+                var d = document, s = d.createElement('script');
+
+                s.type = 'text/javascript';
+                s.async = true;
+                var shortname = 'fuzhengwei';
+
+                s.src = '//' + shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+
+                disqus_loaded = true;
+            }
+            $(that).remove();
+        })
+    })
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  
+
+  
+        <div id="gitalk-container"></div>
+        <script src="/assets/js/gitalk.min.js"></script>
+        <script src="/assets/js/md5.js"></script>
+        <script>
+        var gitalk = new Gitalk({
+            id: md5(decodeURI('/itstack-demo-design/2020/06/14/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F.html')),
+            clientID: 'df8beab2190bec20352a',
+            clientSecret: '7eeeb4369d699c933f02a026ae8bb1e2a9c80e90',
+            repo: 'CodeGuide',
+            owner: 'fuzhengwei',
+            admin: ['fuzhengwei'],
+            labels: ['gitment'],
+            perPage: 50,
+        })
+        gitalk.render('gitalk-container')
+        </script>
+  
+
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <h3>Post Directory</h3>
+<div id="post-directory-module">
+<section class="post-directory">
+    <!-- Links that trigger the jumping -->
+    <!-- Added by javascript below -->
+    <dl></dl>
+</section>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $( "article h2" ).each(function( index ) {
+            $(".post-directory dl").append("<dt><a class=\"jumper\" hre=#" +
+                    $(this).attr("id")
+                    + ">"
+                    + $(this).text()
+                    + "</a></dt>");
+
+            var children = $(this).nextUntil("h2", "h3")
+
+            children.each(function( index ) {
+                $(".post-directory dl").append("<dd><a class=\"jumper\" hre=#" +
+                        $(this).attr("id")
+                        + ">"
+                        + "&nbsp;&nbsp;- " + $(this).text()
+                        + "</a></dd>");
+            });
+        });
+
+        var fixmeTop = $('#post-directory-module').offset().top - 100;       // get initial position of the element
+
+        $(window).scroll(function() {                  // assign scroll event listener
+
+            var currentScroll = $(window).scrollTop(); // get current position
+
+            if (currentScroll >= fixmeTop) {           // apply position: fixed if you
+                $('#post-directory-module').css({      // scroll to that element or below it
+                    top: '100px',
+                    position: 'fixed',
+                    width: 'inherit'
+                });
+            } else {                                   // apply position: static
+                $('#post-directory-module').css({      // if you scroll above it
+                    position: 'inherit',
+                    width: 'inherit'
+                });
+            }
+
+        });
+
+        $("a.jumper").on("click", function( e ) {
+
+            e.preventDefault();
+
+            $("body, html").animate({
+                scrollTop: ($( $(this).attr('hre') ).offset().top - 100)
+            }, 600);
+
+        });
+    });
+
+</script>
+        </div>
+        
+
+    </div>
+    
+    <div class="asb-post-01">
+        <div class="mask"></div>
+			<div class="info">
+	    		<div>扫码或搜索：<span style="color: #E9405A; font-weight: bold;">bugstack虫洞栈</span></div>
+	    	<div>
+	        <span>发送 </span><span class="token" style="color: #e9415a; font-weight: bold; font-size: 17px; margin-bottom: 45px;">290992</span>
+	    	<div>
+	       	 	即可<span style="color: #e9415a; font-weight: bold;">立即永久</span>解锁本站全部文章
+	    	</div>
+	    	<img class="code-img" style="width: 300px;display:unset" src="/assets/images/qrcode.png">
+		</div>
+ 	</div>
+</article>
+
+        </div>
+
+    <footer class="container">
+    <div class="site-footer">
+        <div class="card text-center">
+            <ul class="list-inline" style="margin-left: 0;">
+                <li>
+                    <a target="_blank" href="https://github.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://www.zhihu.com/people/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-1x fa-inverse">知</i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://weibo.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="site-footer-links mobile-hidden">
+            
+            <a href="https://github.com/fuzhengwei" title="Git仓库" target="_blank">Git仓库</a>
+            
+            <a href="/gitchat.html" title="GitChat" target="_blank">GitChat</a>
+            
+        </div>
+        <div class="site-footer-icons">
+            <a href="http://beian.miit.gov.cn" target="_blank">京ICP备19031103号-1</a>
+        </div>
+        <div class="scrolltop">
+            bugstack虫洞栈
+            <a href="javascript:window.scrollTo(0,0)">TOP</a>
+        </div>
+        <div class="rss">
+            <a href="/feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a>
+            Power by <a href="https://github.com/DONGChuan/Yummy-Jekyll">Yummy Jekyll</a>
+        </div>
+    </div>
+    <!-- Third-Party JS -->
+    <script type="text/javascript" src="/bower_components/geopattern/js/geopattern.min.js"></script>
+    <!-- My JS -->
+    <script type="text/javascript" src="/assets/js/script.js"></script>
+    
+
+    <!-- 百度统计&友盟统计 -->
+    <div style="display:none">
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+              var hm = document.createElement("script");
+              hm.src = "https://hm.baidu.com/hm.js?0b31b4c146bf7126aed5009e1a4a11c8";
+              var s = document.getElementsByTagName("script")[0];
+              s.parentNode.insertBefore(hm, s);
+            })();
+
+        </script>
+
+        <script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1278232949&web_id=1278232949"></script>
+    </div>
+    <!-- 百度统计 -->
+</footer>
+
+
+    </body>
+
+</html>

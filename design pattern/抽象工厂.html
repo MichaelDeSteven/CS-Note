@@ -1,0 +1,1007 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="baidu-site-verification" content="3aFsC6yMzO" />
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico">
+
+    <title> 重学 Java 设计模式：实战抽象工厂模式「替换Redis双集群升级，代理类抽象场景」 - bugstack虫洞栈 </title>
+    <meta name="keywords" content="Java、Netty、设计模式、Javassist、ASM、Byte-buddy、DDD领域驱动设计、Spring、Mybatis、算法、源码分析">
+    <meta name="description"
+          content="技术好就一定能写出好代码吗？不能！再漂亮的马桶放到厨房都略显尴尬！想让它们合理的出现在该有的位置上，一定要实战。">
+
+    <link rel="canonical" href="https://bugstack.cn/itstack-demo-design/2020/05/24/%E9%87%8D%E5%AD%A6Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F.html">
+    <link rel="alternate" type="application/rss+xml" title="bugstack虫洞栈 | 沉淀、分享、成长，让自己和他人都能有所收获" href="https://bugstack.cn/feed.xml">
+
+    <!-- Third-Party CSS -->
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/octicons/octicons/octicons.css">
+    <link rel="stylesheet" href="/bower_components/hover/css/hover-min.css">
+    <link rel="stylesheet" href="/bower_components/primer-markdown/dist/user-content.min.css">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" href="/assets/css/gitalk.css">
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="/assets/css/common.css">
+
+    <!-- CSS set in page -->
+    
+
+    <!-- CSS set in layout -->
+    
+    <link rel="stylesheet" href="/assets/css/sidebar-post-nav.css">
+    
+
+    <!-- https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css -->
+    <link rel="stylesheet" type="text/css" href="https://bugstack.cn/assets/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/lock.js"></script>
+
+</head>
+
+
+    <body>
+
+    <header class="site-header">
+    <div class="site-header-topbar">
+        <div class="container">
+            <div class="topbar-menu">
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki"
+                       target="_blank"
+                       title="GitHub">
+                        GitHub
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki/%E5%80%BC%E5%BE%97%E4%B8%80%E7%9C%8B%E7%9A%84%E5%A5%BD%E4%B9%A6"
+                       target="_blank"
+                       title="电子书">
+                        电子书
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack/interview.html"
+                       target="_self"
+                       title="面试">
+                        面试
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack-code-life/itstack-code-life.html"
+                       target="_self"
+                       title="故事">
+                        故事
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/link.html"
+                       target="_self"
+                       title="友链">
+                        友链
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/about.html"
+                       target="_self"
+                       title="关于">
+                        关于
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <a id="site-header-brand" href="/" title="bugstack虫洞栈">
+            <span class="octicon octicon-smiley"></span>
+            bugstack虫洞栈
+        </a>
+        <nav class="site-header-nav" role="navigation">
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target=""
+                   title="首页">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="Java/Spring">
+                    Java/Spring
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-any/itstack-demo-any.html" 
+                           target=""
+                     >编程基础</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-code.html" 
+                           target=""
+                     >源码分析</a></li>
+                    
+                    <li><a href="/itstack-demo-algorithm/itstack-demo-algorithm.html" 
+                           target=""
+                     >野路子搞算法</a></li>
+                    
+                    <li><a href="/itstack-demo-springcloud/itstack-demo-springcloud.html" 
+                           target=""
+                     >Spring Cloud</a></li>
+                    
+                    <li><a href="/itstack-demo-jvm/itstack-demo-jvm.html" 
+                           target=""
+                     >用Java实现JVM</a></li>
+                    
+                    <li><a href="/itstack-demo-drools/itstack-demo-drools.html" 
+                           target=""
+                     >Drools·规则引擎</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/itstack-demo-netty/itstack-demo-netty.html"
+                   target="_self"
+                   title="Netty4.x专题">
+                    Netty4.x专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-1.html" 
+                           target=""
+                     >基础入门篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-2.html" 
+                           target=""
+                     >中级拓展篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-3.html" 
+                           target=""
+                     >高级应用篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-4.html" 
+                           target=""
+                     >源码分析篇</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="架构师专题">
+                    架构师专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-ark-middleware/itstack-ark-middleware.html" 
+                           target=""
+                     >中间件开发</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-bytecode.html" 
+                           target=""
+                     >字节码编程</a></li>
+                    
+                    <li><a href="/itstack-demo-agent/itstack-demo-agent.html" 
+                           target=""
+                     >调用链路监控</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-design.html" 
+                           target=""
+                     >实战设计模式</a></li>
+                    
+                    <li><a href="/itstack-demo-ddd/itstack-demo-ddd.html" 
+                           target=""
+                     >领域驱动设计</a></li>
+                    
+                    <li><a href="/itstack-demo-frame/itstack-demo-frame.html" 
+                           target=""
+                     >架构框架搭建</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/archives.html"
+                   target="_self"
+                   title="Archives">
+                    Archives
+                </a>
+                
+            </div>
+            
+        </nav>
+    </div>
+</header>
+
+
+        <div class="content">
+            <section class="jumbotron geopattern" data-pattern-id="重学 Java 设计模式：实战抽象工厂模式「替换Redis双集群升级，代理类抽象场景」">
+    <div class="container">
+        <div id="jumbotron-meta-info">        
+            <h1>重学 Java 设计模式：实战抽象工厂模式「替换Redis双集群升级，代理类抽象场景」</h1>
+            <span class="meta-info">
+                
+                
+                <span class="octicon octicon-calendar"></span> 2020/05/24
+                
+            </span>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function(){
+
+        $('.geopattern').each(function(){
+            $(this).geopattern($(this).data('pattern-id'));
+        });
+
+    });
+</script>
+<article class="post container need"  itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="row">
+
+        
+        <div class="col-md-9 markdown-body">
+
+            <p>作者：小傅哥
+<br />博客：<a href="https://bugstack.cn">https://bugstack.cn</a></p>
+
+<blockquote>
+  <p>沉淀、分享、成长，让自己和他人都能有所收获！😄</p>
+</blockquote>
+
+<h2 id="一前言">一、前言</h2>
+
+<p><code class="highlighter-rouge">代码一把梭，兄弟来背锅。</code></p>
+
+<p>大部分做开发的小伙伴初心都希望把代码写好，除了把编程当作工作以外他们还是具备工匠精神的从业者。但很多时候又很难让你把初心坚持下去，就像；接了个烂手的项目、产品功能要的急、个人能力不足，等等原因导致工程代码臃肿不堪，线上频出事故，最终离职走人。</p>
+
+<p><code class="highlighter-rouge">看了很多书、学了很多知识，多线程能玩出花，可最后我还是写不好代码！</code></p>
+
+<p>这就有点像家里装修完了买物件，我几十万的实木沙发，怎么放这里就不好看。同样代码写的不好并不一定是基础技术不足，也不一定是产品要得急 <code class="highlighter-rouge">怎么实现我不管明天上线</code>。而很多时候是我们对编码的经验的不足和对架构的把控能力不到位，我相信产品的第一个需求往往都不复杂，甚至所见所得。但如果你不考虑后续的是否会拓展，将来会在哪些模块继续添加功能，那么后续的代码就会随着你种下的第一颗恶性的种子开始蔓延。</p>
+
+<p><code class="highlighter-rouge">学习设计模式的心得有哪些，怎么学才会用！</code></p>
+
+<p>设计模式书籍，有点像考驾驶证的科一、家里装修时的手册、或者单身狗的恋爱宝典。但！你只要不实操，一定能搞的<strong>乱<code class="highlighter-rouge">码</code>七糟</strong>。因为这些指导思想都是从实际经验中提炼的，没有经过提炼的小白，很难驾驭这样的知识。所以在学习的过程中首先要有案例，之后再结合案例与自己实际的业务，尝试重构改造，慢慢体会其中的感受，从而也就学会了如果搭建出优秀的代码。</p>
+
+<h2 id="二开发环境">二、开发环境</h2>
+
+<ol>
+  <li>JDK 1.8</li>
+  <li>Idea + Maven</li>
+  <li>涉及工程三个，可以通过关注<strong>公众号</strong>：<a href="https://bugstack.cn/assets/images/qrcode.png"><code class="highlighter-rouge">bugstack虫洞栈</code></a>，回复<code class="highlighter-rouge">源码下载</code>获取</li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th>工程</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>itstack-demo-design-2-00</td>
+      <td>场景模拟工程，模拟出使用Redis升级为集群时类改造</td>
+    </tr>
+    <tr>
+      <td>itstack-demo-design-2-01</td>
+      <td>使用一坨代码实现业务需求，也是对ifelse的使用</td>
+    </tr>
+    <tr>
+      <td>itstack-demo-design-2-02</td>
+      <td>通过设计模式优化改造代码，产生对比性从而学习</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="三抽象工厂模式介绍">三、抽象工厂模式介绍</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-2-01.png" alt="抽象工厂模式，图片来自 refactoringguru.cn" /></p>
+
+<p>抽象工厂模式与工厂方法模式虽然主要意图都是为了解决，<strong>接口选择</strong>问题。但在实现上，抽象工厂是一个中心工厂，创建其他工厂的模式。</p>
+
+<p>可能在平常的业务开发中很少关注这样的设计模式或者类似的代码结构，但是这种场景确一直在我们身边，例如；</p>
+
+<ol>
+  <li>不同系统内的回车换行
+    <ol>
+      <li>Unix系统里，每行结尾只有 **<换行>**，即 `\n`；</换行></li>
+      <li>Windows系统里面，每行结尾是 **<换行><回车>**，即 `\n\r`；</回车></换行></li>
+      <li>Mac系统里，每行结尾是 **<回车>**</回车></li>
+    </ol>
+  </li>
+  <li>
+    <p>IDEA 开发工具的差异展示(Win\Mac)</p>
+
+    <p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-2-02.png" alt="不同系统下，IDEA 开发工具的展示差异点" /></p>
+  </li>
+</ol>
+
+<p><strong>除了这样显而易见的例子外，我们的业务开发中时常也会遇到类似的问题，需要兼容做处理。</strong>但大部分经验不足的开发人员，常常直接通过添加<code class="highlighter-rouge">ifelse</code>方式进行处理了。</p>
+
+<h2 id="四案例场景模拟">四、案例场景模拟</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-2-03.png" alt="模拟企业级双套Redis集群升级" /></p>
+
+<p><code class="highlighter-rouge">很多时候初期业务的蛮荒发展，也会牵动着研发对系统的建设。</code></p>
+
+<p>预估<code class="highlighter-rouge">QPS较低</code>、<code class="highlighter-rouge">系统压力较小</code>、<code class="highlighter-rouge">并发访问不大</code>、<code class="highlighter-rouge">近一年没有大动作</code>等等，在考虑时间投入成本的前提前，并不会投入特别多的人力去构建非常完善的系统。就像对 <code class="highlighter-rouge">Redis</code> 的使用，往往可能只要是单机的就可以满足现状。</p>
+
+<p><code class="highlighter-rouge">不吹牛的讲百度首页我上学时候一天就能写完，等毕业工作了就算给我一年都完成不了！</code></p>
+
+<p>但随着业务超过预期的快速发展，系统的负载能力也要随着跟上。原有的单机 <code class="highlighter-rouge">Redis</code> 已经满足不了系统需求。这时候就需要更换为更为健壮的Redis集群服务，虽然需要修改但是不能影响目前系统的运行，还要平滑过渡过去。</p>
+
+<p>随着这次的升级，可以预见的问题会有；</p>
+
+<ol>
+  <li>很多服务用到了Redis需要一起升级到集群。</li>
+  <li>需要兼容集群A和集群B，便于后续的灾备。</li>
+  <li>两套集群提供的接口和方法各有差异，需要做适配。</li>
+  <li>不能影响到目前正常运行的系统。</li>
+</ol>
+
+<h3 id="1-场景模拟工程">1. 场景模拟工程</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mo">00</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">└──</span> <span class="n">main</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+                <span class="err">├──</span> <span class="n">matter</span>
+                <span class="err">│</span>   <span class="err">├──</span> <span class="no">EGM</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">│</span>   <span class="err">└──</span> <span class="no">IIR</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">└──</span> <span class="nc">RedisUtils</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<p><em>工程中的所有代码可以通过关注公众号：<code class="highlighter-rouge">bugstack虫洞栈</code>，回复<code class="highlighter-rouge">源码下载</code>进行获取。</em></p>
+
+<h3 id="2-场景简述">2. 场景简述</h3>
+
+<h4 id="21-模拟单机服务-redisutils">2.1 模拟单机服务 RedisUtils</h4>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-2-04.png" alt="Redis单机服务" /></p>
+
+<ul>
+  <li>模拟Redis功能，也就是假定目前所有的系统都在使用的服务</li>
+  <li>类和方法名次都固定写死到各个业务系统中，改动略微麻烦</li>
+</ul>
+
+<h4 id="22-模拟集群-egm">2.2 模拟集群 EGM</h4>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-2-05.png" alt="模拟集群 EGM" /></p>
+
+<ul>
+  <li>模拟一个集群服务，但是方法名与各业务系统中使用的方法名不同。有点像你mac，我用win。做一样的事，但有不同的操作。</li>
+</ul>
+
+<h4 id="23-模拟集群-iir">2.3 模拟集群 IIR</h4>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-2-06.png" alt="模拟集群 IIR" /></p>
+
+<ul>
+  <li>这是另外一套集群服务，有时候在企业开发中就很有可能出现两套服务，这里我们也是为了做模拟案例，所以添加两套实现同样功能的不同服务，来学习抽象工厂模式。</li>
+</ul>
+
+<p>综上可以看到，我们目前的系统中已经在大量的使用redis服务，但是因为系统不能满足业务的快速发展，因此需要迁移到集群服务中。而这时有两套集群服务需要兼容使用，又要满足所有的业务系统改造的同时不影响线上使用。</p>
+
+<h3 id="3-单集群代码使用">3. 单集群代码使用</h3>
+
+<p>以下是案例模拟中原有的单集群Redis使用方式，后续会通过对这里的代码进行改造。</p>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-2-07.png" alt="当前功能的类图结构" /></p>
+
+<h3 id="31-定义使用接口">3.1 定义使用接口</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">CacheService</span> <span class="o">{</span>
+
+    <span class="nc">String</span> <span class="nf">get</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">key</span><span class="o">);</span>
+
+    <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">,</span> <span class="nc">String</span> <span class="n">value</span><span class="o">);</span>
+
+    <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">,</span> <span class="nc">String</span> <span class="n">value</span><span class="o">,</span> <span class="kt">long</span> <span class="n">timeout</span><span class="o">,</span> <span class="nc">TimeUnit</span> <span class="n">timeUnit</span><span class="o">);</span>
+
+    <span class="kt">void</span> <span class="nf">del</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">);</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="32-实现调用代码">3.2 实现调用代码</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CacheServiceImpl</span> <span class="kd">implements</span> <span class="nc">CacheService</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">RedisUtils</span> <span class="n">redisUtils</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RedisUtils</span><span class="o">();</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">get</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">redisUtils</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">,</span> <span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">redisUtils</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">,</span> <span class="nc">String</span> <span class="n">value</span><span class="o">,</span> <span class="kt">long</span> <span class="n">timeout</span><span class="o">,</span> <span class="nc">TimeUnit</span> <span class="n">timeUnit</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">redisUtils</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">,</span> <span class="n">timeout</span><span class="o">,</span> <span class="n">timeUnit</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">del</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">redisUtils</span><span class="o">.</span><span class="na">del</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>目前的代码对于当前场景下的使用没有什么问题，也比较简单。但是所有的业务系统都在使用同时，需要改造就不那么容易了。这里可以思考下，看如何改造才是合理的。</li>
+</ul>
+
+<h2 id="五用一坨坨代码实现">五、用一坨坨代码实现</h2>
+
+<p><code class="highlighter-rouge">讲道理没有ifelse解决不了的逻辑，不行就在加一行！</code></p>
+
+<p>此时的实现方式并不会修改类结构图，也就是与上面给出的类层级关系一致。通过在接口中添加类型字段区分当前使用的是哪个集群，来作为使用的判断。可以说目前的方式非常难用，其他使用方改动颇多，这里只是做为例子。</p>
+
+<h3 id="1-工程结构">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mo">01</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">└──</span> <span class="n">main</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+                <span class="err">├──</span> <span class="n">impl</span>
+                <span class="err">│</span>   <span class="err">└──</span> <span class="nc">CacheServiceImpl</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">└──</span> <span class="nc">CacheService</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<ul>
+  <li>此时的只有两个类，类结构非常简单。而我们需要的补充扩展功能也只是在 <code class="highlighter-rouge">CacheServiceImpl</code> 中实现。</li>
+</ul>
+
+<h3 id="2-ifelse实现需求">2. ifelse实现需求</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CacheServiceImpl</span> <span class="kd">implements</span> <span class="nc">CacheService</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">RedisUtils</span> <span class="n">redisUtils</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RedisUtils</span><span class="o">();</span>
+
+    <span class="kd">private</span> <span class="no">EGM</span> <span class="n">egm</span> <span class="o">=</span> <span class="k">new</span> <span class="no">EGM</span><span class="o">();</span>
+
+    <span class="kd">private</span> <span class="no">IIR</span> <span class="n">iir</span> <span class="o">=</span> <span class="k">new</span> <span class="no">IIR</span><span class="o">();</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">get</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">,</span> <span class="kt">int</span> <span class="n">redisType</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="mi">1</span> <span class="o">==</span> <span class="n">redisType</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">egm</span><span class="o">.</span><span class="na">gain</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="mi">2</span> <span class="o">==</span> <span class="n">redisType</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">iir</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">redisUtils</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">,</span> <span class="nc">String</span> <span class="n">value</span><span class="o">,</span> <span class="kt">int</span> <span class="n">redisType</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="mi">1</span> <span class="o">==</span> <span class="n">redisType</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">egm</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="mi">2</span> <span class="o">==</span> <span class="n">redisType</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">iir</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="n">redisUtils</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">//... 同类不做太多展示，可以下载源码进行参考</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里的实现过程非常简单，主要根据类型判断是哪个Redis集群。</li>
+  <li>虽然实现是简单了，但是对使用者来说就麻烦了，并且也很难应对后期的拓展和不停的维护。</li>
+</ul>
+
+<h3 id="3-测试验证">3. 测试验证</h3>
+
+<p>接下来我们通过junit单元测试的方式验证接口服务，强调日常编写好单测可以更好的提高系统的健壮度。</p>
+
+<p><strong>编写测试类：</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_CacheService</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">CacheService</span> <span class="n">cacheService</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">CacheServiceImpl</span><span class="o">();</span>
+    <span class="n">cacheService</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="s">"user_name_01"</span><span class="o">,</span> <span class="s">"小傅哥"</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+    <span class="nc">String</span> <span class="n">val01</span> <span class="o">=</span> <span class="n">cacheService</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"user_name_01"</span><span class="o">,</span><span class="mi">1</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">val01</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>结果：</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">22</span><span class="o">:</span><span class="mi">26</span><span class="o">:</span><span class="mf">24.591</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">matter</span><span class="o">.</span><span class="na">EGM</span> <span class="o">-</span> <span class="nc">EGM写入数据</span> <span class="n">key</span><span class="err">：</span><span class="n">user_name_01</span> <span class="n">val</span><span class="err">：</span><span class="n">小傅哥</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">26</span><span class="o">:</span><span class="mf">24.593</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">matter</span><span class="o">.</span><span class="na">EGM</span> <span class="o">-</span> <span class="nc">EGM获取数据</span> <span class="n">key</span><span class="err">：</span><span class="n">user_name_01</span>
+<span class="n">测试结果</span><span class="err">：</span><span class="n">小傅哥</span>
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<ul>
+  <li>从结果上看运行正常，并没有什么问题。但这样的代码只要到生成运行起来以后，想再改就真的难了！</li>
+</ul>
+
+<h2 id="六抽象工厂模式重构代码">六、抽象工厂模式重构代码</h2>
+
+<p><code class="highlighter-rouge">接下来使用抽象工厂模式来进行代码优化，也算是一次很小的重构。</code></p>
+
+<p>这里的抽象工厂的创建和获取方式，会采用代理类的方式进行实现。所被代理的类就是目前的Redis操作方法类，让这个类在不需要任何修改下，就可以实现调用集群A和集群B的数据服务。</p>
+
+<p>并且这里还有一点非常重要，由于集群A和集群B在部分方法提供上是不同的，因此需要做一个接口适配，而这个适配类就相当于工厂中的工厂，用于创建把不同的服务抽象为统一的接口做相同的业务。这一块与我们上一章节中的<code class="highlighter-rouge">工厂方法模型</code>类型，可以翻阅参考。</p>
+
+<h3 id="1-工程结构-1">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mo">02</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">├──</span> <span class="n">main</span>
+    <span class="err">│</span>   <span class="err">└──</span> <span class="n">java</span>
+    <span class="err">│</span>       <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+    <span class="err">│</span>           <span class="err">├──</span> <span class="n">factory</span>    
+    <span class="err">│</span>           <span class="err">│</span>   <span class="err">├──</span> <span class="n">impl</span>
+    <span class="err">│</span>           <span class="err">│</span>   <span class="err">│</span>   <span class="err">├──</span> <span class="nc">EGMCacheAdapter</span><span class="o">.</span><span class="na">java</span> 
+    <span class="err">│</span>           <span class="err">│</span>   <span class="err">│</span>   <span class="err">└──</span> <span class="nc">IIRCacheAdapter</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">│</span>   <span class="err">├──</span> <span class="nc">ICacheAdapter</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">│</span>   <span class="err">├──</span> <span class="nc">JDKInvocationHandler</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">│</span>   <span class="err">└──</span> <span class="nc">JDKProxy</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">├──</span> <span class="n">impl</span>
+    <span class="err">│</span>           <span class="err">│</span>   <span class="err">└──</span> <span class="nc">CacheServiceImpl</span><span class="o">.</span><span class="na">java</span>    
+    <span class="err">│</span>           <span class="err">└──</span> <span class="nc">CacheService</span><span class="o">.</span><span class="na">java</span> 
+    <span class="err">└──</span> <span class="n">test</span>
+         <span class="err">└──</span> <span class="n">java</span>
+             <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span>
+                 <span class="err">└──</span> <span class="nc">ApiTest</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<p><strong>抽象工厂模型结构</strong></p>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-2-08.png" alt="抽象工厂模型结构" /></p>
+
+<ul>
+  <li>工程中涉及的部分核心功能代码，如下；
+    <ul>
+      <li><code class="highlighter-rouge">ICacheAdapter</code>，定义了适配接口，分别包装两个集群中差异化的接口名称。<code class="highlighter-rouge">EGMCacheAdapter</code>、<code class="highlighter-rouge">IIRCacheAdapter</code></li>
+      <li><code class="highlighter-rouge">JDKProxy</code>、<code class="highlighter-rouge">JDKInvocationHandler</code>，是代理类的定义和实现，这部分也就是抽象工厂的另外一种实现方式。通过这样的方式可以很好的把原有操作Redis的方法进行代理操作，通过控制不同的入参对象，控制缓存的使用。</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>好</strong>，那么接下来会分别讲解几个类的具体实现。</p>
+
+<h3 id="2-代码实现">2. 代码实现</h3>
+
+<h4 id="21-定义适配接口">2.1 定义适配接口</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ICacheAdapter</span> <span class="o">{</span>
+
+    <span class="nc">String</span> <span class="nf">get</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">);</span>
+
+    <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">,</span> <span class="nc">String</span> <span class="n">value</span><span class="o">);</span>
+
+    <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">,</span> <span class="nc">String</span> <span class="n">value</span><span class="o">,</span> <span class="kt">long</span> <span class="n">timeout</span><span class="o">,</span> <span class="nc">TimeUnit</span> <span class="n">timeUnit</span><span class="o">);</span>
+
+    <span class="kt">void</span> <span class="nf">del</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">);</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这个类的主要作用是让所有集群的提供方，能在统一的方法名称下进行操作。也方面后续的拓展。</li>
+</ul>
+
+<h4 id="22-实现集群使用服务">2.2 实现集群使用服务</h4>
+
+<p><strong>EGMCacheAdapter</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">EGMCacheAdapter</span> <span class="kd">implements</span> <span class="nc">ICacheAdapter</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="no">EGM</span> <span class="n">egm</span> <span class="o">=</span> <span class="k">new</span> <span class="no">EGM</span><span class="o">();</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">get</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">egm</span><span class="o">.</span><span class="na">gain</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">,</span> <span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">egm</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">,</span> <span class="nc">String</span> <span class="n">value</span><span class="o">,</span> <span class="kt">long</span> <span class="n">timeout</span><span class="o">,</span> <span class="nc">TimeUnit</span> <span class="n">timeUnit</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">egm</span><span class="o">.</span><span class="na">setEx</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">,</span> <span class="n">timeout</span><span class="o">,</span> <span class="n">timeUnit</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">del</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">egm</span><span class="o">.</span><span class="na">delete</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>IIRCacheAdapter</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">IIRCacheAdapter</span> <span class="kd">implements</span> <span class="nc">ICacheAdapter</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="no">IIR</span> <span class="n">iir</span> <span class="o">=</span> <span class="k">new</span> <span class="no">IIR</span><span class="o">();</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">get</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">iir</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">,</span> <span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">iir</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">,</span> <span class="nc">String</span> <span class="n">value</span><span class="o">,</span> <span class="kt">long</span> <span class="n">timeout</span><span class="o">,</span> <span class="nc">TimeUnit</span> <span class="n">timeUnit</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">iir</span><span class="o">.</span><span class="na">setExpire</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">,</span> <span class="n">timeout</span><span class="o">,</span> <span class="n">timeUnit</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">del</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">iir</span><span class="o">.</span><span class="na">del</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>以上两个实现都非常容易，在统一方法名下进行包装。</li>
+</ul>
+
+<h4 id="23-定义抽象工程代理类和实现">2.3 定义抽象工程代理类和实现</h4>
+
+<p><strong>JDKProxy</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="no">T</span> <span class="nf">getProxy</span><span class="o">(</span><span class="nc">Class</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="n">interfaceClass</span><span class="o">,</span> <span class="nc">ICacheAdapter</span> <span class="n">cacheAdapter</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+    <span class="nc">InvocationHandler</span> <span class="n">handler</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JDKInvocationHandler</span><span class="o">(</span><span class="n">cacheAdapter</span><span class="o">);</span>
+    <span class="nc">ClassLoader</span> <span class="n">classLoader</span> <span class="o">=</span> <span class="nc">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getContextClassLoader</span><span class="o">();</span>
+    <span class="nc">Class</span><span class="o">&lt;?&gt;[]</span> <span class="n">classes</span> <span class="o">=</span> <span class="n">interfaceClass</span><span class="o">.</span><span class="na">getInterfaces</span><span class="o">();</span>
+    <span class="k">return</span> <span class="o">(</span><span class="no">T</span><span class="o">)</span> <span class="nc">Proxy</span><span class="o">.</span><span class="na">newProxyInstance</span><span class="o">(</span><span class="n">classLoader</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Class</span><span class="o">[]{</span><span class="n">classes</span><span class="o">[</span><span class="mi">0</span><span class="o">]},</span> <span class="n">handler</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里主要的作用就是完成代理类，同时对于使用哪个集群有外部通过入参进行传递。</li>
+</ul>
+
+<p><strong>JDKInvocationHandler</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JDKInvocationHandler</span> <span class="kd">implements</span> <span class="nc">InvocationHandler</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">ICacheAdapter</span> <span class="n">cacheAdapter</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">JDKInvocationHandler</span><span class="o">(</span><span class="nc">ICacheAdapter</span> <span class="n">cacheAdapter</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">cacheAdapter</span> <span class="o">=</span> <span class="n">cacheAdapter</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">invoke</span><span class="o">(</span><span class="nc">Object</span> <span class="n">proxy</span><span class="o">,</span> <span class="nc">Method</span> <span class="n">method</span><span class="o">,</span> <span class="nc">Object</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Throwable</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nc">ICacheAdapter</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="n">method</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span> <span class="nc">ClassLoaderUtils</span><span class="o">.</span><span class="na">getClazzByArgs</span><span class="o">(</span><span class="n">args</span><span class="o">)).</span><span class="na">invoke</span><span class="o">(</span><span class="n">cacheAdapter</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>在代理类的实现中其实也非常简单，通过穿透进来的集群服务进行方法操作。</li>
+  <li>另外在<code class="highlighter-rouge">invoke</code>中通过使用获取方法名称反射方式，调用对应的方法功能，也就简化了整体的使用。</li>
+  <li>到这我们就已经将整体的功能实现完成了，关于抽象工厂这部分也可以使用非代理的方式进行实现。</li>
+</ul>
+
+<h3 id="3-测试验证-1">3. 测试验证</h3>
+
+<p><strong>编写测试类：</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_CacheService</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+    <span class="nc">CacheService</span> <span class="n">proxy_EGM</span> <span class="o">=</span> <span class="nc">JDKProxy</span><span class="o">.</span><span class="na">getProxy</span><span class="o">(</span><span class="nc">CacheServiceImpl</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="k">new</span> <span class="nc">EGMCacheAdapter</span><span class="o">());</span>
+    <span class="n">proxy_EGM</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="s">"user_name_01"</span><span class="o">,</span><span class="s">"小傅哥"</span><span class="o">);</span>
+    <span class="nc">String</span> <span class="n">val01</span> <span class="o">=</span> <span class="n">proxy_EGM</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"user_name_01"</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">val01</span><span class="o">);</span>
+    
+    <span class="nc">CacheService</span> <span class="n">proxy_IIR</span> <span class="o">=</span> <span class="nc">JDKProxy</span><span class="o">.</span><span class="na">getProxy</span><span class="o">(</span><span class="nc">CacheServiceImpl</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="k">new</span> <span class="nc">IIRCacheAdapter</span><span class="o">());</span>
+    <span class="n">proxy_IIR</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="s">"user_name_01"</span><span class="o">,</span><span class="s">"小傅哥"</span><span class="o">);</span>
+    <span class="nc">String</span> <span class="n">val02</span> <span class="o">=</span> <span class="n">proxy_IIR</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"user_name_01"</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">val02</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>在测试的代码中通过传入不同的集群类型，就可以调用不同的集群下的方法。<code class="highlighter-rouge">JDKProxy.getProxy(CacheServiceImpl.class, new EGMCacheAdapter());</code></li>
+  <li>如果后续有扩展的需求，也可以按照这样的类型方式进行补充，同时对于改造上来说并没有改动原来的方法，降低了修改成本。</li>
+</ul>
+
+<p><strong>结果：</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">23</span><span class="o">:</span><span class="mo">07</span><span class="o">:</span><span class="mf">06.953</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">matter</span><span class="o">.</span><span class="na">EGM</span> <span class="o">-</span> <span class="nc">EGM写入数据</span> <span class="n">key</span><span class="err">：</span><span class="n">user_name_01</span> <span class="n">val</span><span class="err">：</span><span class="n">小傅哥</span>
+<span class="mi">23</span><span class="o">:</span><span class="mo">07</span><span class="o">:</span><span class="mf">06.956</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">matter</span><span class="o">.</span><span class="na">EGM</span> <span class="o">-</span> <span class="nc">EGM获取数据</span> <span class="n">key</span><span class="err">：</span><span class="n">user_name_01</span>
+<span class="n">测试结果</span><span class="err">：</span><span class="n">小傅哥</span>
+<span class="mi">23</span><span class="o">:</span><span class="mo">07</span><span class="o">:</span><span class="mf">06.957</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">matter</span><span class="o">.</span><span class="na">IIR</span> <span class="o">-</span> <span class="nc">IIR写入数据</span> <span class="n">key</span><span class="err">：</span><span class="n">user_name_01</span> <span class="n">val</span><span class="err">：</span><span class="n">小傅哥</span>
+<span class="mi">23</span><span class="o">:</span><span class="mo">07</span><span class="o">:</span><span class="mf">06.957</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">matter</span><span class="o">.</span><span class="na">IIR</span> <span class="o">-</span> <span class="nc">IIR获取数据</span> <span class="n">key</span><span class="err">：</span><span class="n">user_name_01</span>
+<span class="n">测试结果</span><span class="err">：</span><span class="n">小傅哥</span>
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<ul>
+  <li>运行结果正常，这样的代码满足了这次拓展的需求，同时你的技术能力也给老板留下了深刻的印象。</li>
+  <li>研发自我能力的提升远不是外接的压力就是编写一坨坨代码的接口，如果你已经熟练了很多技能，那么可以在即使紧急的情况下，也能做出完善的方案。</li>
+</ul>
+
+<h2 id="七总结">七、总结</h2>
+
+<ul>
+  <li>抽象工厂模式，所要解决的问题就是在一个产品族，存在多个不同类型的产品(Redis集群、操作系统)情况下，接口选择的问题。而这种场景在业务开发中也是非常多见的，只不过可能有时候没有将它们抽象化出来。</li>
+  <li><code class="highlighter-rouge">你的代码只是被ifelse埋上了！</code>当你知道什么场景下何时可以被抽象工程优化代码，那么你的代码层级结构以及满足业务需求上，都可以得到很好的完成功能实现并提升扩展性和优雅度。</li>
+  <li>那么这个设计模式满足了；单一职责、开闭原则、解耦等优点，但如果说随着业务的不断拓展，可能会造成类实现上的复杂度。但也可以说算不上缺点，因为可以随着其他设计方式的引入和代理类以及自动生成加载的方式降低此项缺点。</li>
+</ul>
+
+
+            <div>
+   <div align="center" class="copyright">
+	   <div class="cmower">bugstack虫洞栈</div>
+	   <div class="brief">沉淀、分享、成长，让自己和他人都能有所收获</div>
+       <img src="/assets/images/qrcode.png" >
+	   <div class="saoma">微信扫描二维码，关注我的公众号</div>
+   </div>
+   <p align="center" style="margin-top: 15px; font-size: 11px;color: #cc0000;">
+       <strong>（转载本站文章请注明作者和出处 <a href="https://bugstack.cn">微信公众号：bugstack虫洞栈 | 作者：小傅哥</a>）</strong>
+   </p>
+</div>
+
+
+            <!-- Comments -->
+            <div class="comment">
+             
+
+  
+    <a href="#" class="show_disqus_comment" onclick="return false;">Show Disqus Comments</a>
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_config = function () {
+        this.page.url = 'https://bugstack.cn/itstack-demo-design/2020/05/24/%E9%87%8D%E5%AD%A6Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F.html';
+        this.page.identifier = '/itstack-demo-design/2020/05/24/%E9%87%8D%E5%AD%A6Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F.html';
+        this.page.title = '重学 Java 设计模式：实战抽象工厂模式「替换Redis双集群升级，代理类抽象场景」';
+    };
+    var disqus_loaded = false;
+    $(function() {
+        $('.show_disqus_comment').on('click', function() { // DON'T EDIT BELOW THIS LINE
+            $(this).html('加载中...');
+            var that = this;
+            if (!disqus_loaded) {
+                var d = document, s = d.createElement('script');
+
+                s.type = 'text/javascript';
+                s.async = true;
+                var shortname = 'fuzhengwei';
+
+                s.src = '//' + shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+
+                disqus_loaded = true;
+            }
+            $(that).remove();
+        })
+    })
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  
+
+  
+        <div id="gitalk-container"></div>
+        <script src="/assets/js/gitalk.min.js"></script>
+        <script src="/assets/js/md5.js"></script>
+        <script>
+        var gitalk = new Gitalk({
+            id: md5(decodeURI('/itstack-demo-design/2020/05/24/%E9%87%8D%E5%AD%A6Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F.html')),
+            clientID: 'df8beab2190bec20352a',
+            clientSecret: '7eeeb4369d699c933f02a026ae8bb1e2a9c80e90',
+            repo: 'CodeGuide',
+            owner: 'fuzhengwei',
+            admin: ['fuzhengwei'],
+            labels: ['gitment'],
+            perPage: 50,
+        })
+        gitalk.render('gitalk-container')
+        </script>
+  
+
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <h3>Post Directory</h3>
+<div id="post-directory-module">
+<section class="post-directory">
+    <!-- Links that trigger the jumping -->
+    <!-- Added by javascript below -->
+    <dl></dl>
+</section>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $( "article h2" ).each(function( index ) {
+            $(".post-directory dl").append("<dt><a class=\"jumper\" hre=#" +
+                    $(this).attr("id")
+                    + ">"
+                    + $(this).text()
+                    + "</a></dt>");
+
+            var children = $(this).nextUntil("h2", "h3")
+
+            children.each(function( index ) {
+                $(".post-directory dl").append("<dd><a class=\"jumper\" hre=#" +
+                        $(this).attr("id")
+                        + ">"
+                        + "&nbsp;&nbsp;- " + $(this).text()
+                        + "</a></dd>");
+            });
+        });
+
+        var fixmeTop = $('#post-directory-module').offset().top - 100;       // get initial position of the element
+
+        $(window).scroll(function() {                  // assign scroll event listener
+
+            var currentScroll = $(window).scrollTop(); // get current position
+
+            if (currentScroll >= fixmeTop) {           // apply position: fixed if you
+                $('#post-directory-module').css({      // scroll to that element or below it
+                    top: '100px',
+                    position: 'fixed',
+                    width: 'inherit'
+                });
+            } else {                                   // apply position: static
+                $('#post-directory-module').css({      // if you scroll above it
+                    position: 'inherit',
+                    width: 'inherit'
+                });
+            }
+
+        });
+
+        $("a.jumper").on("click", function( e ) {
+
+            e.preventDefault();
+
+            $("body, html").animate({
+                scrollTop: ($( $(this).attr('hre') ).offset().top - 100)
+            }, 600);
+
+        });
+    });
+
+</script>
+        </div>
+        
+
+    </div>
+    
+    <div class="asb-post-01">
+        <div class="mask"></div>
+			<div class="info">
+	    		<div>扫码或搜索：<span style="color: #E9405A; font-weight: bold;">bugstack虫洞栈</span></div>
+	    	<div>
+	        <span>发送 </span><span class="token" style="color: #e9415a; font-weight: bold; font-size: 17px; margin-bottom: 45px;">290992</span>
+	    	<div>
+	       	 	即可<span style="color: #e9415a; font-weight: bold;">立即永久</span>解锁本站全部文章
+	    	</div>
+	    	<img class="code-img" style="width: 300px;display:unset" src="/assets/images/qrcode.png">
+		</div>
+ 	</div>
+</article>
+
+        </div>
+
+    <footer class="container">
+    <div class="site-footer">
+        <div class="card text-center">
+            <ul class="list-inline" style="margin-left: 0;">
+                <li>
+                    <a target="_blank" href="https://github.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://www.zhihu.com/people/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-1x fa-inverse">知</i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://weibo.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="site-footer-links mobile-hidden">
+            
+            <a href="https://github.com/fuzhengwei" title="Git仓库" target="_blank">Git仓库</a>
+            
+            <a href="/gitchat.html" title="GitChat" target="_blank">GitChat</a>
+            
+        </div>
+        <div class="site-footer-icons">
+            <a href="http://beian.miit.gov.cn" target="_blank">京ICP备19031103号-1</a>
+        </div>
+        <div class="scrolltop">
+            bugstack虫洞栈
+            <a href="javascript:window.scrollTo(0,0)">TOP</a>
+        </div>
+        <div class="rss">
+            <a href="/feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a>
+            Power by <a href="https://github.com/DONGChuan/Yummy-Jekyll">Yummy Jekyll</a>
+        </div>
+    </div>
+    <!-- Third-Party JS -->
+    <script type="text/javascript" src="/bower_components/geopattern/js/geopattern.min.js"></script>
+    <!-- My JS -->
+    <script type="text/javascript" src="/assets/js/script.js"></script>
+    
+
+    <!-- 百度统计&友盟统计 -->
+    <div style="display:none">
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+              var hm = document.createElement("script");
+              hm.src = "https://hm.baidu.com/hm.js?0b31b4c146bf7126aed5009e1a4a11c8";
+              var s = document.getElementsByTagName("script")[0];
+              s.parentNode.insertBefore(hm, s);
+            })();
+
+        </script>
+
+        <script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1278232949&web_id=1278232949"></script>
+    </div>
+    <!-- 百度统计 -->
+</footer>
+
+
+    </body>
+
+</html>

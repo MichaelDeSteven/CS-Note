@@ -1,0 +1,773 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="baidu-site-verification" content="3aFsC6yMzO" />
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico">
+
+    <title> 重学 Java 设计模式：实战单例模式「7种单例模式案例，Effective Java 作者推荐枚举单例模式」 - bugstack虫洞栈 </title>
+    <meta name="keywords" content="Java、Netty、设计模式、Javassist、ASM、Byte-buddy、DDD领域驱动设计、Spring、Mybatis、算法、源码分析">
+    <meta name="description"
+          content="五个创建型设计模式的最后一个单例模式，最常见、最有意思的设计模式，可以找到至少7、8种写法，而且还有Effective Java 作者推荐使用枚举的方式解决单例模式，值得深入学习。">
+
+    <link rel="canonical" href="https://bugstack.cn/itstack-demo-design/2020/05/31/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F.html">
+    <link rel="alternate" type="application/rss+xml" title="bugstack虫洞栈 | 沉淀、分享、成长，让自己和他人都能有所收获" href="https://bugstack.cn/feed.xml">
+
+    <!-- Third-Party CSS -->
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/octicons/octicons/octicons.css">
+    <link rel="stylesheet" href="/bower_components/hover/css/hover-min.css">
+    <link rel="stylesheet" href="/bower_components/primer-markdown/dist/user-content.min.css">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" href="/assets/css/gitalk.css">
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="/assets/css/common.css">
+
+    <!-- CSS set in page -->
+    
+
+    <!-- CSS set in layout -->
+    
+    <link rel="stylesheet" href="/assets/css/sidebar-post-nav.css">
+    
+
+    <!-- https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css -->
+    <link rel="stylesheet" type="text/css" href="https://bugstack.cn/assets/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/lock.js"></script>
+
+</head>
+
+
+    <body>
+
+    <header class="site-header">
+    <div class="site-header-topbar">
+        <div class="container">
+            <div class="topbar-menu">
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki"
+                       target="_blank"
+                       title="GitHub">
+                        GitHub
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki/%E5%80%BC%E5%BE%97%E4%B8%80%E7%9C%8B%E7%9A%84%E5%A5%BD%E4%B9%A6"
+                       target="_blank"
+                       title="电子书">
+                        电子书
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack/interview.html"
+                       target="_self"
+                       title="面试">
+                        面试
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack-code-life/itstack-code-life.html"
+                       target="_self"
+                       title="故事">
+                        故事
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/link.html"
+                       target="_self"
+                       title="友链">
+                        友链
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/about.html"
+                       target="_self"
+                       title="关于">
+                        关于
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <a id="site-header-brand" href="/" title="bugstack虫洞栈">
+            <span class="octicon octicon-smiley"></span>
+            bugstack虫洞栈
+        </a>
+        <nav class="site-header-nav" role="navigation">
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target=""
+                   title="首页">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="Java/Spring">
+                    Java/Spring
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-any/itstack-demo-any.html" 
+                           target=""
+                     >编程基础</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-code.html" 
+                           target=""
+                     >源码分析</a></li>
+                    
+                    <li><a href="/itstack-demo-algorithm/itstack-demo-algorithm.html" 
+                           target=""
+                     >野路子搞算法</a></li>
+                    
+                    <li><a href="/itstack-demo-springcloud/itstack-demo-springcloud.html" 
+                           target=""
+                     >Spring Cloud</a></li>
+                    
+                    <li><a href="/itstack-demo-jvm/itstack-demo-jvm.html" 
+                           target=""
+                     >用Java实现JVM</a></li>
+                    
+                    <li><a href="/itstack-demo-drools/itstack-demo-drools.html" 
+                           target=""
+                     >Drools·规则引擎</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/itstack-demo-netty/itstack-demo-netty.html"
+                   target="_self"
+                   title="Netty4.x专题">
+                    Netty4.x专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-1.html" 
+                           target=""
+                     >基础入门篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-2.html" 
+                           target=""
+                     >中级拓展篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-3.html" 
+                           target=""
+                     >高级应用篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-4.html" 
+                           target=""
+                     >源码分析篇</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="架构师专题">
+                    架构师专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-ark-middleware/itstack-ark-middleware.html" 
+                           target=""
+                     >中间件开发</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-bytecode.html" 
+                           target=""
+                     >字节码编程</a></li>
+                    
+                    <li><a href="/itstack-demo-agent/itstack-demo-agent.html" 
+                           target=""
+                     >调用链路监控</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-design.html" 
+                           target=""
+                     >实战设计模式</a></li>
+                    
+                    <li><a href="/itstack-demo-ddd/itstack-demo-ddd.html" 
+                           target=""
+                     >领域驱动设计</a></li>
+                    
+                    <li><a href="/itstack-demo-frame/itstack-demo-frame.html" 
+                           target=""
+                     >架构框架搭建</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/archives.html"
+                   target="_self"
+                   title="Archives">
+                    Archives
+                </a>
+                
+            </div>
+            
+        </nav>
+    </div>
+</header>
+
+
+        <div class="content">
+            <section class="jumbotron geopattern" data-pattern-id="重学 Java 设计模式：实战单例模式「7种单例模式案例，Effective Java 作者推荐枚举单例模式」">
+    <div class="container">
+        <div id="jumbotron-meta-info">        
+            <h1>重学 Java 设计模式：实战单例模式「7种单例模式案例，Effective Java 作者推荐枚举单例模式」</h1>
+            <span class="meta-info">
+                
+                
+                <span class="octicon octicon-calendar"></span> 2020/05/31
+                
+            </span>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function(){
+
+        $('.geopattern').each(function(){
+            $(this).geopattern($(this).data('pattern-id'));
+        });
+
+    });
+</script>
+<article class="post container need"  itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="row">
+
+        
+        <div class="col-md-9 markdown-body">
+
+            <p>作者：小傅哥
+<br />博客：<a href="https://bugstack.cn">https://bugstack.cn</a></p>
+
+<blockquote>
+  <p>沉淀、分享、成长，让自己和他人都能有所收获！😄</p>
+</blockquote>
+
+<h2 id="一前言">一、前言</h2>
+
+<p><code class="highlighter-rouge">5个创建型模式的最后一个</code></p>
+
+<p>在设计模式中按照不同的处理方式共包含三大类；<strong>创建型模式</strong>、<strong>结构型模式</strong>和<strong>行为模式</strong>，其中创建型模式目前已经介绍了其中的四个；<code class="highlighter-rouge">工厂方法模式</code>、<code class="highlighter-rouge">抽象工厂模式</code>、<code class="highlighter-rouge">生成器模式</code>和<code class="highlighter-rouge">原型模式</code>，除此之外还有最后一个<code class="highlighter-rouge">单例模式</code>。</p>
+
+<p><code class="highlighter-rouge">掌握了的知识才是自己的</code></p>
+
+<p>在本次编写的<strong>重学 Java 设计模式</strong>的编写中尽可能多的用各种场景案例还介绍设计的使用，包括我们已经使用过的场景；<code class="highlighter-rouge">各种类型奖品发放</code>、<code class="highlighter-rouge">多套Redis缓存集群升级</code>、<code class="highlighter-rouge">装修公司报价清单</code>和<code class="highlighter-rouge">百份考卷题目与答案乱序</code>，通过这些场景案例的实践感受设计模式的思想。但这些场景都是作者通过经验分离出来的，还并不是读者的知识，所以你如果希望可以融会贯通的掌握那么一定要亲力亲为的操作，事必躬亲的完成。</p>
+
+<p><code class="highlighter-rouge">书不是看的是用的</code></p>
+
+<p>在这里还是想强调一下学习方法，总有很多小伙伴对学习知识有疑惑，明明看了、看的时候也懂了，但到了实际使用的时候却用不上。或者有时候在想是不要是有更加生动的漫画或者什么对比会好些，当然这些方式可能会加快一个新人对知识的理解速度。但只要你把学习视频当电影看、学习书籍当故事看，就很难掌握这项技术栈。只有你把它用起来，逐字逐句的深挖，一点点的探求，把各项遇到的盲点全部扫清，才能让你真的掌握这项技能。</p>
+
+<h2 id="二开发环境">二、开发环境</h2>
+
+<ol>
+  <li>JDK 1.8</li>
+  <li>Idea + Maven</li>
+  <li>涉及工程1个，可以通过关注<strong>公众号</strong>：<a href="https://bugstack.cn/assets/images/qrcode.png"><code class="highlighter-rouge">bugstack虫洞栈</code></a>，回复<code class="highlighter-rouge">源码下载</code>获取(打开获取的链接，找到序号18)</li>
+</ol>
+
+<h2 id="三单例模式介绍">三、单例模式介绍</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-5-01.png" alt="单例模式，图片来自 refactoringguru.cn" /></p>
+
+<p>单例模式可以说是整个设计中最简单的模式之一，而且这种方式即使在没有看设计模式相关资料也会常用在编码开发中。</p>
+
+<p>因为在编程开发中经常会遇到这样一种场景，那就是需要保证一个类只有一个实例哪怕多线程同时访问，并需要提供一个全局访问此实例的点。</p>
+
+<p>综上以及我们平常的开发中，可以总结一条经验，单例模式主要解决的是，一个全局使用的类频繁的创建和消费，从而提升提升整体的代码的性能。</p>
+
+<h2 id="四案例场景">四、案例场景</h2>
+
+<p>本章节的技术所出现的场景非常简单也是我们日常开发所能见到的，例如；</p>
+
+<ol>
+  <li>数据库的连接池不会反复创建</li>
+  <li>spring中一个单例模式bean的生成和使用</li>
+  <li>在我们平常的代码中需要设置全局的的一些属性保存</li>
+</ol>
+
+<p>在我们的日常开发中大致上会出现如上这些场景中使用到单例模式，虽然单例模式并不复杂但是使用面却比较广。</p>
+
+<h2 id="五7种单例模式实现">五、7种单例模式实现</h2>
+
+<p>单例模式的实现方式比较多，主要在实现上是否支持懒汉模式、是否线程安全中运用各项技巧。当然也有一些场景不需要考虑懒加载也就是懒汉模式的情况，会直接使用<code class="highlighter-rouge">static</code>静态类或属性和方法的方式进行处理，供外部调用。</p>
+
+<p>那么接下来我们就通过实现不同方式的实现进行讲解单例模式。</p>
+
+<h3 id="0-静态类使用">0. 静态类使用</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Singleton_00</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">cache</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ConcurrentHashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;();</span>
+    
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>以上这种方式在我们平常的业务开发中非常场常见，这样静态类的方式可以在第一次运行的时候直接初始化Map类，同时这里我们也不需要到延迟加载在使用。</li>
+  <li>在不需要维持任何状态下，仅仅用于全局访问，这个使用使用静态类的方式更加方便。</li>
+  <li>但如果需要被继承以及需要维持一些特定状态的情况下，就适合使用单例模式。</li>
+</ul>
+
+<h3 id="1-懒汉模式线程不安全">1. 懒汉模式(线程不安全)</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Singleton_01</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Singleton_01</span> <span class="n">instance</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="nf">Singleton_01</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Singleton_01</span> <span class="nf">getInstance</span><span class="o">(){</span>
+        <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">!=</span> <span class="n">instance</span><span class="o">)</span> <span class="k">return</span> <span class="n">instance</span><span class="o">;</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Singleton_01</span><span class="o">();</span>
+        <span class="k">return</span> <span class="n">instance</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>单例模式有一个特点就是不允许外部直接创建，也就是<code class="highlighter-rouge">new Singleton_01()</code>，因此这里在默认的构造函数上添加了私有属性 <code class="highlighter-rouge">private</code>。</li>
+  <li>目前此种方式的单例确实满足了懒加载，但是如果有多个访问者同时去获取对象实例<em>你可以想象成一堆人在抢厕所</em>，就会造成多个同样的实例并存，从而没有达到单例的要求。</li>
+</ul>
+
+<h3 id="2-懒汉模式线程安全">2. 懒汉模式(线程安全)</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Singleton_02</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Singleton_02</span> <span class="n">instance</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="nf">Singleton_02</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">synchronized</span> <span class="n">Singleton_02</span> <span class="nf">getInstance</span><span class="o">(){</span>
+        <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">!=</span> <span class="n">instance</span><span class="o">)</span> <span class="k">return</span> <span class="n">instance</span><span class="o">;</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Singleton_02</span><span class="o">();</span>
+        <span class="k">return</span> <span class="n">instance</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>此种模式虽然是安全的，但由于把锁加到方法上后，所有的访问都因需要锁占用导致资源的浪费。如果不是特殊情况下，不建议此种方式实现单例模式。</li>
+</ul>
+
+<h3 id="3-饿汉模式线程安全">3. 饿汉模式(线程安全)</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Singleton_03</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Singleton_03</span> <span class="n">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Singleton_03</span><span class="o">();</span>
+
+    <span class="kd">private</span> <span class="nf">Singleton_03</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Singleton_03</span> <span class="nf">getInstance</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">instance</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>此种方式与我们开头的第一个实例化<code class="highlighter-rouge">Map</code>基本一致，在程序启动的时候直接运行加载，后续有外部需要使用的时候获取即可。</li>
+  <li>但此种方式并不是懒加载，也就是说无论你程序中是否用到这样的类都会在程序启动之初进行创建。</li>
+  <li>那么这种方式导致的问题就像你下载个游戏软件，可能你游戏地图还没有打开呢，但是程序已经将这些地图全部实例化。到你手机上最明显体验就一开游戏内存满了，手机卡了，需要换了。</li>
+</ul>
+
+<h3 id="4-使用类的内部类线程安全">4. 使用类的内部类(线程安全)</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Singleton_04</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">SingletonHolder</span> <span class="o">{</span>
+        <span class="kd">private</span> <span class="kd">static</span> <span class="n">Singleton_04</span> <span class="n">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Singleton_04</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="nf">Singleton_04</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Singleton_04</span> <span class="nf">getInstance</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nc">SingletonHolder</span><span class="o">.</span><span class="na">instance</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>使用类的静态内部类实现的单例模式，既保证了线程安全有保证了懒加载，同时不会因为加锁的方式耗费性能。</li>
+  <li>这主要是因为JVM虚拟机可以保证多线程并发访问的正确性，也就是一个类的构造方法在多线程环境下可以被正确的加载。</li>
+  <li>此种方式也是非常推荐使用的一种单例模式</li>
+</ul>
+
+<h3 id="5-双重锁校验线程安全">5. 双重锁校验(线程安全)</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Singleton_05</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">volatile</span> <span class="n">Singleton_05</span> <span class="n">instance</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="nf">Singleton_05</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Singleton_05</span> <span class="nf">getInstance</span><span class="o">(){</span>
+       <span class="k">if</span><span class="o">(</span><span class="kc">null</span> <span class="o">!=</span> <span class="n">instance</span><span class="o">)</span> <span class="k">return</span> <span class="n">instance</span><span class="o">;</span>
+       <span class="kd">synchronized</span> <span class="o">(</span><span class="n">Singleton_05</span><span class="o">.</span><span class="na">class</span><span class="o">){</span>
+           <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">instance</span><span class="o">){</span>
+               <span class="n">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Singleton_05</span><span class="o">();</span>
+           <span class="o">}</span>
+       <span class="o">}</span>
+       <span class="k">return</span> <span class="n">instance</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>双重锁的方式是方法级锁的优化，减少了部分获取实例的耗时。</li>
+  <li>同时这种方式也满足了懒加载。</li>
+</ul>
+
+<h3 id="6-casatomicreference线程安全">6. CAS「AtomicReference」(线程安全)</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Singleton_06</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">AtomicReference</span><span class="o">&lt;</span><span class="n">Singleton_06</span><span class="o">&gt;</span> <span class="no">INSTANCE</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AtomicReference</span><span class="o">&lt;</span><span class="n">Singleton_06</span><span class="o">&gt;();</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Singleton_06</span> <span class="n">instance</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="nf">Singleton_06</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Singleton_06</span> <span class="nf">getInstance</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">for</span> <span class="o">(;</span> <span class="o">;</span> <span class="o">)</span> <span class="o">{</span>
+            <span class="n">Singleton_06</span> <span class="n">instance</span> <span class="o">=</span> <span class="no">INSTANCE</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">!=</span> <span class="n">instance</span><span class="o">)</span> <span class="k">return</span> <span class="n">instance</span><span class="o">;</span>
+            <span class="no">INSTANCE</span><span class="o">.</span><span class="na">compareAndSet</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span> <span class="k">new</span> <span class="n">Singleton_06</span><span class="o">());</span>
+            <span class="k">return</span> <span class="no">INSTANCE</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">Singleton_06</span><span class="o">.</span><span class="na">getInstance</span><span class="o">());</span> <span class="c1">// org.itstack.demo.design.Singleton_06@2b193f2d</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">Singleton_06</span><span class="o">.</span><span class="na">getInstance</span><span class="o">());</span> <span class="c1">// org.itstack.demo.design.Singleton_06@2b193f2d</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>java并发库提供了很多原子类来支持并发访问的数据安全性；<code class="highlighter-rouge">AtomicInteger</code>、<code class="highlighter-rouge">AtomicBoolean</code>、<code class="highlighter-rouge">AtomicLong</code>、<code class="highlighter-rouge">AtomicReference</code>。</li>
+  <li>AtomicReference<V> 可以封装引用一个V实例，支持并发访问如上的单例方式就是使用了这样的一个特点。</V></li>
+  <li>使用CAS的好处就是不需要使用传统的加锁方式保证线程安全，而是依赖于CAS的忙等算法，依赖于底层硬件的实现，来保证线程安全。相对于其他锁的实现没有线程的切换和阻塞也就没有了额外的开销，并且可以支持较大的并发性。</li>
+  <li>当然CAS也有一个缺点就是忙等，如果一直没有获取到将会处于死循环中。</li>
+</ul>
+
+<h3 id="7-effective--java作者推荐的枚举单例线程安全">7. Effective  Java作者推荐的枚举单例(线程安全)</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="n">Singleton_07</span> <span class="o">{</span>
+
+    <span class="no">INSTANCE</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"hi~"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>约书亚·布洛克（英语：Joshua J. Bloch，1961年8月28日－），美国著名程序员。他为Java平台设计并实作了许多的功能，曾担任Google的首席Java架构师（Chief Java Architect）。</p>
+</blockquote>
+
+<ul>
+  <li>Effective Java 作者推荐使用枚举的方式解决单例模式，此种方式可能是平时最少用到的。</li>
+  <li>这种方式解决了最主要的；线程安全、自由串行化、单一实例。</li>
+</ul>
+
+<p><strong>调用方式</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">Singleton_07</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">test</span><span class="o">();</span>
+</code></pre></div></div>
+
+<p><em>这种写法在功能上与共有域方法相近，但是它更简洁，无偿地提供了串行化机制，绝对防止对此实例化，即使是在面对复杂的串行化或者反射攻击的时候。虽然这中方法还没有广泛采用，但是单元素的枚举类型已经成为实现Singleton的最佳方法。</em></p>
+
+<p>但也要知道此种方式在存在继承场景下是不可用的。</p>
+
+<h2 id="六总结">六、总结</h2>
+
+<ul>
+  <li>虽然只是一个很平常的单例模式，但在各种的实现上真的可以看到java的基本功的体现，这里包括了；懒汉、饿汉、线程是否安全、静态类、内部类、加锁、串行化等等。</li>
+  <li>在平时的开发中如果可以确保此类是全局可用不需要做懒加载，那么直接创建并给外部调用即可。但如果是很多的类，有些需要在用户触发一定的条件后(游戏关卡)才显示，那么一定要用懒加载。线程的安全上可以按需选择。</li>
+  <li>建议在学习的过程中一定要加以实践，否则很难完完整整的掌握一整套的知识体系。例如案例中的出现的<code class="highlighter-rouge">Effective Java</code>一书也非常建议大家阅读。另外推荐下这位大神的Github：<a href="https://github.com/jbloch">https://github.com/jbloch</a></li>
+</ul>
+
+
+            <div>
+   <div align="center" class="copyright">
+	   <div class="cmower">bugstack虫洞栈</div>
+	   <div class="brief">沉淀、分享、成长，让自己和他人都能有所收获</div>
+       <img src="/assets/images/qrcode.png" >
+	   <div class="saoma">微信扫描二维码，关注我的公众号</div>
+   </div>
+   <p align="center" style="margin-top: 15px; font-size: 11px;color: #cc0000;">
+       <strong>（转载本站文章请注明作者和出处 <a href="https://bugstack.cn">微信公众号：bugstack虫洞栈 | 作者：小傅哥</a>）</strong>
+   </p>
+</div>
+
+
+            <!-- Comments -->
+            <div class="comment">
+             
+
+  
+    <a href="#" class="show_disqus_comment" onclick="return false;">Show Disqus Comments</a>
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_config = function () {
+        this.page.url = 'https://bugstack.cn/itstack-demo-design/2020/05/31/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F.html';
+        this.page.identifier = '/itstack-demo-design/2020/05/31/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F.html';
+        this.page.title = '重学 Java 设计模式：实战单例模式「7种单例模式案例，Effective Java 作者推荐枚举单例模式」';
+    };
+    var disqus_loaded = false;
+    $(function() {
+        $('.show_disqus_comment').on('click', function() { // DON'T EDIT BELOW THIS LINE
+            $(this).html('加载中...');
+            var that = this;
+            if (!disqus_loaded) {
+                var d = document, s = d.createElement('script');
+
+                s.type = 'text/javascript';
+                s.async = true;
+                var shortname = 'fuzhengwei';
+
+                s.src = '//' + shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+
+                disqus_loaded = true;
+            }
+            $(that).remove();
+        })
+    })
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  
+
+  
+        <div id="gitalk-container"></div>
+        <script src="/assets/js/gitalk.min.js"></script>
+        <script src="/assets/js/md5.js"></script>
+        <script>
+        var gitalk = new Gitalk({
+            id: md5(decodeURI('/itstack-demo-design/2020/05/31/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F.html')),
+            clientID: 'df8beab2190bec20352a',
+            clientSecret: '7eeeb4369d699c933f02a026ae8bb1e2a9c80e90',
+            repo: 'CodeGuide',
+            owner: 'fuzhengwei',
+            admin: ['fuzhengwei'],
+            labels: ['gitment'],
+            perPage: 50,
+        })
+        gitalk.render('gitalk-container')
+        </script>
+  
+
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <h3>Post Directory</h3>
+<div id="post-directory-module">
+<section class="post-directory">
+    <!-- Links that trigger the jumping -->
+    <!-- Added by javascript below -->
+    <dl></dl>
+</section>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $( "article h2" ).each(function( index ) {
+            $(".post-directory dl").append("<dt><a class=\"jumper\" hre=#" +
+                    $(this).attr("id")
+                    + ">"
+                    + $(this).text()
+                    + "</a></dt>");
+
+            var children = $(this).nextUntil("h2", "h3")
+
+            children.each(function( index ) {
+                $(".post-directory dl").append("<dd><a class=\"jumper\" hre=#" +
+                        $(this).attr("id")
+                        + ">"
+                        + "&nbsp;&nbsp;- " + $(this).text()
+                        + "</a></dd>");
+            });
+        });
+
+        var fixmeTop = $('#post-directory-module').offset().top - 100;       // get initial position of the element
+
+        $(window).scroll(function() {                  // assign scroll event listener
+
+            var currentScroll = $(window).scrollTop(); // get current position
+
+            if (currentScroll >= fixmeTop) {           // apply position: fixed if you
+                $('#post-directory-module').css({      // scroll to that element or below it
+                    top: '100px',
+                    position: 'fixed',
+                    width: 'inherit'
+                });
+            } else {                                   // apply position: static
+                $('#post-directory-module').css({      // if you scroll above it
+                    position: 'inherit',
+                    width: 'inherit'
+                });
+            }
+
+        });
+
+        $("a.jumper").on("click", function( e ) {
+
+            e.preventDefault();
+
+            $("body, html").animate({
+                scrollTop: ($( $(this).attr('hre') ).offset().top - 100)
+            }, 600);
+
+        });
+    });
+
+</script>
+        </div>
+        
+
+    </div>
+    
+    <div class="asb-post-01">
+        <div class="mask"></div>
+			<div class="info">
+	    		<div>扫码或搜索：<span style="color: #E9405A; font-weight: bold;">bugstack虫洞栈</span></div>
+	    	<div>
+	        <span>发送 </span><span class="token" style="color: #e9415a; font-weight: bold; font-size: 17px; margin-bottom: 45px;">290992</span>
+	    	<div>
+	       	 	即可<span style="color: #e9415a; font-weight: bold;">立即永久</span>解锁本站全部文章
+	    	</div>
+	    	<img class="code-img" style="width: 300px;display:unset" src="/assets/images/qrcode.png">
+		</div>
+ 	</div>
+</article>
+
+        </div>
+
+    <footer class="container">
+    <div class="site-footer">
+        <div class="card text-center">
+            <ul class="list-inline" style="margin-left: 0;">
+                <li>
+                    <a target="_blank" href="https://github.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://www.zhihu.com/people/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-1x fa-inverse">知</i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://weibo.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="site-footer-links mobile-hidden">
+            
+            <a href="https://github.com/fuzhengwei" title="Git仓库" target="_blank">Git仓库</a>
+            
+            <a href="/gitchat.html" title="GitChat" target="_blank">GitChat</a>
+            
+        </div>
+        <div class="site-footer-icons">
+            <a href="http://beian.miit.gov.cn" target="_blank">京ICP备19031103号-1</a>
+        </div>
+        <div class="scrolltop">
+            bugstack虫洞栈
+            <a href="javascript:window.scrollTo(0,0)">TOP</a>
+        </div>
+        <div class="rss">
+            <a href="/feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a>
+            Power by <a href="https://github.com/DONGChuan/Yummy-Jekyll">Yummy Jekyll</a>
+        </div>
+    </div>
+    <!-- Third-Party JS -->
+    <script type="text/javascript" src="/bower_components/geopattern/js/geopattern.min.js"></script>
+    <!-- My JS -->
+    <script type="text/javascript" src="/assets/js/script.js"></script>
+    
+
+    <!-- 百度统计&友盟统计 -->
+    <div style="display:none">
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+              var hm = document.createElement("script");
+              hm.src = "https://hm.baidu.com/hm.js?0b31b4c146bf7126aed5009e1a4a11c8";
+              var s = document.getElementsByTagName("script")[0];
+              s.parentNode.insertBefore(hm, s);
+            })();
+
+        </script>
+
+        <script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1278232949&web_id=1278232949"></script>
+    </div>
+    <!-- 百度统计 -->
+</footer>
+
+
+    </body>
+
+</html>

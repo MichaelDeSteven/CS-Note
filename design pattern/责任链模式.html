@@ -1,0 +1,976 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="baidu-site-verification" content="3aFsC6yMzO" />
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico">
+
+    <title> 重学 Java 设计模式：实战责任链模式「模拟618电商大促期间，项目上线流程多级负责人审批场景」 - bugstack虫洞栈 </title>
+    <meta name="keywords" content="Java、netty、dubbo、asm、Javassist、重学Java设计模式、面经手册、字节码编程、码农职场故事、源码分析、全链路监控、领域驱动设计、源码分析">
+    <meta name="description"
+          content="射击🏹需要去靶场学习、滑雪🏂需要去雪场体验、开车🚗需要能上路实践，没有这样的技术场景给你训练，即便你有再多的想法都没法运用起来。所以，如果真的想学习一定要去一个有实操的场景，下水试试才能学会狗刨。">
+
+    <link rel="canonical" href="https://bugstack.cn/itstack-demo-design/2020/06/18/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F.html">
+    <link rel="alternate" type="application/rss+xml" title="bugstack虫洞栈 | 沉淀、分享、成长，让自己和他人都能有所收获" href="https://bugstack.cn/feed.xml">
+
+    <!-- Third-Party CSS -->
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/octicons/octicons/octicons.css">
+    <link rel="stylesheet" href="/bower_components/hover/css/hover-min.css">
+    <link rel="stylesheet" href="/bower_components/primer-markdown/dist/user-content.min.css">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" href="/assets/css/gitalk.css">
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="/assets/css/common.css">
+
+    <!-- CSS set in page -->
+    
+
+    <!-- CSS set in layout -->
+    
+    <link rel="stylesheet" href="/assets/css/sidebar-post-nav.css">
+    
+
+    <!-- https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css -->
+    <link rel="stylesheet" type="text/css" href="https://bugstack.cn/assets/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/lock.js"></script>
+
+</head>
+
+
+    <body>
+
+    <header class="site-header">
+    <div class="site-header-topbar">
+        <div class="container">
+            <div class="topbar-menu">
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki"
+                       target="_blank"
+                       title="GitHub">
+                        GitHub
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki/%E5%80%BC%E5%BE%97%E4%B8%80%E7%9C%8B%E7%9A%84%E5%A5%BD%E4%B9%A6"
+                       target="_blank"
+                       title="电子书">
+                        电子书
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack/interview.html"
+                       target="_self"
+                       title="面试">
+                        面试
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack/framework.html"
+                       target="_self"
+                       title="架构">
+                        架构
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack-code-life/itstack-code-life.html"
+                       target="_self"
+                       title="故事">
+                        故事
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/link.html"
+                       target="_self"
+                       title="友链">
+                        友链
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/about.html"
+                       target="_self"
+                       title="关于">
+                        关于
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <a id="site-header-brand" href="/" title="bugstack虫洞栈">
+            <span class="octicon octicon-smiley"></span>
+            bugstack虫洞栈
+        </a>
+        <nav class="site-header-nav" role="navigation">
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target=""
+                   title="首页">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="Java/Spring">
+                    Java/Spring
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-any/itstack-demo-any.html" 
+                           target=""
+                     >编程基础</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-code.html" 
+                           target=""
+                     >源码分析</a></li>
+                    
+                    <li><a href="/itstack-demo-algorithm/itstack-demo-algorithm.html" 
+                           target=""
+                     >野路子搞算法</a></li>
+                    
+                    <li><a href="/itstack-demo-springcloud/itstack-demo-springcloud.html" 
+                           target=""
+                     >Spring Cloud</a></li>
+                    
+                    <li><a href="/itstack-demo-jvm/itstack-demo-jvm.html" 
+                           target=""
+                     >用Java实现JVM</a></li>
+                    
+                    <li><a href="/itstack-demo-drools/itstack-demo-drools.html" 
+                           target=""
+                     >Drools·规则引擎</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/itstack-demo-netty/itstack-demo-netty.html"
+                   target="_self"
+                   title="Netty4.x专题">
+                    Netty4.x专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-1.html" 
+                           target=""
+                     >基础入门篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-2.html" 
+                           target=""
+                     >中级拓展篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-3.html" 
+                           target=""
+                     >高级应用篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-4.html" 
+                           target=""
+                     >源码分析篇</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="架构师专题">
+                    架构师专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-ark-middleware/itstack-ark-middleware.html" 
+                           target=""
+                     >中间件开发</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-bytecode.html" 
+                           target=""
+                     >字节码编程</a></li>
+                    
+                    <li><a href="/itstack-demo-agent/itstack-demo-agent.html" 
+                           target=""
+                     >调用链路监控</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-design.html" 
+                           target=""
+                     >实战设计模式</a></li>
+                    
+                    <li><a href="/itstack-demo-ddd/itstack-demo-ddd.html" 
+                           target=""
+                     >领域驱动设计</a></li>
+                    
+                    <li><a href="/itstack-demo-frame/itstack-demo-frame.html" 
+                           target=""
+                     >架构框架搭建</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/archives.html"
+                   target="_self"
+                   title="Archives">
+                    Archives
+                </a>
+                
+            </div>
+            
+        </nav>
+    </div>
+</header>
+
+
+        <div class="content">
+            <section class="jumbotron geopattern" data-pattern-id="重学 Java 设计模式：实战责任链模式「模拟618电商大促期间，项目上线流程多级负责人审批场景」">
+    <div class="container">
+        <div id="jumbotron-meta-info">        
+            <h1>重学 Java 设计模式：实战责任链模式「模拟618电商大促期间，项目上线流程多级负责人审批场景」</h1>
+            <span class="meta-info">
+                
+                
+                <span class="octicon octicon-calendar"></span> 2020/06/18
+                
+            </span>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function(){
+
+        $('.geopattern').each(function(){
+            $(this).geopattern($(this).data('pattern-id'));
+        });
+
+    });
+</script>
+<article class="post container need"  itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="row">
+
+        
+        <div class="col-md-9 markdown-body">
+
+            <p>作者：小傅哥
+<br />博客：<a href="https://bugstack.cn">https://bugstack.cn</a></p>
+
+<blockquote>
+  <p>沉淀、分享、成长，让自己和他人都能有所收获！😄</p>
+</blockquote>
+
+<h2 id="一前言">一、前言</h2>
+
+<p><code class="highlighter-rouge">场地和场景的重要性</code></p>
+
+<p>射击🏹需要去靶场学习、滑雪🏂需要去雪场体验、开车🚗需要能上路实践，而编程开发除了能完成产品的功能流程，还需要保证系统的可靠性能。就像你能听到的一些系统监控指标；<code class="highlighter-rouge">QPS</code>、<code class="highlighter-rouge">TPS</code>、<code class="highlighter-rouge">TP99</code>、<code class="highlighter-rouge">TP999</code>、<code class="highlighter-rouge">可用率</code>、<code class="highlighter-rouge">响应时长</code>等等，而这些指标的总和评估就是一个系统的健康度。但如果你几乎没有听到这样的技术术语，也没接触过类似高并发场景，那么就很像驾驶证的科目1考了100分，但不能上路。没有这样的技术场景给你训练，让你不断的体会系统的脾气秉性，即便你有再多的想法都没法实现。所以，如果真的想学习一定要去一个有实操的场景，下水试试才能学会狗刨。</p>
+
+<p><code class="highlighter-rouge">你的视觉盲区有多大</code></p>
+
+<p>同样一本书、同样一条路、同样一座城，你真的以为生活有选择吗？有时候很多选项都是摆设，给你多少次机会你都选的一模一样。这不是你选不选而是你的认知范围决定了你下一秒做的事情，另外的一个下一秒又决定了再下一个下一秒。就像管中窥豹一样，20%的面积在你视觉里都是黑色的，甚至就总是忽略看不到，而这看不到的20%就是生命中的时运！但，人可以学习，可以成长，可以脱胎换骨，可以努力付出，通过一次次的蜕变而看到剩下的20%！</p>
+
+<p><code class="highlighter-rouge">没有设计图纸你敢盖楼吗</code></p>
+
+<p>编程开发中最好的什么，是设计。运用架构思维、经验心得、<code class="highlighter-rouge">才华灵感</code>，构建出最佳的系统。真正的研发会把自己写的代码当做作品来欣赏，你说这是一份工作，但在这样的人眼里这可不是一份工作，而是一份工匠精神。就像可能时而你也会为自己因为一个<code class="highlighter-rouge">niubility</code>的设计而豪迈万丈，为能上线一个扛得住每秒200万访问量的系统会精神焕发。这样的自豪感就是一次次垒砖一样垫高脚底，不断的把你的视野提高，让你能看到上层设计也能知晓根基建设。可以把控全局，也可以治理细节。这一份份知识的沉淀，来帮助你绘制出一张系统架构蓝图。</p>
+
+<h2 id="二开发环境">二、开发环境</h2>
+
+<ol>
+  <li>JDK 1.8</li>
+  <li>Idea + Maven</li>
+  <li>涉及工程三个，可以通过关注<strong>公众号</strong>：<a href="https://bugstack.cn/assets/images/qrcode.png"><code class="highlighter-rouge">bugstack虫洞栈</code></a>，回复<code class="highlighter-rouge">源码下载</code>获取(打开获取的链接，找到序号18)</li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th>工程</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>itstack-demo-design-13-00</td>
+      <td>场景模拟工程；模拟一个上线流程审批的接口。</td>
+    </tr>
+    <tr>
+      <td>itstack-demo-design-13-01</td>
+      <td>使用一坨代码实现业务需求</td>
+    </tr>
+    <tr>
+      <td>itstack-demo-design-13-02</td>
+      <td>通过设计模式优化改造代码，产生对比性从而学习</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="三责任链模式介绍">三、责任链模式介绍</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-13-01.png" alt="责任链模式，图片来自 refactoringguru.cn" /></p>
+
+<p><strong>击鼓传雷</strong>，看上图你是否想起周星驰有一个电影，大家坐在海边围成一个圈，拿着一个点燃的炸弹，互相传递。</p>
+
+<p>责任链模式的核心是解决一组服务中的先后执行处理关系，就有点像你没钱花了，需要家庭财务支出审批，10块钱以下找闺女审批，100块钱先闺女审批在媳妇审批。你可以理解想象成当你要跳槽的时候被安排的明明白白的被各个领导签字放行。</p>
+
+<h2 id="四案例场景模拟">四、案例场景模拟</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-13-02.png" alt="场景模拟；618大促场景上线审批场景" /></p>
+
+<p><strong>在本案例中我们模拟在618大促期间的业务系统上线审批流程场景</strong></p>
+
+<p>像是这些一线电商类的互联网公司，阿里、京东、拼多多等，在618期间都会做一些运营活动场景以及提供的扩容备战，就像过年期间百度的红包一样。但是所有开发的这些系统都需要陆续的上线，因为临近618有时候也有一些紧急的调整的需要上线，但为了保障线上系统的稳定性是尽可能的减少上线的，也会相应的增强审批力度。就像一级响应、二级响应一样。</p>
+
+<p>而这审批的过程在随着特定时间点会增加不同级别的负责人加入，每个人就像责任链模式中的每一个核心点。对于研发小伙伴并不需要关心具体的审批流程处理细节，只需要知道这个上线更严格，级别也更高，但对于研发人员来说同样是点击相同的提审按钮，等待审核。</p>
+
+<p>接下来我们就模拟这样一个业务诉求场景，使用责任链的设计模式来实现此功能。</p>
+
+<h3 id="1-场景模拟工程">1. 场景模拟工程</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">13</span><span class="o">-</span><span class="mo">00</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">└──</span> <span class="n">main</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+                <span class="err">└──</span> <span class="nc">AuthService</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里的代码结构比较简单，只有一个模拟审核和查询审核结果的服务类。相当于你可以调用这个类去审核工程和获取审核结构，这部分结果信息是模拟的写到缓存实现。</li>
+</ul>
+
+<h3 id="2-场景简述">2. 场景简述</h3>
+
+<h4 id="21-模拟审核服务">2.1 模拟审核服务</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AuthService</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Date</span><span class="o">&gt;</span> <span class="n">authMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ConcurrentHashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Date</span><span class="o">&gt;();</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">Date</span> <span class="nf">queryAuthInfo</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">orderId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">authMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">uId</span><span class="o">.</span><span class="na">concat</span><span class="o">(</span><span class="n">orderId</span><span class="o">));</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">auth</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">orderId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">authMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">uId</span><span class="o">.</span><span class="na">concat</span><span class="o">(</span><span class="n">orderId</span><span class="o">),</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">());</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里面提供了两个接口一个是查询审核结果(<code class="highlighter-rouge">queryAuthInfo</code>)、另外一个是处理审核(<code class="highlighter-rouge">auth</code>)。</li>
+  <li>这部分是把由谁审核的和审核的单子ID作为唯一key值记录到内存Map结构中。</li>
+</ul>
+
+<h2 id="五用一坨坨代码实现">五、用一坨坨代码实现</h2>
+
+<p><code class="highlighter-rouge">这里我们先使用最直接的方式来实现功能</code></p>
+
+<p>按照我们的需求审批流程，平常系统上线只需要三级负责人审批就可以，但是到了618大促时间点，就需要由二级负责以及一级负责人一起加入审批系统上线流程。在这里我们使用非常直接的if判断方式来实现这样的需求。</p>
+
+<h3 id="1-工程结构">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">13</span><span class="o">-</span><span class="mo">01</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">└──</span> <span class="n">main</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+                <span class="err">└──</span> <span class="nc">AuthController</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这部分非常简单的只包含了一个审核的控制类，就像有些伙伴开始写代码一样，一个类写所有需求。</li>
+</ul>
+
+<h3 id="2-代码实现">2. 代码实现</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AuthController</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">SimpleDateFormat</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SimpleDateFormat</span><span class="o">(</span><span class="s">"yyyy-MM-dd HH:mm:ss"</span><span class="o">);</span><span class="c1">// 时间格式化</span>
+
+    <span class="kd">public</span> <span class="nc">AuthInfo</span> <span class="nf">doAuth</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">orderId</span><span class="o">,</span> <span class="nc">Date</span> <span class="n">authDate</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ParseException</span> <span class="o">{</span>
+
+        <span class="c1">// 三级审批</span>
+        <span class="nc">Date</span> <span class="n">date</span> <span class="o">=</span> <span class="nc">AuthService</span><span class="o">.</span><span class="na">queryAuthInfo</span><span class="o">(</span><span class="s">"1000013"</span><span class="o">,</span> <span class="n">orderId</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">date</span><span class="o">)</span> <span class="k">return</span> <span class="k">new</span> <span class="nc">AuthInfo</span><span class="o">(</span><span class="s">"0001"</span><span class="o">,</span> <span class="s">"单号："</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="s">" 状态：待三级审批负责人 "</span><span class="o">,</span> <span class="s">"王工"</span><span class="o">);</span>
+
+        <span class="c1">// 二级审批</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">authDate</span><span class="o">.</span><span class="na">after</span><span class="o">(</span><span class="n">f</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">"2020-06-01 00:00:00"</span><span class="o">))</span> <span class="o">&amp;&amp;</span> <span class="n">authDate</span><span class="o">.</span><span class="na">before</span><span class="o">(</span><span class="n">f</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">"2020-06-25 23:59:59"</span><span class="o">)))</span> <span class="o">{</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="nc">AuthService</span><span class="o">.</span><span class="na">queryAuthInfo</span><span class="o">(</span><span class="s">"1000012"</span><span class="o">,</span> <span class="n">orderId</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">date</span><span class="o">)</span> <span class="k">return</span> <span class="k">new</span> <span class="nc">AuthInfo</span><span class="o">(</span><span class="s">"0001"</span><span class="o">,</span> <span class="s">"单号："</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="s">" 状态：待二级审批负责人 "</span><span class="o">,</span> <span class="s">"张经理"</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="c1">// 一级审批</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">authDate</span><span class="o">.</span><span class="na">after</span><span class="o">(</span><span class="n">f</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">"2020-06-11 00:00:00"</span><span class="o">))</span> <span class="o">&amp;&amp;</span> <span class="n">authDate</span><span class="o">.</span><span class="na">before</span><span class="o">(</span><span class="n">f</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">"2020-06-20 23:59:59"</span><span class="o">)))</span> <span class="o">{</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="nc">AuthService</span><span class="o">.</span><span class="na">queryAuthInfo</span><span class="o">(</span><span class="s">"1000011"</span><span class="o">,</span> <span class="n">orderId</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">date</span><span class="o">)</span> <span class="k">return</span> <span class="k">new</span> <span class="nc">AuthInfo</span><span class="o">(</span><span class="s">"0001"</span><span class="o">,</span> <span class="s">"单号："</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="s">" 状态：待一级审批负责人 "</span><span class="o">,</span> <span class="s">"段总"</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">AuthInfo</span><span class="o">(</span><span class="s">"0001"</span><span class="o">,</span> <span class="s">"单号："</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="s">" 状态：审批完成"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里从上到下分别判断了在指定时间范围内由不同的人员进行审批，就像618上线的时候需要三个负责人都审批才能让系统进行上线。</li>
+  <li>像是这样的功能看起来很简单的，但是实际的业务中会有很多部门，但如果这样实现就很难进行扩展，并且在改动扩展调整也非常麻烦。</li>
+</ul>
+
+<h3 id="3-测试验证">3. 测试验证</h3>
+
+<h4 id="31-编写测试类">3.1 编写测试类</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_AuthController</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">ParseException</span> <span class="o">{</span>
+    <span class="nc">AuthController</span> <span class="n">authController</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AuthController</span><span class="o">();</span>  
+
+    <span class="c1">// 模拟三级负责人审批</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">authController</span><span class="o">.</span><span class="na">doAuth</span><span class="o">(</span><span class="s">"小傅哥"</span><span class="o">,</span> <span class="s">"1000998004813441"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">())));</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="s">"模拟三级负责人审批，王工"</span><span class="o">);</span>
+    <span class="nc">AuthService</span><span class="o">.</span><span class="na">auth</span><span class="o">(</span><span class="s">"1000013"</span><span class="o">,</span> <span class="s">"1000998004813441"</span><span class="o">);</span>  
+
+    <span class="c1">// 模拟二级负责人审批                                 </span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">authController</span><span class="o">.</span><span class="na">doAuth</span><span class="o">(</span><span class="s">"小傅哥"</span><span class="o">,</span> <span class="s">"1000998004813441"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">())));</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="s">"模拟二级负责人审批，张经理"</span><span class="o">);</span>
+    <span class="nc">AuthService</span><span class="o">.</span><span class="na">auth</span><span class="o">(</span><span class="s">"1000012"</span><span class="o">,</span> <span class="s">"1000998004813441"</span><span class="o">);</span>    
+
+    <span class="c1">// 模拟一级负责人审批</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">authController</span><span class="o">.</span><span class="na">doAuth</span><span class="o">(</span><span class="s">"小傅哥"</span><span class="o">,</span> <span class="s">"1000998004813441"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">())));</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="s">"模拟一级负责人审批，段总"</span><span class="o">);</span>
+    <span class="nc">AuthService</span><span class="o">.</span><span class="na">auth</span><span class="o">(</span><span class="s">"1000011"</span><span class="o">,</span> <span class="s">"1000998004813441"</span><span class="o">);</span>            
+
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="s">"审批完成"</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里模拟每次查询是否审批完成，随着审批的不同节点，之后继续由不同的负责人进行审批操作。</li>
+  <li><code class="highlighter-rouge">authController.doAuth</code>，是查看审批的流程节点、<code class="highlighter-rouge">AuthService.auth</code>，是审批方法用于操作节点流程状态。</li>
+</ul>
+
+<h4 id="32-测试结果">3.2 测试结果</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">23</span><span class="o">:</span><span class="mi">25</span><span class="o">:</span><span class="mf">00.363</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="o">{</span><span class="s">"code"</span><span class="o">:</span><span class="s">"0001"</span><span class="o">,</span><span class="s">"info"</span><span class="o">:</span><span class="s">"单号：1000998004813441 状态：待三级审批负责人 王工"</span><span class="o">}</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">25</span><span class="o">:</span><span class="mf">00.366</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="n">模拟三级负责人审批</span><span class="err">，</span><span class="n">王工</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">25</span><span class="o">:</span><span class="mf">00.367</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="o">{</span><span class="s">"code"</span><span class="o">:</span><span class="s">"0001"</span><span class="o">,</span><span class="s">"info"</span><span class="o">:</span><span class="s">"单号：1000998004813441 状态：待二级审批负责人 张经理"</span><span class="o">}</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">25</span><span class="o">:</span><span class="mf">00.367</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="n">模拟二级负责人审批</span><span class="err">，</span><span class="n">张经理</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">25</span><span class="o">:</span><span class="mf">00.368</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="o">{</span><span class="s">"code"</span><span class="o">:</span><span class="s">"0001"</span><span class="o">,</span><span class="s">"info"</span><span class="o">:</span><span class="s">"单号：1000998004813441 状态：待一级审批负责人 段总"</span><span class="o">}</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">25</span><span class="o">:</span><span class="mf">00.368</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="n">模拟一级负责人审批</span><span class="err">，</span><span class="n">段总</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">25</span><span class="o">:</span><span class="mf">00.368</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="n">审批完成</span>
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<ul>
+  <li>从测试结果上可以看到一层层的由不同的人员进行审批，审批完成后到下一个人进行处理。单看结果是满足我们的诉求，只不过很难扩展和调整流程，相当于代码写的死死的。</li>
+</ul>
+
+<h2 id="六责任链模式重构代码">六、责任链模式重构代码</h2>
+
+<p><code class="highlighter-rouge">接下来使用装饰器模式来进行代码优化，也算是一次很小的重构。</code></p>
+
+<p>责任链模式可以让各个服务模块更加清晰，而每一个模块间可以通过<code class="highlighter-rouge">next</code>的方式进行获取。而每一个<code class="highlighter-rouge">next</code>是由继承的统一抽象类实现的。最终所有类的职责可以动态的进行编排使用，编排的过程可以做成可配置化。</p>
+
+<h3 id="1-工程结构-1">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">13</span><span class="o">-</span><span class="mo">02</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">└──</span> <span class="n">main</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+                <span class="err">├──</span> <span class="n">impl</span>
+                <span class="err">│</span>    <span class="err">├──</span> <span class="nc">Level1AuthLink</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">│</span>    <span class="err">├──</span> <span class="nc">Level2AuthLink</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">│</span>    <span class="err">└──</span> <span class="nc">Level3AuthLink</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">├──</span> <span class="nc">AuthInfo</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">└──</span> <span class="nc">AuthLink</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<p><strong>责任链模式模型结构</strong></p>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-13-03.png" alt="责任链模式模型结构" /></p>
+
+<ul>
+  <li>上图是这个业务模型中责任链结构的核心部分，通过三个实现了统一抽象类<code class="highlighter-rouge">AuthLink</code>的不同规则，再进行责任编排模拟出一条链路。这个链路就是业务中的责任链。</li>
+  <li>一般在使用责任链时候如果是场景比较固定，可以通过写死到代码中进行初始化。但如果业务场景经常变化可以做成xml配置的方式进行处理，也可以落到库里进行初始化操作。</li>
+</ul>
+
+<h3 id="2-代码实现-1">2. 代码实现</h3>
+
+<h4 id="21-责任链中返回对象定义">2.1 责任链中返回对象定义</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AuthInfo</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">code</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">info</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">AuthInfo</span><span class="o">(</span><span class="nc">String</span> <span class="n">code</span><span class="o">,</span> <span class="nc">String</span> <span class="o">...</span><span class="na">infos</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">code</span> <span class="o">=</span> <span class="n">code</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="nl">str:</span><span class="n">infos</span><span class="o">){</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">info</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">info</span><span class="o">.</span><span class="na">concat</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    
+    <span class="c1">// ...get/set</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这个类的是包装了责任链处理过程中返回结果的类，方面处理每个责任链的返回信息。</li>
+</ul>
+
+<h4 id="22-链路抽象类定义">2.2 链路抽象类定义</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">AuthLink</span> <span class="o">{</span>
+
+    <span class="kd">protected</span> <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">AuthLink</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="kd">protected</span> <span class="nc">SimpleDateFormat</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SimpleDateFormat</span><span class="o">(</span><span class="s">"yyyy-MM-dd HH:mm:ss"</span><span class="o">);</span><span class="c1">// 时间格式化</span>
+    <span class="kd">protected</span> <span class="nc">String</span> <span class="n">levelUserId</span><span class="o">;</span>                           <span class="c1">// 级别人员ID</span>
+    <span class="kd">protected</span> <span class="nc">String</span> <span class="n">levelUserName</span><span class="o">;</span>                         <span class="c1">// 级别人员姓名</span>
+    <span class="kd">private</span> <span class="nc">AuthLink</span> <span class="n">next</span><span class="o">;</span>                                  <span class="c1">// 责任链</span>
+
+    <span class="kd">public</span> <span class="nf">AuthLink</span><span class="o">(</span><span class="nc">String</span> <span class="n">levelUserId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">levelUserName</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">levelUserId</span> <span class="o">=</span> <span class="n">levelUserId</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">levelUserName</span> <span class="o">=</span> <span class="n">levelUserName</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">AuthLink</span> <span class="nf">next</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">next</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">AuthLink</span> <span class="nf">appendNext</span><span class="o">(</span><span class="nc">AuthLink</span> <span class="n">next</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">next</span><span class="o">;</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">abstract</span> <span class="nc">AuthInfo</span> <span class="nf">doAuth</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">orderId</span><span class="o">,</span> <span class="nc">Date</span> <span class="n">authDate</span><span class="o">);</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这部分是责任链，<strong>链接起来</strong>的核心部分。<code class="highlighter-rouge">AuthLink next</code>，重点在于可以通过<code class="highlighter-rouge">next</code>方式获取下一个链路需要处理的节点。</li>
+  <li><code class="highlighter-rouge">levelUserId</code>、<code class="highlighter-rouge">levelUserName</code>，是责任链中的公用信息，标记每一个审核节点的人员信息。</li>
+  <li>抽象类中定义了一个抽象方法，<code class="highlighter-rouge">abstract AuthInfo doAuth</code>，这是每一个实现者必须实现的类，不同的审核级别处理不同的业务。</li>
+</ul>
+
+<h4 id="23-三个审核实现类">2.3 三个审核实现类</h4>
+
+<p><strong>Level1AuthLink</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Level1AuthLink</span> <span class="kd">extends</span> <span class="nc">AuthLink</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nf">Level1AuthLink</span><span class="o">(</span><span class="nc">String</span> <span class="n">levelUserId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">levelUserName</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">levelUserId</span><span class="o">,</span> <span class="n">levelUserName</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">AuthInfo</span> <span class="nf">doAuth</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">orderId</span><span class="o">,</span> <span class="nc">Date</span> <span class="n">authDate</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Date</span> <span class="n">date</span> <span class="o">=</span> <span class="nc">AuthService</span><span class="o">.</span><span class="na">queryAuthInfo</span><span class="o">(</span><span class="n">levelUserId</span><span class="o">,</span> <span class="n">orderId</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">date</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">AuthInfo</span><span class="o">(</span><span class="s">"0001"</span><span class="o">,</span> <span class="s">"单号："</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="s">" 状态：待一级审批负责人 "</span><span class="o">,</span> <span class="n">levelUserName</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="nc">AuthLink</span> <span class="n">next</span> <span class="o">=</span> <span class="kd">super</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">next</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">AuthInfo</span><span class="o">(</span><span class="s">"0000"</span><span class="o">,</span> <span class="s">"单号："</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="s">" 状态：一级审批完成负责人"</span><span class="o">,</span> <span class="s">" 时间："</span><span class="o">,</span> <span class="n">f</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">date</span><span class="o">),</span> <span class="s">" 审批人："</span><span class="o">,</span> <span class="n">levelUserName</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">next</span><span class="o">.</span><span class="na">doAuth</span><span class="o">(</span><span class="n">uId</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="n">authDate</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Level2AuthLink</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Level2AuthLink</span> <span class="kd">extends</span> <span class="nc">AuthLink</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">beginDate</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">"2020-06-11 00:00:00"</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">endDate</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">"2020-06-20 23:59:59"</span><span class="o">);</span>
+
+    <span class="kd">public</span> <span class="nf">Level2AuthLink</span><span class="o">(</span><span class="nc">String</span> <span class="n">levelUserId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">levelUserName</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ParseException</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">levelUserId</span><span class="o">,</span> <span class="n">levelUserName</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">AuthInfo</span> <span class="nf">doAuth</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">orderId</span><span class="o">,</span> <span class="nc">Date</span> <span class="n">authDate</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Date</span> <span class="n">date</span> <span class="o">=</span> <span class="nc">AuthService</span><span class="o">.</span><span class="na">queryAuthInfo</span><span class="o">(</span><span class="n">levelUserId</span><span class="o">,</span> <span class="n">orderId</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">date</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">AuthInfo</span><span class="o">(</span><span class="s">"0001"</span><span class="o">,</span> <span class="s">"单号："</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="s">" 状态：待二级审批负责人 "</span><span class="o">,</span> <span class="n">levelUserName</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="nc">AuthLink</span> <span class="n">next</span> <span class="o">=</span> <span class="kd">super</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">next</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">AuthInfo</span><span class="o">(</span><span class="s">"0000"</span><span class="o">,</span> <span class="s">"单号："</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="s">" 状态：二级审批完成负责人"</span><span class="o">,</span> <span class="s">" 时间："</span><span class="o">,</span> <span class="n">f</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">date</span><span class="o">),</span> <span class="s">" 审批人："</span><span class="o">,</span> <span class="n">levelUserName</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">authDate</span><span class="o">.</span><span class="na">before</span><span class="o">(</span><span class="n">beginDate</span><span class="o">)</span> <span class="o">||</span> <span class="n">authDate</span><span class="o">.</span><span class="na">after</span><span class="o">(</span><span class="n">endDate</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">AuthInfo</span><span class="o">(</span><span class="s">"0000"</span><span class="o">,</span> <span class="s">"单号："</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="s">" 状态：二级审批完成负责人"</span><span class="o">,</span> <span class="s">" 时间："</span><span class="o">,</span> <span class="n">f</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">date</span><span class="o">),</span> <span class="s">" 审批人："</span><span class="o">,</span> <span class="n">levelUserName</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">next</span><span class="o">.</span><span class="na">doAuth</span><span class="o">(</span><span class="n">uId</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="n">authDate</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Level3AuthLink</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Level3AuthLink</span> <span class="kd">extends</span> <span class="nc">AuthLink</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">beginDate</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">"2020-06-01 00:00:00"</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">endDate</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">"2020-06-25 23:59:59"</span><span class="o">);</span>
+
+    <span class="kd">public</span> <span class="nf">Level3AuthLink</span><span class="o">(</span><span class="nc">String</span> <span class="n">levelUserId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">levelUserName</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ParseException</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">levelUserId</span><span class="o">,</span> <span class="n">levelUserName</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">AuthInfo</span> <span class="nf">doAuth</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">orderId</span><span class="o">,</span> <span class="nc">Date</span> <span class="n">authDate</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Date</span> <span class="n">date</span> <span class="o">=</span> <span class="nc">AuthService</span><span class="o">.</span><span class="na">queryAuthInfo</span><span class="o">(</span><span class="n">levelUserId</span><span class="o">,</span> <span class="n">orderId</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">date</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">AuthInfo</span><span class="o">(</span><span class="s">"0001"</span><span class="o">,</span> <span class="s">"单号："</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="s">" 状态：待三级审批负责人 "</span><span class="o">,</span> <span class="n">levelUserName</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="nc">AuthLink</span> <span class="n">next</span> <span class="o">=</span> <span class="kd">super</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">next</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">AuthInfo</span><span class="o">(</span><span class="s">"0000"</span><span class="o">,</span> <span class="s">"单号："</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="s">" 状态：三级审批负责人完成"</span><span class="o">,</span> <span class="s">" 时间："</span><span class="o">,</span> <span class="n">f</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">date</span><span class="o">),</span> <span class="s">" 审批人："</span><span class="o">,</span> <span class="n">levelUserName</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">authDate</span><span class="o">.</span><span class="na">before</span><span class="o">(</span><span class="n">beginDate</span><span class="o">)</span> <span class="o">||</span> <span class="n">authDate</span><span class="o">.</span><span class="na">after</span><span class="o">(</span><span class="n">endDate</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">AuthInfo</span><span class="o">(</span><span class="s">"0000"</span><span class="o">,</span> <span class="s">"单号："</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="s">" 状态：三级审批负责人完成"</span><span class="o">,</span> <span class="s">" 时间："</span><span class="o">,</span> <span class="n">f</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">date</span><span class="o">),</span> <span class="s">" 审批人："</span><span class="o">,</span> <span class="n">levelUserName</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">next</span><span class="o">.</span><span class="na">doAuth</span><span class="o">(</span><span class="n">uId</span><span class="o">,</span> <span class="n">orderId</span><span class="o">,</span> <span class="n">authDate</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>如上三个类；<code class="highlighter-rouge">Level1AuthLink</code>、<code class="highlighter-rouge">Level2AuthLink</code>、<code class="highlighter-rouge">Level3AuthLink</code>，实现了不同的审核级别处理的简单逻辑。</li>
+  <li>例如第一个审核类中会先判断是否审核通过，如果没有审核通过则返回结果给调用方，引导去审核。<em>（这里简单模拟审核后有时间信息不为空，作为判断条件）</em></li>
+  <li>判断完成后获取下一个审核节点；<code class="highlighter-rouge">super.next();</code>，如果不存在下一个节点，则直接返回结果。</li>
+  <li>之后是根据不同的业务时间段进行判断是否需要，二级和一级的审核。</li>
+  <li>最后返回下一个审核结果；<code class="highlighter-rouge">next.doAuth(uId, orderId, authDate);</code>，有点像递归调用。</li>
+</ul>
+
+<h3 id="3-测试验证-1">3. 测试验证</h3>
+
+<h4 id="31-编写测试类-1">3.1 编写测试类</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_AuthLink</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">ParseException</span> <span class="o">{</span>
+    <span class="nc">AuthLink</span> <span class="n">authLink</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Level3AuthLink</span><span class="o">(</span><span class="s">"1000013"</span><span class="o">,</span> <span class="s">"王工"</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">appendNext</span><span class="o">(</span><span class="k">new</span> <span class="nc">Level2AuthLink</span><span class="o">(</span><span class="s">"1000012"</span><span class="o">,</span> <span class="s">"张经理"</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">appendNext</span><span class="o">(</span><span class="k">new</span> <span class="nc">Level1AuthLink</span><span class="o">(</span><span class="s">"1000011"</span><span class="o">,</span> <span class="s">"段总"</span><span class="o">)));</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">authLink</span><span class="o">.</span><span class="na">doAuth</span><span class="o">(</span><span class="s">"小傅哥"</span><span class="o">,</span> <span class="s">"1000998004813441"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">())));</span>
+
+    <span class="c1">// 模拟三级负责人审批</span>
+    <span class="nc">AuthService</span><span class="o">.</span><span class="na">auth</span><span class="o">(</span><span class="s">"1000013"</span><span class="o">,</span> <span class="s">"1000998004813441"</span><span class="o">);</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="s">"模拟三级负责人审批，王工"</span><span class="o">);</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">authLink</span><span class="o">.</span><span class="na">doAuth</span><span class="o">(</span><span class="s">"小傅哥"</span><span class="o">,</span> <span class="s">"1000998004813441"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">())));</span>
+
+    <span class="c1">// 模拟二级负责人审批</span>
+    <span class="nc">AuthService</span><span class="o">.</span><span class="na">auth</span><span class="o">(</span><span class="s">"1000012"</span><span class="o">,</span> <span class="s">"1000998004813441"</span><span class="o">);</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="s">"模拟二级负责人审批，张经理"</span><span class="o">);</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">authLink</span><span class="o">.</span><span class="na">doAuth</span><span class="o">(</span><span class="s">"小傅哥"</span><span class="o">,</span> <span class="s">"1000998004813441"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">())));</span>
+
+    <span class="c1">// 模拟一级负责人审批</span>
+    <span class="nc">AuthService</span><span class="o">.</span><span class="na">auth</span><span class="o">(</span><span class="s">"1000011"</span><span class="o">,</span> <span class="s">"1000998004813441"</span><span class="o">);</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="s">"模拟一级负责人审批，段总"</span><span class="o">);</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">authLink</span><span class="o">.</span><span class="na">doAuth</span><span class="o">(</span><span class="s">"小傅哥"</span><span class="o">,</span> <span class="s">"1000998004813441"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">())));</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里包括最核心的责任链创建，实际的业务中会包装到控制层；<code class="highlighter-rouge">   AuthLink authLink = new Level3AuthLink("1000013", "王工") .appendNext(new Level2AuthLink("1000012", "张经理") .appendNext(new Level1AuthLink("1000011", "段总")));</code> 通过把不同的责任节点进行组装，构成一条完整业务的责任链。</li>
+  <li>接下里不断的执行查看审核链路<code class="highlighter-rouge">authLink.doAuth(...)</code>，通过返回结果对数据进行3、2、1级负责人审核，直至最后审核全部完成。</li>
+</ul>
+
+<h4 id="32-测试结果-1">3.2 测试结果</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">23</span><span class="o">:</span><span class="mi">49</span><span class="o">:</span><span class="mf">46.585</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="o">{</span><span class="s">"code"</span><span class="o">:</span><span class="s">"0001"</span><span class="o">,</span><span class="s">"info"</span><span class="o">:</span><span class="s">"单号：1000998004813441 状态：待三级审批负责人 王工"</span><span class="o">}</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">49</span><span class="o">:</span><span class="mf">46.590</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="n">模拟三级负责人审批</span><span class="err">，</span><span class="n">王工</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">49</span><span class="o">:</span><span class="mf">46.590</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="o">{</span><span class="s">"code"</span><span class="o">:</span><span class="s">"0001"</span><span class="o">,</span><span class="s">"info"</span><span class="o">:</span><span class="s">"单号：1000998004813441 状态：待二级审批负责人 张经理"</span><span class="o">}</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">49</span><span class="o">:</span><span class="mf">46.590</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="n">模拟二级负责人审批</span><span class="err">，</span><span class="n">张经理</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">49</span><span class="o">:</span><span class="mf">46.590</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="o">{</span><span class="s">"code"</span><span class="o">:</span><span class="s">"0001"</span><span class="o">,</span><span class="s">"info"</span><span class="o">:</span><span class="s">"单号：1000998004813441 状态：待一级审批负责人 段总"</span><span class="o">}</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">49</span><span class="o">:</span><span class="mf">46.590</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="n">模拟一级负责人审批</span><span class="err">，</span><span class="n">段总</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">49</span><span class="o">:</span><span class="mf">46.590</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="o">{</span><span class="s">"code"</span><span class="o">:</span><span class="s">"0000"</span><span class="o">,</span><span class="s">"info"</span><span class="o">:</span><span class="s">"单号：1000998004813441 状态：一级审批完成负责人 时间：2020-06-18 23:49:46 审批人：段总"</span><span class="o">}</span>
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<ul>
+  <li>从上述的结果可以看到我们的责任链已经生效，按照责任链的结构一层层审批，直至最后输出审批结束到一级完成的结果。</li>
+  <li>这样责任链的设计方式可以方便的进行扩展和维护，也把if语句干掉了。</li>
+</ul>
+
+<h2 id="七总结">七、总结</h2>
+
+<ul>
+  <li>从上面代码从if语句重构到使用责任链模式开发可以看到，我们的代码结构变得清晰干净了，也解决了大量if语句的使用。并不是if语句不好，只不过if语句并不适合做系统流程设计，但是在做判断和行为逻辑处理中还是非常可以使用的。</li>
+  <li>在我们前面学习结构性模式中讲到过组合模式，它像是一颗组合树一样，我们搭建出一个流程决策树。其实这样的模式也是可以和责任链模型进行组合扩展使用，而这部分的重点在于如何关联<strong>链路的关联</strong>，最终的执行都是在执行在中间的关系链。</li>
+  <li>责任链模式很好的处理单一职责和开闭原则，简单了耦合也使对象关系更加清晰，而且外部的调用方并不需要关心责任链是如何进行处理的<em>(以上程序中可以把责任链的组合进行包装，在提供给外部使用)</em>。但除了这些优点外也需要是适当的场景才进行使用，避免造成性能以及编排混乱调试测试疏漏问题。</li>
+</ul>
+
+
+            <div>
+   <div align="center" class="copyright">
+	   <div class="cmower">bugstack虫洞栈</div>
+	   <div class="brief">沉淀、分享、成长，让自己和他人都能有所收获</div>
+       <img src="/assets/images/qrcode.png" >
+	   <div class="saoma">微信扫描二维码，关注我的公众号</div>
+   </div>
+   <p align="center" style="margin-top: 15px; font-size: 11px;color: #cc0000;">
+       <strong>（转载本站文章请注明作者和出处 <a href="https://bugstack.cn">微信公众号：bugstack虫洞栈 | 作者：小傅哥</a>）</strong>
+   </p>
+</div>
+
+
+            <!-- Comments -->
+            <div class="comment">
+             
+
+  
+    <a href="#" class="show_disqus_comment" onclick="return false;">Show Disqus Comments</a>
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_config = function () {
+        this.page.url = 'https://bugstack.cn/itstack-demo-design/2020/06/18/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F.html';
+        this.page.identifier = '/itstack-demo-design/2020/06/18/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F.html';
+        this.page.title = '重学 Java 设计模式：实战责任链模式「模拟618电商大促期间，项目上线流程多级负责人审批场景」';
+    };
+    var disqus_loaded = false;
+    $(function() {
+        $('.show_disqus_comment').on('click', function() { // DON'T EDIT BELOW THIS LINE
+            $(this).html('加载中...');
+            var that = this;
+            if (!disqus_loaded) {
+                var d = document, s = d.createElement('script');
+
+                s.type = 'text/javascript';
+                s.async = true;
+                var shortname = 'fuzhengwei';
+
+                s.src = '//' + shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+
+                disqus_loaded = true;
+            }
+            $(that).remove();
+        })
+    })
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  
+
+  
+        <div id="gitalk-container"></div>
+        <script src="/assets/js/gitalk.min.js"></script>
+        <script src="/assets/js/md5.js"></script>
+        <script>
+        var gitalk = new Gitalk({
+            id: md5(decodeURI('/itstack-demo-design/2020/06/18/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F.html')),
+            clientID: 'df8beab2190bec20352a',
+            clientSecret: '7eeeb4369d699c933f02a026ae8bb1e2a9c80e90',
+            repo: 'CodeGuide',
+            owner: 'fuzhengwei',
+            admin: ['fuzhengwei'],
+            labels: ['gitment'],
+            perPage: 50,
+        })
+        gitalk.render('gitalk-container')
+        </script>
+  
+
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <h3>Post Directory</h3>
+<div id="post-directory-module">
+<section class="post-directory">
+    <!-- Links that trigger the jumping -->
+    <!-- Added by javascript below -->
+    <dl></dl>
+</section>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $( "article h2" ).each(function( index ) {
+            $(".post-directory dl").append("<dt><a class=\"jumper\" hre=#" +
+                    $(this).attr("id")
+                    + ">"
+                    + $(this).text()
+                    + "</a></dt>");
+
+            var children = $(this).nextUntil("h2", "h3")
+
+            children.each(function( index ) {
+                $(".post-directory dl").append("<dd><a class=\"jumper\" hre=#" +
+                        $(this).attr("id")
+                        + ">"
+                        + "&nbsp;&nbsp;- " + $(this).text()
+                        + "</a></dd>");
+            });
+        });
+
+        var fixmeTop = $('#post-directory-module').offset().top - 100;       // get initial position of the element
+
+        $(window).scroll(function() {                  // assign scroll event listener
+
+            var currentScroll = $(window).scrollTop(); // get current position
+
+            if (currentScroll >= fixmeTop) {           // apply position: fixed if you
+                $('#post-directory-module').css({      // scroll to that element or below it
+                    top: '100px',
+                    position: 'fixed',
+                    width: 'inherit'
+                });
+            } else {                                   // apply position: static
+                $('#post-directory-module').css({      // if you scroll above it
+                    position: 'inherit',
+                    width: 'inherit'
+                });
+            }
+
+        });
+
+        $("a.jumper").on("click", function( e ) {
+
+            e.preventDefault();
+
+            $("body, html").animate({
+                scrollTop: ($( $(this).attr('hre') ).offset().top - 100)
+            }, 600);
+
+        });
+    });
+
+</script>
+        </div>
+        
+
+    </div>
+    
+    <div class="asb-post-01">
+        <div class="mask"></div>
+			<div class="info">
+	    		<div>扫码或搜索：<span style="color: #E9405A; font-weight: bold;">bugstack虫洞栈</span></div>
+	    	<div>
+	        <span>发送 </span><span class="token" style="color: #e9415a; font-weight: bold; font-size: 17px; margin-bottom: 45px;">290992</span>
+	    	<div>
+	       	 	即可<span style="color: #e9415a; font-weight: bold;">立即永久</span>解锁本站全部文章
+	    	</div>
+	    	<img class="code-img" style="width: 300px;display:unset" src="/assets/images/qrcode.png">
+		</div>
+ 	</div>
+</article>
+
+        </div>
+
+    <footer class="container">
+    <div class="site-footer">
+        <div class="card text-center">
+            <ul class="list-inline" style="margin-left: 0;">
+                <li>
+                    <a target="_blank" href="https://github.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://www.zhihu.com/people/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-1x fa-inverse">知</i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://weibo.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="site-footer-links mobile-hidden">
+            
+            <a href="https://github.com/fuzhengwei" title="Git仓库" target="_blank">Git仓库</a>
+            
+            <a href="/gitchat.html" title="GitChat" target="_blank">GitChat</a>
+            
+        </div>
+        <div class="site-footer-icons">
+            <a href="http://beian.miit.gov.cn" target="_blank">京ICP备19031103号-1</a>
+        </div>
+        <div class="scrolltop">
+            bugstack虫洞栈
+            <a href="javascript:window.scrollTo(0,0)">TOP</a>
+        </div>
+        <div class="rss">
+            <a href="/feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a>
+            Power by <a href="https://github.com/DONGChuan/Yummy-Jekyll">Yummy Jekyll</a>
+        </div>
+    </div>
+    <!-- Third-Party JS -->
+    <script type="text/javascript" src="/bower_components/geopattern/js/geopattern.min.js"></script>
+    <!-- My JS -->
+    <script type="text/javascript" src="/assets/js/script.js"></script>
+    
+
+    <!-- 百度统计&友盟统计 -->
+    <div style="display:none">
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+              var hm = document.createElement("script");
+              hm.src = "https://hm.baidu.com/hm.js?0b31b4c146bf7126aed5009e1a4a11c8";
+              var s = document.getElementsByTagName("script")[0];
+              s.parentNode.insertBefore(hm, s);
+            })();
+
+        </script>
+
+        <script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1278232949&web_id=1278232949"></script>
+    </div>
+    <!-- 百度统计 -->
+</footer>
+
+
+    </body>
+
+</html>

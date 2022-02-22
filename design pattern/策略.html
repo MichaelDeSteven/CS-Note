@@ -1,0 +1,897 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="baidu-site-verification" content="3aFsC6yMzO" />
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico">
+
+    <title> 重学 Java 设计模式：实战策略模式「模拟多种营销类型优惠券，折扣金额计算策略场景」 - bugstack虫洞栈 </title>
+    <meta name="keywords" content="Java、Netty、设计模式、Javassist、ASM、Byte-buddy、DDD领域驱动设计、Spring、Mybatis、算法、源码分析">
+    <meta name="description"
+          content="文无第一，武无第二！😼不同方向但同样努力的人，都有自身的价值和亮点，也都是可以互相学习的。不要太过于用自己手里的矛去攻击别人的盾🛡，哪怕一时争辩过了也多半可能是你被安放的角色不同。取别人之强补自己之弱，矛与盾的结合可能就是坦克。">
+
+    <link rel="canonical" href="https://bugstack.cn/itstack-demo-design/2020/07/05/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F.html">
+    <link rel="alternate" type="application/rss+xml" title="bugstack虫洞栈 | 沉淀、分享、成长，让自己和他人都能有所收获" href="https://bugstack.cn/feed.xml">
+
+    <!-- Third-Party CSS -->
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/octicons/octicons/octicons.css">
+    <link rel="stylesheet" href="/bower_components/hover/css/hover-min.css">
+    <link rel="stylesheet" href="/bower_components/primer-markdown/dist/user-content.min.css">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" href="/assets/css/gitalk.css">
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="/assets/css/common.css">
+
+    <!-- CSS set in page -->
+    
+
+    <!-- CSS set in layout -->
+    
+    <link rel="stylesheet" href="/assets/css/sidebar-post-nav.css">
+    
+
+    <!-- https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css -->
+    <link rel="stylesheet" type="text/css" href="https://bugstack.cn/assets/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/lock.js"></script>
+
+</head>
+
+
+    <body>
+
+    <header class="site-header">
+    <div class="site-header-topbar">
+        <div class="container">
+            <div class="topbar-menu">
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki"
+                       target="_blank"
+                       title="GitHub">
+                        GitHub
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki/%E5%80%BC%E5%BE%97%E4%B8%80%E7%9C%8B%E7%9A%84%E5%A5%BD%E4%B9%A6"
+                       target="_blank"
+                       title="电子书">
+                        电子书
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack/interview.html"
+                       target="_self"
+                       title="面试">
+                        面试
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack-code-life/itstack-code-life.html"
+                       target="_self"
+                       title="故事">
+                        故事
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/link.html"
+                       target="_self"
+                       title="友链">
+                        友链
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/about.html"
+                       target="_self"
+                       title="关于">
+                        关于
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <a id="site-header-brand" href="/" title="bugstack虫洞栈">
+            <span class="octicon octicon-smiley"></span>
+            bugstack虫洞栈
+        </a>
+        <nav class="site-header-nav" role="navigation">
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target=""
+                   title="首页">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="Java/Spring">
+                    Java/Spring
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-any/itstack-demo-any.html" 
+                           target=""
+                     >编程基础</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-code.html" 
+                           target=""
+                     >源码分析</a></li>
+                    
+                    <li><a href="/itstack-demo-algorithm/itstack-demo-algorithm.html" 
+                           target=""
+                     >野路子搞算法</a></li>
+                    
+                    <li><a href="/itstack-demo-springcloud/itstack-demo-springcloud.html" 
+                           target=""
+                     >Spring Cloud</a></li>
+                    
+                    <li><a href="/itstack-demo-jvm/itstack-demo-jvm.html" 
+                           target=""
+                     >用Java实现JVM</a></li>
+                    
+                    <li><a href="/itstack-demo-drools/itstack-demo-drools.html" 
+                           target=""
+                     >Drools·规则引擎</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/itstack-demo-netty/itstack-demo-netty.html"
+                   target="_self"
+                   title="Netty4.x专题">
+                    Netty4.x专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-1.html" 
+                           target=""
+                     >基础入门篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-2.html" 
+                           target=""
+                     >中级拓展篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-3.html" 
+                           target=""
+                     >高级应用篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-4.html" 
+                           target=""
+                     >源码分析篇</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="架构师专题">
+                    架构师专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-ark-middleware/itstack-ark-middleware.html" 
+                           target=""
+                     >中间件开发</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-bytecode.html" 
+                           target=""
+                     >字节码编程</a></li>
+                    
+                    <li><a href="/itstack-demo-agent/itstack-demo-agent.html" 
+                           target=""
+                     >调用链路监控</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-design.html" 
+                           target=""
+                     >实战设计模式</a></li>
+                    
+                    <li><a href="/itstack-demo-ddd/itstack-demo-ddd.html" 
+                           target=""
+                     >领域驱动设计</a></li>
+                    
+                    <li><a href="/itstack-demo-frame/itstack-demo-frame.html" 
+                           target=""
+                     >架构框架搭建</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/archives.html"
+                   target="_self"
+                   title="Archives">
+                    Archives
+                </a>
+                
+            </div>
+            
+        </nav>
+    </div>
+</header>
+
+
+        <div class="content">
+            <section class="jumbotron geopattern" data-pattern-id="重学 Java 设计模式：实战策略模式「模拟多种营销类型优惠券，折扣金额计算策略场景」">
+    <div class="container">
+        <div id="jumbotron-meta-info">        
+            <h1>重学 Java 设计模式：实战策略模式「模拟多种营销类型优惠券，折扣金额计算策略场景」</h1>
+            <span class="meta-info">
+                
+                
+                <span class="octicon octicon-calendar"></span> 2020/07/05
+                
+            </span>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function(){
+
+        $('.geopattern').each(function(){
+            $(this).geopattern($(this).data('pattern-id'));
+        });
+
+    });
+</script>
+<article class="post container need"  itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="row">
+
+        
+        <div class="col-md-9 markdown-body">
+
+            <p>作者：小傅哥
+<br />博客：<a href="https://bugstack.cn">https://bugstack.cn</a></p>
+
+<blockquote>
+  <p>沉淀、分享、成长，让自己和他人都能有所收获！😄</p>
+</blockquote>
+
+<h2 id="一前言">一、前言</h2>
+
+<p><code class="highlighter-rouge">文无第一，武无第二</code></p>
+
+<p>不同方向但同样努力的人，都有自身的价值和亮点，也都是可以互相学习的。不要太过于用自己手里的矛去攻击别人的盾🛡，哪怕一时争辩过了也多半可能是你被安放的角色不同。取别人之强补自己之弱，矛与盾的结合可能就是坦克。</p>
+
+<p><code class="highlighter-rouge">能把复杂的知识讲的简单很重要</code></p>
+
+<p>在学习的过程中我们看过很多资料、视频、文档等，因为现在资料视频都较多所以往往一个知识点会有多种多样的视频形式讲解。除了推广营销以外，确实有很多人的视频讲解非常优秀，例如李永乐老师的短视频课，可以在一个黑板上把那么复杂的知识，讲解的那么容易理解，那么透彻。而我们学习编程的人也是，不只是要学会把知识点讲明白，也要写明白。</p>
+
+<p><code class="highlighter-rouge">🙉提升自己的眼界交往更多同好</code></p>
+
+<p>有时候圈子很重要，就像上学期间大家都会发现班里有这样一类学生👩‍🎓不怎么听课，但是就是学习好。那假如让他回家呆着，不能在课堂里呢？类似的圈子还有；图书馆、网吧、车友群、技术群等等，都可以给你带来同类爱好的人所分享出来的技能或者大家一起烘托出的氛围帮你成长。</p>
+
+<h2 id="二开发环境">二、开发环境</h2>
+
+<ol>
+  <li>JDK 1.8</li>
+  <li>Idea + Maven</li>
+  <li>涉及工程三个，可以通过关注<strong>公众号</strong>：<a href="https://bugstack.cn/assets/images/qrcode.png"><code class="highlighter-rouge">bugstack虫洞栈</code></a>，回复<code class="highlighter-rouge">源码下载</code>获取(打开获取的链接，找到序号18)</li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th>工程</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>itstack-demo-design-20-01</td>
+      <td>使用一坨代码实现业务需求</td>
+    </tr>
+    <tr>
+      <td>itstack-demo-design-20-02</td>
+      <td>通过设计模式优化改造代码，产生对比性从而学习</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="三策略模式介绍">三、策略模式介绍</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-20-01.png" alt="策略模式，图片来自 refactoringguru.cn" /></p>
+
+<p>策略模式是一种行为模式，也是替代大量<code class="highlighter-rouge">ifelse</code>的利器。它所能帮你解决的是场景，一般是具有同类可替代的行为逻辑算法场景。比如；不同类型的交易方式(信用卡、支付宝、微信)、生成唯一ID策略(UUID、DB自增、DB+Redis、雪花算法、Leaf算法)等，都可以使用策略模式进行行为包装，供给外部使用。</p>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-20-02.png" alt="诸葛亮锦囊妙计" /></p>
+
+<p>策略模式也有点像三国演义中诸葛亮给刘关张的锦囊；</p>
+<ul>
+  <li>第一个锦囊：见乔国老，并把刘备娶亲的事情du搞得东吴人尽皆知。</li>
+  <li>第二个锦囊：用谎言（曹操打荆州）骗泡在温柔乡里的刘备回去。</li>
+  <li>第三个锦囊：让孙夫人摆平东吴的追兵，她是孙权妹妹，东吴将领惧她三分。</li>
+</ul>
+
+<h2 id="四案例场景模拟">四、案例场景模拟</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-20-03.png" alt="场景模拟；商品支付使用营销优惠券" /></p>
+
+<p><strong>在本案例中我们模拟在购买商品时候使用的各种类型优惠券(满减、直减、折扣、n元购)</strong></p>
+
+<p>这个场景几乎也是大家的一个日常购物省钱渠道，购买商品的时候都希望找一些优惠券，让购买的商品更加实惠。而且到了大促的时候就会有更多的优惠券需要计算那些商品一起购买更加优惠！！！</p>
+
+<p>这样的场景有时候用户用起来还是蛮爽的，但是最初这样功能的设定以及产品的不断迭代，对于程序员👨‍💻‍开发还是不太容易的。因为这里包括了很多的规则和优惠逻辑，所以我们模拟其中的一个计算优惠的方式，使用策略模式来实现。</p>
+
+<h2 id="五用一坨坨代码实现">五、用一坨坨代码实现</h2>
+
+<p><code class="highlighter-rouge">这里我们先使用最粗暴的方式来实现功能</code></p>
+
+<p>对于优惠券的设计最初可能非常简单，就是一个金额的抵扣，也没有现在这么多种类型。所以如果没有这样场景的经验话，往往设计上也是非常简单的。但随着产品功能的不断迭代，如果程序最初设计的不具备很好的扩展性，那么往后就会越来越混乱。</p>
+
+<h3 id="1-工程结构">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">20</span><span class="o">-</span><span class="mo">01</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">└──</span> <span class="n">main</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+                <span class="err">└──</span> <span class="nc">CouponDiscountService</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<ul>
+  <li><code class="highlighter-rouge">一坨坨</code>工程的结构很简单，也是最直接的面向过程开发方式。</li>
+</ul>
+
+<h3 id="2-代码实现">2. 代码实现</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 博客：https://bugstack.cn - 沉淀、分享、成长，让自己和他人都能有所收获！
+ * 公众号：bugstack虫洞栈
+ * Create by 小傅哥(fustack) @2020
+ * 优惠券折扣计算接口
+ * &lt;p&gt;
+ * 优惠券类型；
+ * 1. 直减券
+ * 2. 满减券
+ * 3. 折扣券
+ * 4. n元购
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CouponDiscountService</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kt">double</span> <span class="nf">discountAmount</span><span class="o">(</span><span class="kt">int</span> <span class="n">type</span><span class="o">,</span> <span class="kt">double</span> <span class="n">typeContent</span><span class="o">,</span> <span class="kt">double</span> <span class="n">skuPrice</span><span class="o">,</span> <span class="kt">double</span> <span class="n">typeExt</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// 1. 直减券</span>
+        <span class="k">if</span> <span class="o">(</span><span class="mi">1</span> <span class="o">==</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">skuPrice</span> <span class="o">-</span> <span class="n">typeContent</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="c1">// 2. 满减券</span>
+        <span class="k">if</span> <span class="o">(</span><span class="mi">2</span> <span class="o">==</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">skuPrice</span> <span class="o">&lt;</span> <span class="n">typeExt</span><span class="o">)</span> <span class="k">return</span> <span class="n">skuPrice</span><span class="o">;</span>
+            <span class="k">return</span> <span class="n">skuPrice</span> <span class="o">-</span> <span class="n">typeContent</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="c1">// 3. 折扣券</span>
+        <span class="k">if</span> <span class="o">(</span><span class="mi">3</span> <span class="o">==</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">skuPrice</span> <span class="o">*</span> <span class="n">typeContent</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="c1">// 4. n元购</span>
+        <span class="k">if</span> <span class="o">(</span><span class="mi">4</span> <span class="o">==</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">typeContent</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="no">D</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>以上是不同类型的优惠券计算折扣后的实际金额。</li>
+  <li>入参包括；优惠券类型、优惠券金额、商品金额，因为有些优惠券是满多少减少多少，所以增加了<code class="highlighter-rouge">typeExt</code>类型。这也是方法的不好扩展性问题。</li>
+  <li>最后是整个的方法体中对优惠券抵扣金额的实现，最开始可能是一个最简单的优惠券，后面随着产品功能的增加，不断的扩展<code class="highlighter-rouge">if</code>语句。实际的代码可能要比这个多很多。</li>
+</ul>
+
+<h2 id="六策略模式重构代码">六、策略模式重构代码</h2>
+
+<p><code class="highlighter-rouge">接下来使用策略模式来进行代码优化，也算是一次很小的重构。</code></p>
+
+<p>与上面面向流程式的开发这里会使用设计模式，优惠代码结构，增强整体的扩展性。</p>
+
+<h3 id="1-工程结构-1">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">20</span><span class="o">-</span><span class="mo">02</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">└──</span> <span class="n">main</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+                <span class="err">├──</span> <span class="n">event</span>
+                <span class="err">│</span>    <span class="err">└──</span> <span class="nc">MJCouponDiscount</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">│</span>    <span class="err">└──</span> <span class="nc">NYGCouponDiscount</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">│</span>    <span class="err">└──</span> <span class="nc">ZJCouponDiscount</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">│</span>    <span class="err">└──</span> <span class="nc">ZKCouponDiscount</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">├──</span> <span class="nc">Context</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">└──</span> <span class="nc">ICouponDiscount</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<p><strong>策略模式模型结构</strong></p>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-20-04.png" alt="策略模式模型结构" /></p>
+
+<ul>
+  <li>整体的结构模式并不复杂，主要体现的不同类型的优惠券在计算优惠券方式的不同计算策略。</li>
+  <li>这里包括一个接口类(<code class="highlighter-rouge">ICouponDiscount</code>)以及四种优惠券类型的实现方式。</li>
+  <li>最后提供了策略模式的上下控制类处理，整体的策略服务。</li>
+</ul>
+
+<h3 id="2-代码实现-1">2. 代码实现</h3>
+
+<h4 id="21-优惠券接口">2.1 优惠券接口</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ICouponDiscount</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="cm">/**
+     * 优惠券金额计算
+     * @param couponInfo 券折扣信息；直减、满减、折扣、N元购
+     * @param skuPrice   sku金额
+     * @return           优惠后金额
+     */</span>
+    <span class="nc">BigDecimal</span> <span class="nf">discountAmount</span><span class="o">(</span><span class="no">T</span> <span class="n">couponInfo</span><span class="o">,</span> <span class="nc">BigDecimal</span> <span class="n">skuPrice</span><span class="o">);</span>
+
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<ul>
+  <li>定义了优惠券折扣接口，也增加了泛型用于不同类型的接口可以传递不同的类型参数。</li>
+  <li>接口中包括商品金额以及出参返回最终折扣后的金额，这里在实际开发中会比现在的接口参数多一些，但核心逻辑是这些。</li>
+</ul>
+
+<h4 id="22-优惠券接口实现">2.2 优惠券接口实现</h4>
+
+<p><strong>满减</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MJCouponDiscount</span> <span class="kd">implements</span> <span class="nc">ICouponDiscount</span><span class="o">&lt;</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">String</span><span class="o">&gt;&gt;</span>  <span class="o">{</span>
+
+    <span class="cm">/**
+     * 满减计算
+     * 1. 判断满足x元后-n元，否则不减
+     * 2. 最低支付金额1元
+     */</span>
+    <span class="kd">public</span> <span class="nc">BigDecimal</span> <span class="nf">discountAmount</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">couponInfo</span><span class="o">,</span> <span class="nc">BigDecimal</span> <span class="n">skuPrice</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">x</span> <span class="o">=</span> <span class="n">couponInfo</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"x"</span><span class="o">);</span>
+        <span class="nc">String</span> <span class="n">o</span> <span class="o">=</span> <span class="n">couponInfo</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"n"</span><span class="o">);</span>
+
+        <span class="c1">// 小于商品金额条件的，直接返回商品原价</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">skuPrice</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="n">x</span><span class="o">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="k">return</span> <span class="n">skuPrice</span><span class="o">;</span>
+        <span class="c1">// 减去优惠金额判断</span>
+        <span class="nc">BigDecimal</span> <span class="n">discountAmount</span> <span class="o">=</span> <span class="n">skuPrice</span><span class="o">.</span><span class="na">subtract</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="n">o</span><span class="o">));</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">discountAmount</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="nc">BigDecimal</span><span class="o">.</span><span class="na">ZERO</span><span class="o">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="o">)</span> <span class="k">return</span> <span class="nc">BigDecimal</span><span class="o">.</span><span class="na">ONE</span><span class="o">;</span>
+
+        <span class="k">return</span> <span class="n">discountAmount</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>直减</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ZJCouponDiscount</span> <span class="kd">implements</span> <span class="nc">ICouponDiscount</span><span class="o">&lt;</span><span class="nc">Double</span><span class="o">&gt;</span>  <span class="o">{</span>
+
+    <span class="cm">/**
+     * 直减计算
+     * 1. 使用商品价格减去优惠价格
+     * 2. 最低支付金额1元
+     */</span>
+    <span class="kd">public</span> <span class="nc">BigDecimal</span> <span class="nf">discountAmount</span><span class="o">(</span><span class="nc">Double</span> <span class="n">couponInfo</span><span class="o">,</span> <span class="nc">BigDecimal</span> <span class="n">skuPrice</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">BigDecimal</span> <span class="n">discountAmount</span> <span class="o">=</span> <span class="n">skuPrice</span><span class="o">.</span><span class="na">subtract</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="n">couponInfo</span><span class="o">));</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">discountAmount</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="nc">BigDecimal</span><span class="o">.</span><span class="na">ZERO</span><span class="o">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="o">)</span> <span class="k">return</span> <span class="nc">BigDecimal</span><span class="o">.</span><span class="na">ONE</span><span class="o">;</span>
+        <span class="k">return</span> <span class="n">discountAmount</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>折扣</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ZKCouponDiscount</span> <span class="kd">implements</span> <span class="nc">ICouponDiscount</span><span class="o">&lt;</span><span class="nc">Double</span><span class="o">&gt;</span> <span class="o">{</span>
+
+
+    <span class="cm">/**
+     * 折扣计算
+     * 1. 使用商品价格乘以折扣比例，为最后支付金额
+     * 2. 保留两位小数
+     * 3. 最低支付金额1元
+     */</span>
+    <span class="kd">public</span> <span class="nc">BigDecimal</span> <span class="nf">discountAmount</span><span class="o">(</span><span class="nc">Double</span> <span class="n">couponInfo</span><span class="o">,</span> <span class="nc">BigDecimal</span> <span class="n">skuPrice</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">BigDecimal</span> <span class="n">discountAmount</span> <span class="o">=</span> <span class="n">skuPrice</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="n">couponInfo</span><span class="o">)).</span><span class="na">setScale</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="nc">BigDecimal</span><span class="o">.</span><span class="na">ROUND_HALF_UP</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">discountAmount</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="nc">BigDecimal</span><span class="o">.</span><span class="na">ZERO</span><span class="o">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="o">)</span> <span class="k">return</span> <span class="nc">BigDecimal</span><span class="o">.</span><span class="na">ONE</span><span class="o">;</span>
+        <span class="k">return</span> <span class="n">discountAmount</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>N元购</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NYGCouponDiscount</span> <span class="kd">implements</span> <span class="nc">ICouponDiscount</span><span class="o">&lt;</span><span class="nc">Double</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="cm">/**
+     * n元购购买
+     * 1. 无论原价多少钱都固定金额购买
+     */</span>
+    <span class="kd">public</span> <span class="nc">BigDecimal</span> <span class="nf">discountAmount</span><span class="o">(</span><span class="nc">Double</span> <span class="n">couponInfo</span><span class="o">,</span> <span class="nc">BigDecimal</span> <span class="n">skuPrice</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">BigDecimal</span><span class="o">(</span><span class="n">couponInfo</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>以上是四种不同类型的优惠券计算折扣金额的策略方式，可以从代码中看到每一种优惠方式的优惠金额。</li>
+</ul>
+
+<h4 id="23-策略控制类">2.3 策略控制类</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Context</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">ICouponDiscount</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="n">couponDiscount</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Context</span><span class="o">(</span><span class="nc">ICouponDiscount</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="n">couponDiscount</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">couponDiscount</span> <span class="o">=</span> <span class="n">couponDiscount</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">BigDecimal</span> <span class="nf">discountAmount</span><span class="o">(</span><span class="no">T</span> <span class="n">couponInfo</span><span class="o">,</span> <span class="nc">BigDecimal</span> <span class="n">skuPrice</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">couponDiscount</span><span class="o">.</span><span class="na">discountAmount</span><span class="o">(</span><span class="n">couponInfo</span><span class="o">,</span> <span class="n">skuPrice</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>策略模式的控制类主要是外部可以传递不同的策略实现，在通过统一的方法执行优惠策略计算。</li>
+  <li>另外这里也可以包装成map结构，让外部只需要对应的泛型类型即可使用相应的服务。</li>
+</ul>
+
+<h3 id="3-测试验证">3. 测试验证</h3>
+
+<h4 id="31-编写测试类直减优惠">3.1 编写测试类(直减优惠)</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_zj</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// 直减；100-10，商品100元</span>
+    <span class="nc">Context</span><span class="o">&lt;</span><span class="nc">Double</span><span class="o">&gt;</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Context</span><span class="o">&lt;</span><span class="nc">Double</span><span class="o">&gt;(</span><span class="k">new</span> <span class="nc">ZJCouponDiscount</span><span class="o">());</span>
+    <span class="nc">BigDecimal</span> <span class="n">discountAmount</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">discountAmount</span><span class="o">(</span><span class="mi">10</span><span class="no">D</span><span class="o">,</span> <span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="mi">100</span><span class="o">));</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：直减优惠后金额 {}"</span><span class="o">,</span> <span class="n">discountAmount</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>测试结果</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">15</span><span class="o">:</span><span class="mi">43</span><span class="o">:</span><span class="mf">22.035</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="n">直减优惠后金额</span> <span class="mi">90</span>
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<h4 id="32-编写测试类满减优惠">3.2 编写测试类(满减优惠)</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_mj</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// 满100减10，商品100元</span>
+    <span class="nc">Context</span><span class="o">&lt;</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">String</span><span class="o">&gt;&gt;</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Context</span><span class="o">&lt;</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">String</span><span class="o">&gt;&gt;(</span><span class="k">new</span> <span class="nc">MJCouponDiscount</span><span class="o">());</span>
+    <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">mapReq</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;();</span>
+    <span class="n">mapReq</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"x"</span><span class="o">,</span><span class="s">"100"</span><span class="o">);</span>
+    <span class="n">mapReq</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"n"</span><span class="o">,</span><span class="s">"10"</span><span class="o">);</span>
+    <span class="nc">BigDecimal</span> <span class="n">discountAmount</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">discountAmount</span><span class="o">(</span><span class="n">mapReq</span><span class="o">,</span> <span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="mi">100</span><span class="o">));</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：满减优惠后金额 {}"</span><span class="o">,</span> <span class="n">discountAmount</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>测试结果</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">15</span><span class="o">:</span><span class="mi">43</span><span class="o">:</span><span class="mf">42.695</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="n">满减优惠后金额</span> <span class="mi">90</span>
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<h4 id="33-编写测试类折扣优惠">3.3 编写测试类(折扣优惠)</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_zk</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// 折扣9折，商品100元</span>
+    <span class="nc">Context</span><span class="o">&lt;</span><span class="nc">Double</span><span class="o">&gt;</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Context</span><span class="o">&lt;</span><span class="nc">Double</span><span class="o">&gt;(</span><span class="k">new</span> <span class="nc">ZKCouponDiscount</span><span class="o">());</span>
+    <span class="nc">BigDecimal</span> <span class="n">discountAmount</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">discountAmount</span><span class="o">(</span><span class="mf">0.9</span><span class="no">D</span><span class="o">,</span> <span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="mi">100</span><span class="o">));</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：折扣9折后金额 {}"</span><span class="o">,</span> <span class="n">discountAmount</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>测试结果</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">15</span><span class="o">:</span><span class="mi">44</span><span class="o">:</span><span class="mf">05.602</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="n">折扣9折后金额</span> <span class="mf">90.00</span>
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<h4 id="34-编写测试类n元购优惠">3.4 编写测试类(n元购优惠)</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_nyg</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// n元购；100-10，商品100元</span>
+    <span class="nc">Context</span><span class="o">&lt;</span><span class="nc">Double</span><span class="o">&gt;</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Context</span><span class="o">&lt;</span><span class="nc">Double</span><span class="o">&gt;(</span><span class="k">new</span> <span class="nc">NYGCouponDiscount</span><span class="o">());</span>
+    <span class="nc">BigDecimal</span> <span class="n">discountAmount</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">discountAmount</span><span class="o">(</span><span class="mi">90</span><span class="no">D</span><span class="o">,</span> <span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="mi">100</span><span class="o">));</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：n元购优惠后金额 {}"</span><span class="o">,</span> <span class="n">discountAmount</span><span class="o">);</span>
+
+</code></pre></div></div>
+
+<p><strong>测试结果</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">15</span><span class="o">:</span><span class="mi">44</span><span class="o">:</span><span class="mf">24.700</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="n">n元购优惠后金额</span> <span class="mi">90</span>
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<ul>
+  <li>以上四组测试分别验证了不同类型优惠券的优惠策略，测试结果是满足我们的预期。</li>
+  <li>这里四种优惠券最终都是在原价<code class="highlighter-rouge">100元</code>上折扣<code class="highlighter-rouge">10元</code>，最终支付<code class="highlighter-rouge">90元</code>。</li>
+</ul>
+
+<h2 id="七总结">七、总结</h2>
+
+<ul>
+  <li>以上的策略模式案例相对来说不并不复杂，主要的逻辑都是体现在关于不同种类优惠券的计算折扣策略上。结构相对来说也比较简单，在实际的开发中这样的设计模式也是非常常用的。另外这样的设计与命令模式、适配器模式结构相似，但是思路是有差异的。</li>
+  <li>通过策略设计模式的使用可以把我们方法中的if语句优化掉，大量的if语句使用会让代码难以扩展，也不好维护，同时在后期遇到各种问题也很难维护。在使用这样的设计模式后可以很好的满足隔离性与和扩展性，对于不断新增的需求也非常方便承接。</li>
+  <li><code class="highlighter-rouge">策略模式</code>、<code class="highlighter-rouge">适配器模式</code>、<code class="highlighter-rouge">组合模式</code>等，在一些结构上是比较相似的，但是每一个模式是有自己的逻辑特点，在使用的过程中最佳的方式是经过较多的实践来吸取经验，为后续的研发设计提供更好的技术输出。</li>
+</ul>
+
+
+            <div>
+   <div align="center" class="copyright">
+	   <div class="cmower">bugstack虫洞栈</div>
+	   <div class="brief">沉淀、分享、成长，让自己和他人都能有所收获</div>
+       <img src="/assets/images/qrcode.png" >
+	   <div class="saoma">微信扫描二维码，关注我的公众号</div>
+   </div>
+   <p align="center" style="margin-top: 15px; font-size: 11px;color: #cc0000;">
+       <strong>（转载本站文章请注明作者和出处 <a href="https://bugstack.cn">微信公众号：bugstack虫洞栈 | 作者：小傅哥</a>）</strong>
+   </p>
+</div>
+
+
+            <!-- Comments -->
+            <div class="comment">
+             
+
+  
+    <a href="#" class="show_disqus_comment" onclick="return false;">Show Disqus Comments</a>
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_config = function () {
+        this.page.url = 'https://bugstack.cn/itstack-demo-design/2020/07/05/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F.html';
+        this.page.identifier = '/itstack-demo-design/2020/07/05/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F.html';
+        this.page.title = '重学 Java 设计模式：实战策略模式「模拟多种营销类型优惠券，折扣金额计算策略场景」';
+    };
+    var disqus_loaded = false;
+    $(function() {
+        $('.show_disqus_comment').on('click', function() { // DON'T EDIT BELOW THIS LINE
+            $(this).html('加载中...');
+            var that = this;
+            if (!disqus_loaded) {
+                var d = document, s = d.createElement('script');
+
+                s.type = 'text/javascript';
+                s.async = true;
+                var shortname = 'fuzhengwei';
+
+                s.src = '//' + shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+
+                disqus_loaded = true;
+            }
+            $(that).remove();
+        })
+    })
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  
+
+  
+        <div id="gitalk-container"></div>
+        <script src="/assets/js/gitalk.min.js"></script>
+        <script src="/assets/js/md5.js"></script>
+        <script>
+        var gitalk = new Gitalk({
+            id: md5(decodeURI('/itstack-demo-design/2020/07/05/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F.html')),
+            clientID: 'df8beab2190bec20352a',
+            clientSecret: '7eeeb4369d699c933f02a026ae8bb1e2a9c80e90',
+            repo: 'CodeGuide',
+            owner: 'fuzhengwei',
+            admin: ['fuzhengwei'],
+            labels: ['gitment'],
+            perPage: 50,
+        })
+        gitalk.render('gitalk-container')
+        </script>
+  
+
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <h3>Post Directory</h3>
+<div id="post-directory-module">
+<section class="post-directory">
+    <!-- Links that trigger the jumping -->
+    <!-- Added by javascript below -->
+    <dl></dl>
+</section>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $( "article h2" ).each(function( index ) {
+            $(".post-directory dl").append("<dt><a class=\"jumper\" hre=#" +
+                    $(this).attr("id")
+                    + ">"
+                    + $(this).text()
+                    + "</a></dt>");
+
+            var children = $(this).nextUntil("h2", "h3")
+
+            children.each(function( index ) {
+                $(".post-directory dl").append("<dd><a class=\"jumper\" hre=#" +
+                        $(this).attr("id")
+                        + ">"
+                        + "&nbsp;&nbsp;- " + $(this).text()
+                        + "</a></dd>");
+            });
+        });
+
+        var fixmeTop = $('#post-directory-module').offset().top - 100;       // get initial position of the element
+
+        $(window).scroll(function() {                  // assign scroll event listener
+
+            var currentScroll = $(window).scrollTop(); // get current position
+
+            if (currentScroll >= fixmeTop) {           // apply position: fixed if you
+                $('#post-directory-module').css({      // scroll to that element or below it
+                    top: '100px',
+                    position: 'fixed',
+                    width: 'inherit'
+                });
+            } else {                                   // apply position: static
+                $('#post-directory-module').css({      // if you scroll above it
+                    position: 'inherit',
+                    width: 'inherit'
+                });
+            }
+
+        });
+
+        $("a.jumper").on("click", function( e ) {
+
+            e.preventDefault();
+
+            $("body, html").animate({
+                scrollTop: ($( $(this).attr('hre') ).offset().top - 100)
+            }, 600);
+
+        });
+    });
+
+</script>
+        </div>
+        
+
+    </div>
+    
+    <div class="asb-post-01">
+        <div class="mask"></div>
+			<div class="info">
+	    		<div>扫码或搜索：<span style="color: #E9405A; font-weight: bold;">bugstack虫洞栈</span></div>
+	    	<div>
+	        <span>发送 </span><span class="token" style="color: #e9415a; font-weight: bold; font-size: 17px; margin-bottom: 45px;">290992</span>
+	    	<div>
+	       	 	即可<span style="color: #e9415a; font-weight: bold;">立即永久</span>解锁本站全部文章
+	    	</div>
+	    	<img class="code-img" style="width: 300px;display:unset" src="/assets/images/qrcode.png">
+		</div>
+ 	</div>
+</article>
+
+        </div>
+
+    <footer class="container">
+    <div class="site-footer">
+        <div class="card text-center">
+            <ul class="list-inline" style="margin-left: 0;">
+                <li>
+                    <a target="_blank" href="https://github.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://www.zhihu.com/people/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-1x fa-inverse">知</i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://weibo.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="site-footer-links mobile-hidden">
+            
+            <a href="https://github.com/fuzhengwei" title="Git仓库" target="_blank">Git仓库</a>
+            
+            <a href="/gitchat.html" title="GitChat" target="_blank">GitChat</a>
+            
+        </div>
+        <div class="site-footer-icons">
+            <a href="http://beian.miit.gov.cn" target="_blank">京ICP备19031103号-1</a>
+        </div>
+        <div class="scrolltop">
+            bugstack虫洞栈
+            <a href="javascript:window.scrollTo(0,0)">TOP</a>
+        </div>
+        <div class="rss">
+            <a href="/feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a>
+            Power by <a href="https://github.com/DONGChuan/Yummy-Jekyll">Yummy Jekyll</a>
+        </div>
+    </div>
+    <!-- Third-Party JS -->
+    <script type="text/javascript" src="/bower_components/geopattern/js/geopattern.min.js"></script>
+    <!-- My JS -->
+    <script type="text/javascript" src="/assets/js/script.js"></script>
+    
+
+    <!-- 百度统计&友盟统计 -->
+    <div style="display:none">
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+              var hm = document.createElement("script");
+              hm.src = "https://hm.baidu.com/hm.js?0b31b4c146bf7126aed5009e1a4a11c8";
+              var s = document.getElementsByTagName("script")[0];
+              s.parentNode.insertBefore(hm, s);
+            })();
+
+        </script>
+
+        <script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1278232949&web_id=1278232949"></script>
+    </div>
+    <!-- 百度统计 -->
+</footer>
+
+
+    </body>
+
+</html>

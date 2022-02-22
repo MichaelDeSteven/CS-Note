@@ -1,6 +1,21 @@
+# Java基础
 
 
-# JAVA基础
+
+## Java语言特点
+
+* 简单易学
+* 是一门面向对象语言（封装继承多态）
+* 平台无关性（通过JVM实现）
+* 可靠性
+* 安全性
+* 支持多线程编程
+  * 支持网络编程
+* 动态性，解释与运行并存
+
+
+
+
 
 
 
@@ -41,7 +56,12 @@ private：仅当前类
 
 #### 非访问修饰符
 
-**static**：用来修饰方法和字段，表示类方法和类字段
+**static**
+
+* 修饰方法
+* 修饰字段
+* 修饰内部类：静态内部类与非静态内部类的区别在于非静态内部类在编译完后会隐含地保存一个引用，这个引用用来指向外围类，因此静态内部类创建不依赖于外围类，同时静态内部类不能使用任何非static的方法或者字段
+* 静态代码块：加载顺序为静态代码块—非静态代码块—构造方法
 
 **final**
 
@@ -84,7 +104,13 @@ private：仅当前类
 
 目的：易于拓展新的子类或者功能，增加程序的灵活性
 
-#### // TODO 多态的实现原理
+
+
+原理详见JVM#方法调用
+
+
+
+
 
 
 
@@ -104,17 +130,23 @@ private：仅当前类
 
 
 
-比较抽象类和接口：
+**JDK8**
 
-* 抽象类和接口都可用于实现面向对象中的运行时多态，增加程序的灵活性，接口是对Java多重继承的折中方案，Java中只存在一个父类，但是却可以实现多个接口
+* 支持声明default和静态方法
 
-* 从语法上，Java 8之前接口内的方法不能有任何的实现，从Java 8开始使用关键字default能够拥有默认方法的实现，而抽象类内可以有普通方法和字段
 
-* 接口成员的访问修饰默认且只有public，而抽象类的成员可以有多种访问权限
 
-* 接口字段默认为static和final，而抽象类的字段没有限制
 
-* 从设计层面上看，抽象类提供了一种IS-A的关系**是一种概念上的抽象，而接口则是对行为的抽象**
+
+比较抽象类和接口
+
+* 共同点：**均不能被实例化**，只有实现接口的所有方法或者实现了抽象方法的类才能被实例化
+* 定义：abstract class定义抽象类、interface定义接口
+* 继承：抽象类和接口都可用于实现面向对象中的运行时多态，增加程序的灵活性，接口是对Java多重继承的折中方案，Java中只存在一个父类，但是却可以实现多个接口
+* 构造器：抽象类可以有构造器，接口不能有构造器
+* 从语法上：Java 8之前接口内的方法不能有任何的实现，从Java 8开始使用关键字default能够拥有默认方法的实现，而抽象类内可以有普通方法和字段，
+* 修饰符：接口成员的访问修饰默认且只有public，而抽象类无限制
+* 设计层面：抽象类提供了一种IS-A的关系**是一种概念上的抽象，而接口则是对行为的抽象**
 
 
 
@@ -183,7 +215,7 @@ class AlarmDoor extends Door implements Alarm {
 
 Java拥有两大类数据类型：基本数据类型和引用数据类型
 
-### 内置数据类型
+### 介绍
 
 大致分为整型、字符型、浮点型、布尔型
 
@@ -209,7 +241,7 @@ Java拥有两大类数据类型：基本数据类型和引用数据类型
 
 
 
-#### 缓存池
+### 缓存池
 
 new Integer(123) 与 Integer.valueOf(123) 的区别在于：
 
@@ -224,17 +256,17 @@ return new Integer(i);
 }
 ```
 
-#### 包装类
+
+
+### 包装类
 
 每个内置数据类型都有相应的包装类，基本数据类型转换为包装类称为自动装箱，反之为自动拆箱
 
 
 
+## 引用数据类型
 
-
-### 引用数据类型
-
-#### Object
+### Object
 
 ```java
 public native int hashCode()
@@ -308,11 +340,19 @@ public final void wait() throws InterruptedException
 
 
 
-#### String
+
+
+
+
+### String
+
+JDK8中，String类由final修饰，字符串内容由final char数组维护 同时String类维护了一个字符串常量池
 
 String、StringBuffer、StringBuilder位于java.lang包下
 
-String的常用方法
+
+
+#### **常用方法**
 
 ```java
 indexOf():返回指定字符的索引
@@ -329,6 +369,10 @@ contains():检测字符串是否包含了指定字符串
 intern()
 ```
 
+
+
+#### 不可变性
+
 ```java
 // String类被final修饰，则该类不可被继承
 public final class String
@@ -340,19 +384,16 @@ public final class String
 }
 ```
 
-**intern方法**
 
-JDK8中intern方法解释为：字符串常量池存储着字符串，当调用该方法时，会从常量池查找是否含有该字符串，若存在则直接返回该字符串的地址，否则会在字符串常量池添加一个字符串，并返回该字符串的引用地址。
 
-详见：JVM
+1. 适合作为HashMap和HashSet的key。String的hash值经常被使用。不可变性特征可以使得hash值不可变，由于HashMap和HashSet的key一般都要求不可变，因此String可以适合当作key
+2. 缓存。String Pool存储着字符串，字面量相同的字符串都会指向同一内存地址，在大量使用字符串情况下，可以节省内存，提高效率
+3. 线程安全。String可以被多个线程所使用而不产生线程安全问题
+4. 安全。账户密码一般用字符串表示，不可变使得内容不可修改，保证了安全
 
-**String的不可变性**
 
-1. 方便缓存hash值。String的hash值经常被使用。不可变性特征可以使得hash值不可变，hash值只需计算一次
-2. String Pool存储着字符串，字面量相同的字符串都会指向同一内存地址，在大量使用字符串情况下，可以节省内存，提高效率
-3. String的不可变性天生具备线程安全
 
-String、StringBuilder、StringBuffer
+#### String、StringBuilder、StringBuffer
 
 1. 可变性
    * String不可变
@@ -363,19 +404,134 @@ String、StringBuilder、StringBuffer
 
 
 
+#### intern方法
+
+JDK8中intern方法解释为：字符串常量池存储着字符串，当调用该方法时，会从常量池查找是否含有该字符串，若存在则直接返回该字符串的地址，否则会在字符串常量池添加一个字符串，并返回该字符串的引用地址。
+
+详见：JVM
+
+
+
+#### equals
+
+```java
+public boolean equals(Object anObject) {
+    if (this == anObject) {
+        //内存地址一致的话，为true
+        return true;
+    }
+    //判断是不是String类
+    if (anObject instanceof String) {
+        String anotherString = (String)anObject;
+        int n = value.length;
+        //判断字符串长度是否相等，不等直接返回不等
+        if (n == anotherString.value.length) {
+            char v1[] = value;
+            char v2[] = anotherString.value;
+            int i = 0;
+            //依次比较每个字符
+            while (n-- != 0) {
+                if (v1[i] != v2[i])
+                    return false;
+                i++;
+            }
+            return true;
+        }
+    }
+    return false;
+}
+```
+
+
+
+细节：比较字符串内容并不是一上来就进行了比较，而是先进行几个简单的判断，提升了效率
+
+1. 比较内存地址是否相等
+2. 比较传入的对象类型是否一致
+3. 字符串长度是否相等
+4. 一个个比较字符值
+
+
+
+#### concat
+
+```java
+public String concat(String str) {
+    int otherLen = str.length();
+    if (otherLen == 0) {
+        return this;
+    }
+    int len = value.length;
+    char buf[] = Arrays.copyOf(value, len + otherLen);
+    str.getChars(buf, len);
+    return new String(buf, true);
+}
+```
+
+
+
+创建一个新的字符数组，长度为已有字符串+待拼接字符串长度之和，再将两个字符串的值复制到新的字符数组中，最后返回一个新对象String
+
+
+
+#### append
+
+
+
+```java
+public final class StringBuilder
+    extends AbstractStringBuilder
+    implements java.io.Serializable, CharSequence
+{}
+
+
+abstract class AbstractStringBuilder implements Appendable, CharSequence {
+    // char数组
+    char[] value;
+    public AbstractStringBuilder append(String str) {
+        if (str == null)
+            return appendNull();
+        int len = str.length();
+        ensureCapacityInternal(count + len);
+        str.getChars(0, len, value, count);
+        count += len;
+        return this;
+    }
+}
+```
+
+
+
+#### 字符串拼接
+
+1. 使用+拼接字符串：原理是创建了一个StringBuilder对象之后使用append方法进行处理的
+2. String使用concat方法
+3. StringBuilder和StringBuffer的append方法
+
+
+
+
+
+#### 新特性JDK9
+
+char数组改为了byte数组，好处是节约内存空间和减少GC次数
+
 
 
 ## 内部类
 
 ### 介绍
 
-
+将一个类的放到另一类的内部，就是内部类
 
 ### 原因
 
 
 
-### 分类
+* 和接口配合解决了Java语言多重继承的问题
+* 能与外围类通信，包括了访问private字段
+* 对同一包内的类隐藏
+* 内部类提供了闭包的功能（可调用对象），方便回调
 
 
 
@@ -385,11 +541,11 @@ String、StringBuilder、StringBuffer
 
 ## 泛型
 
-泛型本质就是类型参数化，使用泛型能对类型进行泛化，进而写出更加通用灵活的代码
+泛型本质就是类型参数化，使用泛型能对类型进行泛化，泛型的好处是提高程序健壮性、增加代码可读性、提高效率
 
-### 擦除
 
-与C++的模板不同的是Java在使用泛化时，擦除类型的信息，在泛型的内部代码无法获得任何有关泛型参数类型的信息，例如List<String>在运行时仅用一个List来表示，这样做的原因是为了泛型实现的一种折中，为了使得泛化的客户端可以用非泛化的类库来使用，即迁移兼容性，Java泛型不仅必须要支持向后兼容，还要保持之间的含义。
+
+与C++的模板不同的是Java在使用泛化时，擦除类型的信息，在泛型的内部代码无法获得任何有关泛型参数类型的信息，例如List<String>在运行时仅用一个List来表示，这样做的原因是为了泛型实现的一种**折中**，为了确保能和Java 5之前的版本开发二进制类库进行兼容。即迁移兼容性，Java泛型不仅必须要支持向后兼容，还要保持之间的含义。
 
 
 
@@ -402,13 +558,15 @@ String、StringBuilder、StringBuffer
 
 [10 道 Java 泛型面试题](https://cloud.tencent.com/developer/article/1033693)
 
+https://mp.weixin.qq.com/s/XNYfLrnd7tYnTmuf1oyKQg
+
 
 
 ## 反射
 
 ### 概念
 
-反射是Java的特性之一，它允许运行时的Java程序获取自身的信息，并且可以操作类或对象的内部属性，它的思想就是万事万物皆对象，JVM将class文件装入内存后，为之创建的一个Class对象。通过Class对象来动态获取类的信息以及动态调用对象的方法称为java语言的反射机制
+反射体现了Java语言的动态性，这也是和C++不同的地方，它为运行时的Java程序提供了获取自身的信息，从而能够访问或者操作类或者对象的内部属性或者方法，反射可以说是Java框架的灵魂，是因为它赋予了运行时能够分析类以及类中方法的能力。反射的优点是提高了代码的灵活性，为各个框架开箱即用提供了便利。缺点首先是反射可能会带来一定的性能损耗，同时反射具有一定的安全问题。比如它可以无视泛型参数的安全检查，它也可以访问私有的方法或者字段，破坏了面向对象的设计原则，增加了安全隐患。
 
 
 
@@ -502,15 +660,19 @@ method.invoke(clazz.newInstance());
 
 
 
+[Java Reflection: Why is it so slow?](https://stackoverflow.com/questions/1392351/java-reflection-why-is-it-so-slow)
+
+
+
+
+
 ### 应用场景
 
-反射是框架设计的灵魂，在实际开发设计中，都与反射都有很大的关系，比如动态代理使用了反射机制，Spring的IOC控制反转创建对象以及AOP的面向切面编程大量的使用了反射机制
 
-* 反射还有一些其他方面的应用比如动态地读取配置文件从而达到无需对源码操作而是对配置文件修改即可，越过泛型检查
 
-* 反射的优点是增加了代码的灵活性，利用反射使得我们可以在运行时才进行判断从而实现动态的类的加载
-* 缺点首先是性能方面的问题，反射相当于一系列解释操作，通知JVM要做的事情，性能比Java代码慢很多
-* 还有一点是安全问题，通过反射我们甚至可以直接对私有的方法或者字段进行操作，违反了面向对象的设计原则，增加了类安全隐患
+* JDBC：加载驱动
+* Spring：xml配置文件读取
+* 动态代理
 
 
 
@@ -524,15 +686,87 @@ method.invoke(clazz.newInstance());
 
 ## 异常
 
+异常机制就是为了使得程序具备健壮性。能在调试，运行阶段都能提供有效的手段进行异常捕获，然后实施补救手段。
 
+
+
+
+
+### 体系
+
+Java异常的父类为Throwable，它主要有两个子类Error和Exception，两者之间的区别如下
+
+* Error为Java处理不了错误，常见的Error有OOM，SOF
+* Exception是Java可以处理的异常，Exception又分受检查异常和不受检查异常，Exption
+  * 受检查异常时指如果没有catch`/`throw处理，就通过不了编译，比如运行时异常
+  * 不受检查异常是指没有catch`/`throw，也能通过编译，该类常见的异常有类型转换错误、空指针、数组越界、算术错误
+
+
+
+### try-with-resources
+
+面对需要关闭的资源，try-with-resources优先于try-catch-finally，这样编写的代码更简单，更清晰
+
+适用范围
+
+* 任何实现 java.lang.AutoCloseable或者 java.io.Closeable 的对象
+
+
+
+**例**
+
+```java
+//读取文本文件的内容
+Scanner scanner = null;
+try {
+    scanner = new Scanner(new File("D://read.txt"));
+    while (scanner.hasNext()) {
+        System.out.println(scanner.nextLine());
+    }
+} catch (FileNotFoundException e) {
+    e.printStackTrace();
+} finally {
+    if (scanner != null) {
+        scanner.close();
+    }
+}
+
+try (Scanner scanner = new Scanner(new File("test.txt"))) {
+    while (scanner.hasNext()) {
+        System.out.println(scanner.nextLine());
+    }
+} catch (FileNotFoundException fnfe) {
+    fnfe.printStackTrace();
+}
+```
+
+
+
+
+
+### throw&throws
+
+* throw：用于捕获异常，需要配合try-catch语句
+* throws：用于方法抛出异常，可以单独使用
 
 
 
 ## 注解
 
+### 概念
+
+* 注解是附加在Java代码的一些元信息，用于一些工具在编译或运行时进行解析和使用，起到了说明和配置的功能。注解不会影响代码的实际逻辑
+* 比如@Override起到了标注重写方法的作用，同时如果父类不存在该方法，编译时会报错
+* 注解还可以用来生成文档
+* 实现了配置文件功能
 
 
-### 介绍
+
+
+
+### 元注解
+
+表示注解的注解
 
 ![](C:\Users\Steven\Desktop\CS-Note\java\pic\annotation.jpg)
 
@@ -541,9 +775,9 @@ method.invoke(clazz.newInstance());
 * @Override：检查是否为重写方法，如果发现其父类或者接口没有该方法，则编译报错
 * @Deprecated：表示过时的方法
 * @SuppressWarning：表示忽略注解中声明的警告
-* @Retention：表示这个注释怎么保存，是只在代码中，还是编入的class文件中，或者是在运行时可以通过反射访问
+* @Retention：Retention有保留的意思，表示这个注释怎么保存，是只在代码中，还是编入的class文件中，或者是在运行时可以通过反射访问
 * @Documented：标记这些注解是否包含在用户文档中
-* @Target：标记这个Java注解应该是哪种Java成员
+* @Target：表示目标的意思，使用枚举类ElementType表示注解的范围，可以是类、方法、参数
 * @Inherited：标记这个注解是继承哪个注解类
 
 
@@ -601,15 +835,6 @@ public enum RetentionPolicy {
 
 
 
-### 作用
-
-* 注解是附加在代码的一些元信息，用于一些工具在编译或运行时进行解析和使用，起到了说明和配置的功能。注解不会影响代码的实际逻辑
-* 比如@Override起到了标注重写方法的作用，同时如果父类不存在该方法，编译时会报错
-* 注解还可以用来生成文档
-* 实现了配置文件功能
-
-
-
 
 
 ### 原理
@@ -622,13 +847,173 @@ public enum RetentionPolicy {
 
 
 
-
-
-
-
 [Java 注解（Annotation）](https://www.runoob.com/w3cnote/java-annotation.html)
 
+[Java注解全解析](https://www.jianshu.com/p/9471d6bcf4cf)
 
+
+
+
+
+## SPI
+
+### 概念
+
+SPI全称Service Provider Interface服务提供接口，它允许开发者不用修改Java代码而去实现自己提供的服务，
+
+
+
+### 源码分析
+
+```java
+public final class ServiceLoader<S>
+    implements Iterable<S>
+{
+
+    private static final String PREFIX = "META-INF/services/";
+
+    // The class or interface representing the service being loaded
+    private final Class<S> service;
+
+    // The class loader used to locate, load, and instantiate providers
+    private final ClassLoader loader;
+
+    // The access control context taken when the ServiceLoader is created
+    private final AccessControlContext acc;
+
+    // Cached providers, in instantiation order
+    private LinkedHashMap<String,S> providers = new LinkedHashMap<>();
+
+    // The current lazy-lookup iterator
+    private LazyIterator lookupIterator;
+    
+    public void reload() {
+        providers.clear();
+        // 使用了懒加载+迭代器，服务会放入迭代器当中
+        lookupIterator = new LazyIterator(service, loader);
+    }
+    
+    // 该类使用了工厂方法设计模式，必须用load来创建对象
+    private ServiceLoader(Class<S> svc, ClassLoader cl) {
+        service = Objects.requireNonNull(svc, "Service interface cannot be null");
+        loader = (cl == null) ? ClassLoader.getSystemClassLoader() : cl;
+        acc = (System.getSecurityManager() != null) ? AccessController.getContext() : null;
+        reload();
+    }
+    
+    public static <S> ServiceLoader<S> load(Class<S> service,
+                                            ClassLoader loader)
+    {
+        return new ServiceLoader<>(service, loader);
+    }
+    
+    // 第一次加载会调用load方法，该方法默认使用线程的上下文类加载器
+    public static <S> ServiceLoader<S> load(Class<S> service) {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        return ServiceLoader.load(service, cl);
+    }
+    
+    // 服务的真正加载
+    public Iterator<S> iterator() {
+        return new Iterator<S>() {
+
+            Iterator<Map.Entry<String,S>> knownProviders
+                = providers.entrySet().iterator();
+
+            public boolean hasNext() {
+                if (knownProviders.hasNext())
+                    return true;
+                return lookupIterator.hasNext();
+            }
+
+            public S next() {
+                if (knownProviders.hasNext())
+                    return knownProviders.next().getValue();
+                return lookupIterator.next();
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+
+        };
+    }
+    
+    // Private inner class implementing fully-lazy provider lookup
+    private class LazyIterator implements Iterator<S>
+    {
+
+        Class<S> service;
+        ClassLoader loader;
+        Enumeration<URL> configs = null;
+        // 当前service配置文件的内容迭代器
+        // 即对services进行遍历，取出一个services配置文件，再对该文件按行解析，每行代表一个具体的service实现类，pending是某个services配置文件中service实现类的迭代器
+        Iterator<String> pending = null;
+        String nextName = null;
+
+        private LazyIterator(Class<S> service, ClassLoader loader) {
+            this.service = service;
+            this.loader = loader;
+        }
+
+        private boolean hasNextService() {
+            if (nextName != null) {
+                return true;
+            }
+            // 首次迭代时，configs为空，尝试通过classloader获取名为：
+            // "META-INF/services/[服务全限定名]"的所有配置文件
+            if (configs == null) {
+                try {
+                    // 注意fullName的定义:"META-INF/services/[服务全限定名]"
+                    String fullName = PREFIX + service.getName();
+                    // 通过ClassLoader.getResources()获得资源URL集合
+                    if (loader == null)
+                        configs = ClassLoader.getSystemResources(fullName);
+                    else
+                        configs = loader.getResources(fullName);
+                } catch (IOException x) {
+                    fail(service, "Error locating configuration files", x);
+                }
+            }
+            // 如果pending为空，或者pending已经迭代到迭代器末尾，则尝试解析下一个services配置文件
+            while ((pending == null) || !pending.hasNext()) {
+                if (!configs.hasMoreElements()) {
+                    return false;
+                }
+                pending = parse(service, configs.nextElement());
+            }
+            // 对当前pending内容进行遍历，每一项代表services的一个实现类
+            nextName = pending.next();
+            return true;
+        }
+    }
+
+}
+```
+
+
+
+
+
+
+
+### 应用
+
+JDBC4.0以后不再需要显示实例化DB驱动实现类
+
+
+
+
+
+
+
+
+
+
+
+[SPI官方文档](https://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html)
+
+[SPI源码分析部分](https://www.jianshu.com/p/27c837293aeb)
 
 
 
@@ -691,7 +1076,8 @@ public ArrayList() {
 
 1. 无参构造，会给定一个空数组
 2. 有参构造，若大小为0也会给定一个空数组，否则会创建一个指定大小的数组
-3. 两个空数组的区别是无参构造第一次add操作会直接扩容为默认大小为10的数组
+3. 设置两个空数组的理由是考虑了扩容大小与速度。无参构造第一次add操作会直接扩容为默认大小为10的数组，好处是减少了扩容的次数，无参构造的空数组扩容如10、15，有参构造空数组则按照大小为0、1、2、3、4、6的方式来扩容，好处是节约了内存
+4. 大小为0，赋值一个空数组，只有元素被添加进来才会真正开辟空间，体现了懒加载的思想
 
 
 
@@ -721,10 +1107,10 @@ private void grow(int minCapacity) {
     int oldCapacity = elementData.length;
     // 扩容1.5倍
     int newCapacity = oldCapacity + (oldCapacity >> 1);
-    // 如果扩容容量小于minCapacity，则扩容为minCapacity
+    // 如果扩容容量小于minCapacity，则扩容为我们需要的大小minCapacity
     if (newCapacity - minCapacity < 0)
         newCapacity = minCapacity;
-    if (newCapacity - MAX_ARRAY_SIZE > 0)
+    if (newCapacity - MAX_ARRAY_SIZE > 0)	// 大于最大大小2^31 - 1
         newCapacity = hugeCapacity(minCapacity);
     elementData = Arrays.copyOf(elementData, newCapacity);
 }
@@ -751,11 +1137,12 @@ public boolean add(E e) {
 
 1. 先判断添加后的大小有没有超过当前数组的大小
 2. 如果超过了就进行扩容处理
-3. 判断扩容为原来1.5倍的大小是否大于当前的最小容量
-4. 如果小于当前最小容量，则采用最小容量作为新的数组大小
-5. 调用Arrays的copyOf方法
-6. copyOf则是调用了本地方法arraycopy，进行了数组的拷贝和扩容
-7. 扩容完成后，再进行添加元素操作
+3. 获取当前elementData数组的大小并扩容
+4. 判断扩容为原来1.5倍的大小是否大于当前容量
+5. 如果小于当前容量，则采用当前容量作为新的数组大小
+6. 调用Arrays的copyOf方法
+7. copyOf则是调用了本地方法arraycopy，进行了数组的拷贝和扩容
+8. 扩容完成后，再进行添加元素操作
 
 
 
@@ -831,6 +1218,19 @@ public E remove(int index) {
     return oldValue;
 }
 ```
+
+
+
+
+
+**问题**
+
+ArrayList与LinkedList
+
+* ArrayList底层为动态数组，LinkedList为双向链表
+* ArrayList的随机访问比LinkedList快
+* ArrayList的顺序访问不一定比LinkedList快
+* ArrayList实现了RandomAccess标识接口
 
 
 
@@ -938,6 +1338,7 @@ void linkLast(E e) {
 Node<E> node(int index) {
     // assert isElementIndex(index);
 
+    // 小优化
     if (index < (size >> 1)) {
         Node<E> x = first;
         for (int i = 0; i < index; i++)
@@ -1087,7 +1488,139 @@ public E peek() {
 
 ### CopyOnWriteArrayList
 
-// TODO
+由可重入锁和volatile修饰的数组组成的线程安全的ArrayList，适用于读多写少，对内存资源和实时性要求不高的场景。
+
+**基本信息**
+
+```java
+public class CopyOnWriteArrayList<E>
+    implements List<E>, RandomAccess, Cloneable, java.io.Serializable {
+    
+    // 可重入锁
+    final transient ReentrantLock lock = new ReentrantLock();
+
+    // volatile修饰的数组
+    private transient volatile Object[] array;
+
+}
+```
+
+
+
+**add**
+
+```java
+public boolean add(E e) {
+    final ReentrantLock lock = this.lock;
+    // 使用锁
+    lock.lock();
+    try {
+        Object[] elements = getArray();
+        int len = elements.length;
+        // 创建一个新的数组
+        Object[] newElements = Arrays.copyOf(elements, len + 1);
+        newElements[len] = e;
+        // array更新为新的数组
+        setArray(newElements);
+        // 修改成功
+        return true;
+    } finally {
+        lock.unlock();
+    }
+}
+
+public void add(int index, E element) {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        Object[] elements = getArray();
+        int len = elements.length;
+        // 越界判断
+        if (index > len || index < 0)
+            throw new IndexOutOfBoundsException("Index: "+index+
+                                                ", Size: "+len);
+        Object[] newElements;
+        int numMoved = len - index;
+        // 插入结尾，同第一个add方法逻辑一样
+        if (numMoved == 0)
+            newElements = Arrays.copyOf(elements, len + 1);
+        // 插入中间
+        else {
+            newElements = new Object[len + 1];
+            System.arraycopy(elements, 0, newElements, 0, index);
+            System.arraycopy(elements, index, newElements, index + 1,
+                             numMoved);
+        }
+        newElements[index] = element;
+        setArray(newElements);
+    } finally {
+        lock.unlock();
+    }
+}
+```
+
+
+
+**set**
+
+```java
+public E set(int index, E element) {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        Object[] elements = getArray();
+        E oldValue = get(elements, index);
+
+        if (oldValue != element) {
+            int len = elements.length;
+            Object[] newElements = Arrays.copyOf(elements, len);
+            newElements[index] = element;
+            setArray(newElements);
+        } else {
+            // Not quite a no-op; ensures volatile write semantics
+            setArray(elements);
+        }
+        return oldValue;
+    } finally {
+        lock.unlock();
+    }
+}
+```
+
+
+
+**get**
+
+```java
+// 读时不加锁
+private E get(Object[] a, int index) {
+    return (E) a[index];
+}
+public E get(int index) {
+    return get(getArray(), index);
+}
+```
+
+* 遍历时不加锁
+* 原因是遍历时读取的是原数组
+
+
+
+- 已经加锁了，为什么还需要拷贝新数组？
+  因为在原数组上进行修改，没有办法触发volatile的可见性，需要修改内存地址，即将新拷贝的数组赋值给原引用
+
+
+
+
+
+**评价**
+
+* 相比于Vector类来说，COWArrayList在写时同时允许读操作，大大提高了读操作的效率，适合写少读多的场景
+* 内存占用：写操作时需要创建新的数组，使得内存占用大
+* 数据不一致：COWArrayList只能保证数据的最终一致性，不能保证数据的实时一致性
+* 因此COWArrayList不适合内存敏感或者实时性要求高的场景
+
+
 
 
 
@@ -1125,6 +1658,14 @@ Collection<V> values();
 
 
 ### HashMap
+
+
+
+#### 介绍
+
+HashMap实现了Map接口，提供了常数时间复杂度的get/set方法的哈希表，JDK8以前底层数据结构采用了数组链表的方式，JDK8采用了数组链表加红黑树的方式。它是一个线程不安全的集合类，构造哈希表时，主要由容量和平衡因子所决定。
+
+
 
 #### 基本信息
 
@@ -1366,7 +1907,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
         else if (p instanceof TreeNode)
             e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
         else {
-            // 从链表的第二个接待你开始遍历
+            // 从链表的第二个结点开始遍历
             for (int binCount = 0; ; ++binCount) {
                 // 到了链表尾部，直接插入
                 if ((e = p.next) == null) {
@@ -2135,6 +2676,9 @@ static <K,V> TreeNode<K,V> balanceDeletion(TreeNode<K,V> root,
 * size大小代表HashMap存储的键值对个数
 * capacity容量，table数组的大小，容量一定为2的次方
 * threshold阈值和loadFactor装载因子。threshold是通过loadFactor*capacity得到的，当size超过threshold时，HashMap会再扩容
+* DEFAULT_INITIAL_CAPICITY 表示默认大小为16
+* TREEIFY_THRESHOLD 树化条件之一，链表长度大于8
+* MIN_TREEIFY_CAPACITY 树化条件之一，树化时数组大小最少为64
 
 **HashMap的底层原理**
 
@@ -2179,8 +2723,8 @@ static <K,V> TreeNode<K,V> balanceDeletion(TreeNode<K,V> root,
 * 然后进行哈希扩容操作，首先会遍历table数组的每一个哈希桶
 * 如果哈希桶只有一个元素则直接插入新的table数组
 * 如果哈希桶的结构为红黑树就调用split方法
-* 否则哈希桶为链表，将链表分成高位链表和低位链表，分的依据是哈希值与旧容量进行与运算，结果为0在低位链表，否则为高位链表
-* 链表分离使用了位运算的技巧
+* 否则哈希桶为链表，JDK8避免了hash值重新计算，而是将链表分成高位链表和低位链表，分的依据是哈希值与旧容量进行与运算，结果为0在低位链表，否则为高位链表
+* 链表分离使用了位运算的技巧，最终将节点的位置要么在原来的哈希桶，要么就是原来哈希桶下标+原来哈希桶的容量
   * 由于新容量为2的倍数且为旧容量的2倍，比如10000b即16为新容量，那么旧容量1000b，table下标为000b-111b，能影响下标的只有后3位bit，扩容两倍后，影响下标变成了后4bit，那么后3位bit不变，新的table数组下标取决于第4位bit，且只有两种可能，第一种是等于0，那么这一类一定还是在原来的下标，第二种是等于1，这一类下标就是原来的下标加上旧容量
 * 遍历完哈希桶就将低位链表插入原来下标，高位链表插入原来下表+旧容量
 
@@ -2197,9 +2741,22 @@ static <K,V> TreeNode<K,V> balanceDeletion(TreeNode<K,V> root,
 * 如果为红黑树结构就是用removeTreeNode删除
 * 否则执行链表的删除结点操作
 
+**为什么TREEIFY_THRESHOLD = 8**
+
+* 综合了时间和空间上的共同考量，结点的hashcode随机条件下服从泊松分布，那么在一般情况下哈希桶超过8个元素的概率千万分之一，避免了频繁树化导致哈希表内存占用过大，同时也保证了查找时间具有良好的性能
+
+* 链表的查询时间复杂度为O(n)，红黑树的查询时间复杂度为O(logn)
+* 在数据量不多的时候，使用链表比较快，只有当数据量比较大的时候，才会转化为红黑树，但是红黑树占用的空间大小是链表的2倍，考虑到时间和空间上的损耗，所以要设置边界值（其实链表长度为8的概率很低，在HashMap注释中写了，出现的概率不择千万分之一，红黑树只是为了在极端情况下来保证性能）
+
+**为什么还要有UNTREEIFY_THRESHOLD = 6**
+
+* 起到一个缓冲作用。避免频繁的进行树退化为链表的操作，因为退化也是有开销的，当我们移除一个红黑树上的值的时候，如果只有阈值8的话，那么它会直接退化，我们若再添加一个值，它有可能又需要变为红黑树了，添加阈值6相当于添加了一个缓冲
+
+
+
 **HashMap容量为什么是2的n次方**
 
-1. 从统计角度上讲2的n次方的数据分布均匀
+1. 首先2的幂次违背了算法导论中“不建议采用2的幂次作为除数”因为这样很容易导致哈希冲突的发生，但是hash函数的设计减少了这种冲突，这种做法的效果与算法导论上的方式几乎无差别
 
 2. 同时计算table数组下标时，&运算比%的效率更高
 
@@ -2207,34 +2764,109 @@ static <K,V> TreeNode<K,V> balanceDeletion(TreeNode<K,V> root,
 
    * 第二点就是&运算为什么比%运算更高效
 
-3. 扩容时后的逻辑更加简单
+3. 扩容时后的逻辑更加简单（避免了重新计算节点hash值）
 
 **HashMap的哈希函数**
 
 * 通过hashCode()的高16位和低16位的异或值实现的
-* 哈希函数这样设计是经过了综合考量的，符合了哈希函数的设计原则，不会因而高位没有参与下标运算而造成碰撞，使用异或运算好处就是当某一个bit发生变化时，hash函数返回值也会发生变化，从而减少碰撞
+* 哈希函数这样设计是经过了综合考量的，符合了哈希函数的设计原则（简单、计算快、随机、哈希碰撞少），由于table大小采用的是2的幂次，模运算时候只有低位参与运算，采用这种哈希方式，不会因而高位没有参与下标运算而造成碰撞，使用异或运算好处就是当某一个bit发生变化时，hash函数返回值也会发生变化，从而减少碰撞
 * 不直接使用hashCode()处理后的哈希值作为数组下标是因为值的范围很大，数组取不到这么大的空间
+
+
 
 **HashMap的key设计**
 
-* hashCode和equals方法都要同时重写
+* 两个对象相等，则hashcode一定也是相同的
+* 两个对象相等，那么使用equals方法一定会返回true
+* 两个对象hashcode都相等，那么这两个对象不一定相等
+
+* 因此hashCode和equals方法都要同时重写
 * 如果key只重写了hashCode，却没有重写equals方法，那么equals默认是判断对象是否为同一个对象，那么会造成不同对象虽然值相同，但是会被认为是哈希碰撞
-* 如果重写了equals方法而没有重写hashCode方法，那么也会造成我们认为相同的键值对，但是map认为是哈希碰撞，原因是我们认为相同的对象相同但是它的hashCode却不相同
-
-**HashMap的1.7和1.8比较**
-
-1. JDK1.7底层数据结构是数据链表，JDK8是数组链表+红黑树
-2. JDK1.7的哈希函数较为复杂，而JDK8的哈希函数简单
+* 如果重写了equals方法而没有重写hashCode方法，equals执行速度会相对较慢
 
 
 
-# // TODO HashMap1.7 HashTable
+**比较节点时为什么先比较key的hash然后才比较key**
+
+* 处于性能方面的一个考虑，比较equals可能会需要一定的时间开销，如果先比较key，那么key不相同则节点一定不相同此时则可以跳过比较key这一个过程
 
 
+
+#### HashMap1.7
+
+1.7与1.8主要有3点区别
+
+
+
+* 哈希函数设计
+
+1.7使用了9次函数扰动（4次位运算和5次异或）
+
+1.8使用了2次函数扰动（1次位运算和1次异或）
+
+
+
+* 数据结构
+
+1.7 采用了数组+链表解决哈希冲突
+
+1.8采用了数组+链表+红黑树来解决哈希冲突
+
+
+
+* 扩容
+
+1.7resize需要重新计算所有哈希值
+
+1.8resize则省略该过程
+
+
+
+* 插入链表的方式
+
+1.7链表采用了头插法，并发下容易导致环形链表
+
+1.8链表采用了尾插法，避免了环形链表的产生，但是还是线程不安全
+
+
+
+
+
+#### 线程安全问题
+
+**为什么HashMap线程不安全**
+
+* JDK7使用尾插法，容易导致扩容时发生死循环
+* 并发put操作时，可能会导致元素丢失
+
+
+
+**如何解决？**
+
+使用线程安全的Map，比如ConcurrentMap、HashTable
 
 
 
 [JDK8 HashMap源码行级解析](https://www.cnblogs.com/allmignt/p/12353727.html#ijS57sM7)
+
+[JDK7 HashMap](https://blog.csdn.net/carson_ho/article/details/79373026)
+
+[头插法导致的死循环图解](https://my.oschina.net/u/4163222/blog/4750816)
+
+
+
+
+
+### HashTable
+
+
+
+**基本信息**
+
+```java
+public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
+    implements ConcurrentMap<K,V>, Serializable {
+```
 
 
 
@@ -2265,6 +2897,13 @@ public class LinkedHashMap<K,V>
      * true表示维护的是LRU顺序
      */
     final boolean accessOrder;
+    
+    static class Entry<K,V> extends HashMap.Node<K,V> {
+        Entry<K,V> before, after;
+        Entry(int hash, K key, V value, Node<K,V> next) {
+            super(hash, key, value, next);
+        }
+    }
 }
 ```
 
@@ -2301,6 +2940,10 @@ void afterNodeAccess(Node<K,V> e) { // move node to last
     }
 }
 ```
+
+
+
+
 
 ```java
 // 在put的最后进行afterNodeInsertion
@@ -2366,8 +3009,79 @@ public class myLinkedHashMap {
 
 * 基于红黑树实现
 * 取出的键值对有序
-* 非同步
+* 线程不安全
 * key不能为null
+
+
+
+
+
+**put操作**
+
+```java
+public V put(K key, V value) {
+    Entry<K,V> t = root;
+    // 根节点为空
+    if (t == null) {
+        compare(key, key); // type (and possibly null) check
+
+        root = new Entry<>(key, value, null);
+        size = 1;
+        modCount++;
+        return null;
+    }
+    int cmp;
+    Entry<K,V> parent;
+    // split comparator and comparable paths
+    Comparator<? super K> cpr = comparator;
+    // 基于Comparator来比较并且进行查找
+    if (cpr != null) {
+        // 二叉树查找
+        do {
+            parent = t;
+            cmp = cpr.compare(key, t.key);
+            if (cmp < 0)
+                t = t.left;
+            else if (cmp > 0)
+                t = t.right;
+            else
+                // key存在，直接将原来的value进行覆盖
+                return t.setValue(value);
+        } while (t != null);
+    }
+    // 基于key的大小来进行比较与插入
+    else {
+        if (key == null)
+            throw new NullPointerException();
+        @SuppressWarnings("unchecked")
+        Comparable<? super K> k = (Comparable<? super K>) key;
+        do {
+            parent = t;
+            cmp = k.compareTo(t.key);
+            if (cmp < 0)
+                t = t.left;
+            else if (cmp > 0)
+                t = t.right;
+            else
+                return t.setValue(value);
+        } while (t != null);
+    }
+    // 找到插入位置的父节点，与父节点进行比较然后插入
+    Entry<K,V> e = new Entry<>(key, value, parent);
+    if (cmp < 0)
+        parent.left = e;
+    else
+        parent.right = e;
+    fixAfterInsertion(e);
+    size++;
+    modCount++;
+    return null;
+}
+```
+
+
+
+
 
 
 
@@ -2389,6 +3103,442 @@ private final ReferenceQueue<Object> queue = new ReferenceQueue<>();
 
 
 ### ConcurrentHashMap
+
+
+
+使用ConcurrentHashMap的原因
+
+* HashMap不是线程安全，在多线程环境下，使用put操作会引起死循环
+* HashTable使用synchronized来保证线程安全，但是在线程竞争激烈的情况下HashTable效率十分低下，当一个线程访问HashTable的同步方法，其它线程也访问时，会进入阻塞或轮询状态，比如，线程1使用put操作时，线程2不但不能使用put方法添加元素，也不能使用get方法获取元素，效率低
+
+
+
+
+
+
+
+#### 数据结构
+
+同HashMap类似，使用了Node和TreeNode来封装键值对，不同的是CHM的table使用了volatile关键字，保证了可见性，同时还有一个关键的属性sizeCnt
+
+```java
+    /**
+     * Table initialization and resizing control.  When negative, the
+     * table is being initialized or resized: -1 for initialization,
+     * else -(1 + the number of active resizing threads).  Otherwise,
+     * when table is null, holds the initial table size to use upon
+     * creation, or 0 for default. After initialization, holds the
+     * next element count value upon which to resize the table.
+     */
+    private transient volatile int sizeCtl;
+大意就是sizeCtl是用来指示table数组的初始化状态或者扩容大小的
+    当为负数时表示table数组正在被初始化或者扩容，
+    -1表示初始化
+    -（1 + 正在扩容的线程数）
+    为0表示table数字为空，创建时会使用默认初始化大小16
+    初始化后，sizeCtl持有下次扩容需要扩容的大小
+```
+
+
+
+
+
+#### 实现原理
+
+* JDK7中，ConcurrentHashMap由Segment数组结构和HashEntry数据结构组成，Segment继承了ReentrantLock扮演锁的角色，ConcurrentHashMap采用了分段的方式，每一把锁用于锁容器其中的一部分数据，多线程访问容器不同数据段的数据时，线程间就不会存在锁竞争的问题，从而有效提高了并发访问效率
+
+* JDK8中，ConcurrentHashMap在数据结构选用了与HashMap相同的数据结构：数组+链表+红黑树，在锁的实现上，抛弃了Segment分段锁，改用了CAS+synchronized的方式，实现了更低粒度的锁
+  * synchronized引入了大量的优化。
+  * 减少内存开销，每个节点都需要重入锁，那么需要继承AQS，然而不是所有节点都需要同步支持，一般链表头节点才需要同步，这样做会减少内存带来的开销
+
+
+
+#### **put操作**
+
+
+
+**JDK7**
+
+
+
+**JDK8**
+
+
+
+```java
+final V putVal(K key, V value, boolean onlyIfAbsent) {
+    if (key == null || value == null) throw new NullPointerException();
+    int hash = spread(key.hashCode());
+    int binCount = 0;
+    // 死循环执行，保证最后可以插入成功
+    for (Node<K,V>[] tab = table;;) {
+        Node<K,V> f; int n, i, fh;
+        if (tab == null || (n = tab.length) == 0)
+            // table 需要初始化
+            tab = initTable();
+        // 获取对应下标节点，如果是空，直接插入
+        else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) {
+            // CAS 进行插入
+            if (casTabAt(tab, i, null,
+                         new Node<K,V>(hash, key, value, null)))
+                break;                   // no lock when adding to empty bin
+        }
+        // 如果 hash 冲突了，且 hash 值为 MOVED，说明是 ForwardingNode 对象（这是一个占位符对象，保存了扩容后的容器），table 正在扩容，当前线程参与帮助扩容
+        else if ((fh = f.hash) == MOVED)
+            tab = helpTransfer(tab, f);
+        // 如果 hash 冲突了，且 hash 值不为 -1
+        else {
+            V oldVal = null;
+            // 获取 f 节点（根结点）的锁，防止增加链表的时候导致链表成环
+            synchronized (f) {
+                // 如果对应的下标位置的节点没有改变
+                if (tabAt(tab, i) == f) {
+                    // 并且 f 节点的 hash 值大于等于 0
+                    if (fh >= 0) {
+                        // 链表初始长度
+                        binCount = 1;
+                        // 死循环，直到将值添加到链表尾部，并计算链表的长度
+                        for (Node<K,V> e = f;; ++binCount) {
+                            K ek;
+                            if (e.hash == hash &&
+                                ((ek = e.key) == key ||
+                                 (ek != null && key.equals(ek)))) {
+                                oldVal = e.val;
+                                if (!onlyIfAbsent)
+                                    e.val = value;
+                                break;
+                            }
+                            Node<K,V> pred = e;
+                            if ((e = e.next) == null) {
+                                pred.next = new Node<K,V>(hash, key,
+                                                          value, null);
+                                break;
+                            }
+                        }
+                    }
+                    // 如果 f 节点的 hash 小于 0 并且 f 是树类型
+                    else if (f instanceof TreeBin) {
+                        Node<K,V> p;
+                        binCount = 2;
+                        if ((p = ((TreeBin<K,V>)f).putTreeVal(hash, key,
+                                                              value)) != null) {
+                            oldVal = p.val;
+                            if (!onlyIfAbsent)
+                                p.val = value;
+                        }
+                    }
+                }
+            }
+            // 链表长度大于等于 8 时，将该节点改成红黑树
+            if (binCount != 0) {
+                if (binCount >= TREEIFY_THRESHOLD)
+                    treeifyBin(tab, i);
+                if (oldVal != null)
+                    return oldVal;
+                break;
+            }
+        }
+    }
+    // 判断是否需要扩容
+    addCount(1L, binCount);
+    return null;
+}
+public V put(K key, V value) {
+    return putVal(key, value, false);
+}
+```
+
+* 首先进入一个死循环，保证了最终一定能插入成功
+* 如果table数组为空则初始化数组
+* 如果table数组不为空，头结点为空那么采用CAS操作尝试插入，插入成功则直接退出循环
+* 如果发生了hash冲突，那么对应的根节点hash值会被标记为MOVE（值为-1）状态，表示table正在扩容，当前线程会进入helpTransfer来帮助其它线程进行迁移操作
+* 如果发生hash冲突，但是hash值不为MOVE状态，那么此时才使用synchronized加锁，锁对象为根节点，防止了链表插入结点时导致链表成环
+* 如果根节点对应的下标没有变化，那么就可以插入该下标，下标变化了则重新进入循环
+* 如果hash值大于等于0，那么采用死循环的方式直到结点插入链表尾部成功为止，同时统计链表结点个数
+* 如果hash值小于0且跟根节点是树类型，那么采用红黑树方式插入结点
+* 最后根据结点的个数，大于等于8且table数组大于等于64，则将该哈希桶变成红黑树
+* 最后判断是否需要扩容
+
+
+
+
+
+#### **initTable**
+
+
+
+```java
+private final Node<K,V>[] initTable() {
+    Node<K,V>[] tab; int sc;
+    while ((tab = table) == null || tab.length == 0) {
+        if ((sc = sizeCtl) < 0)
+            Thread.yield(); // lost initialization race; just spin
+        else if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) {，
+            try {
+                if ((tab = table) == null || tab.length == 0) {
+                    int n = (sc > 0) ? sc : DEFAULT_CAPACITY;
+                    @SuppressWarnings("unchecked")
+                    Node<K,V>[] nt = (Node<K,V>[])new Node<?,?>[n];
+                    table = tab = nt;
+                    sc = n - (n >>> 2);
+                }
+            } finally {
+                sizeCtl = sc;
+            }
+            break;
+        }
+    }
+    return tab;
+}
+```
+
+
+
+#### **helpTransfer**
+
+
+
+```java
+/**
+* Helps transfer if a resize is in progress.
+*/
+final Node<K,V>[] helpTransfer(Node<K,V>[] tab, Node<K,V> f) {
+    Node<K,V>[] nextTab; int sc;
+    // 如果 table 不是空，且 node 节点是转移类型，数据检验
+    // 且 node 节点的 nextTable（新 table） 不是空，同样也是数据校验
+    // 尝试帮助扩容
+    if (tab != null && (f instanceof ForwardingNode) &&
+        (nextTab = ((ForwardingNode<K,V>)f).nextTable) != null) {
+       // 根据 length 得到一个标识符号
+        int rs = resizeStamp(tab.length);
+       // 如果 nextTab 没有被并发修改 且 tab 也没有被并发修改
+       // 且 sizeCtl < 0 （说明还在扩容）
+        while (nextTab == nextTable && table == tab &&
+               (sc = sizeCtl) < 0) {
+           // 如果 sizeCtl 无符号右移 16 不等于 rs（sc 前 16 位如果不等于标识符，则标识符变化了）
+           // 或者 sizeCtl == rs + 1 （扩容结束了，不再有线程进行扩容）
+           // 或者 sizeCtl == rs + 65535（如果达到最大帮助线程的数量，即 65535）
+           // 或者转移下标正在调整（扩容结束）
+           // 结束循环，返回 table
+            if ((sc >>> RESIZE_STAMP_SHIFT) != rs || sc == rs + 1 ||
+                sc == rs + MAX_RESIZERS || transferIndex <= 0)
+                break;
+            // 如果以上都不是, 将 sizeCtl + 1（表示增加了一个线程帮助其扩容）
+            if (U.compareAndSwapInt(this, SIZECTL, sc, sc + 1)) {
+               // 进行转移
+                transfer(tab, nextTab);
+                // 结束循环
+                break;
+            }
+        }
+        return nextTab;
+    }
+    return table;
+}
+```
+
+
+
+
+
+#### **transfer**
+
+
+
+**大致流程**
+
+```
+1. 计算 CPU 核心数和桶个数得出每个线程要处理多少桶，小于 16 时该值为 16
+2. 初始化 nextTable，长度为原来的两倍
+3. 死循环转移过程，根据 finishing 变量来判断转移是否结束
+    1. 进入一个 while 循环，并分配 table 数组中的一个桶给线程，初始值是 16，按从大到小的顺序进行分配，当拿到分配值后，进行 i -- 递减。这个 i 就是数组下标。循环中有一个 bound 变量，指的是当前线程此次循环可以处理的区间的最小下标，超过这个下标，就需要重新领取区间或者结束扩容。还有一个 advance 变量，指的是是否继续递减以转移下一个桶，如果为 false，说明当前桶还没有处理完
+    2. 进入 if 判断，判断扩容是否结束，如果扩容结束，清空 nextTable，并更新 table，更新 sizeCtl。如果没完成，但已经无法领取区间，该线程退出该方法，并将 sizeCtl 减一，表示参与扩容的线程少一个。
+    3. 如果没有完成任务，且 i 对应的桶为 null，尝试 CAS 插入占位符 ForwardingNode 对象，这样其他线程进行 put 时就可以感知到并参与到扩容中来
+    4. 如果对应的桶不是空，有占位符，说明当前已经有线程正在对这个桶进行迁移，当前线程跳过这个桶
+    5. 如果以上都不是，说明桶不空，且不是占位符，说明这个桶尚未被处理，当前线程就会开始处理这个桶
+4. 在迁移桶的时候是对头节点上锁的，防止有其他线程插入数据，迁移过程与 HashMap 一致（resize 方法）
+```
+
+
+
+**源码**
+
+```java
+private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
+    int n = tab.length, stride;
+    // 将 length / 8 然后除以 CPU 核心数。如果得到的结果小于 16，那么就使用 16。
+    // 这里的目的是让每个 CPU 处理的桶一样多，避免出现转移任务不均匀的现象，如果桶较少的话，默认一个 CPU（一个线程）处理 16 个桶
+    if ((stride = (NCPU > 1) ? (n >>> 3) / NCPU : n) < MIN_TRANSFER_STRIDE)
+        stride = MIN_TRANSFER_STRIDE; // subdivide range 细分范围 stridea：TODO
+    // 新的 table 尚未初始化
+    if (nextTab == null) {            // initiating
+        try {
+            // 扩容  2 倍
+            Node<K,V>[] nt = (Node<K,V>[])new Node<?,?>[n << 1];
+            // 更新
+            nextTab = nt;
+        } catch (Throwable ex) {      // try to cope with OOME
+            // 扩容失败， sizeCtl 使用 int 最大值。
+            sizeCtl = Integer.MAX_VALUE;
+            return;// 结束
+        }
+        // 更新成员变量
+        nextTable = nextTab;
+        // 更新转移下标，就是 老的 tab 的 length
+        transferIndex = n;
+    }
+    // 新 tab 的 length
+    int nextn = nextTab.length;
+    // 创建一个 fwd 节点，用于占位。当别的线程发现这个槽位中是 fwd 类型的节点，则跳过这个节点。
+    ForwardingNode<K,V> fwd = new ForwardingNode<K,V>(nextTab);
+    // 首次推进为 true，如果等于 true，说明需要再次推进一个下标（i--），反之，如果是 false，那么就不能推进下标，需要将当前的下标处理完毕才能继续推进
+    boolean advance = true;
+    // 完成状态，如果是 true，就结束此方法。
+    boolean finishing = false; // to ensure sweep before committing nextTab
+    // 死循环,i 表示下标，bound 表示当前线程可以处理的当前桶区间最小下标
+    for (int i = 0, bound = 0;;) {
+        Node<K,V> f; int fh;
+        // 如果当前线程可以向后推进；这个循环就是控制 i 递减。同时，每个线程都会进入这里取得自己需要转移的桶的区间
+        while (advance) {
+            int nextIndex, nextBound;
+            // 对 i 减一，判断是否大于等于 bound （正常情况下，如果大于 bound 不成立，说明该线程上次领取的任务已经完成了。那么，需要在下面继续领取任务）
+            // 如果对 i 减一大于等于 bound（还需要继续做任务），或者完成了，修改推进状态为 false，不能推进了。任务成功后修改推进状态为 true。
+            // 通常，第一次进入循环，i-- 这个判断会无法通过，从而走下面的 nextIndex 赋值操作（获取最新的转移下标）。其余情况都是：如果可以推进，将 i 减一，然后修改成不可推进。如果 i 对应的桶处理成功了，改成可以推进。
+            if (--i >= bound || finishing)
+                advance = false;// 这里设置 false，是为了防止在没有成功处理一个桶的情况下却进行了推进
+            // 这里的目的是：1. 当一个线程进入时，会选取最新的转移下标。2. 当一个线程处理完自己的区间时，如果还有剩余区间的没有别的线程处理。再次获取区间。
+            else if ((nextIndex = transferIndex) <= 0) {
+                // 如果小于等于0，说明没有区间了 ，i 改成 -1，推进状态变成 false，不再推进，表示，扩容结束了，当前线程可以退出了
+                // 这个 -1 会在下面的 if 块里判断，从而进入完成状态判断
+                i = -1;
+                advance = false;// 这里设置 false，是为了防止在没有成功处理一个桶的情况下却进行了推进
+            }// CAS 修改 transferIndex，即 length - 区间值，留下剩余的区间值供后面的线程使用
+            else if (U.compareAndSwapInt
+                     (this, TRANSFERINDEX, nextIndex,
+                      nextBound = (nextIndex > stride ?
+                                   nextIndex - stride : 0))) {
+                bound = nextBound;// 这个值就是当前线程可以处理的最小当前区间最小下标
+                i = nextIndex - 1; // 初次对i 赋值，这个就是当前线程可以处理的当前区间的最大下标
+                advance = false; // 这里设置 false，是为了防止在没有成功处理一个桶的情况下却进行了推进，这样对导致漏掉某个桶。下面的 if (tabAt(tab, i) == f) 判断会出现这样的情况。
+            }
+        }// 如果 i 小于0 （不在 tab 下标内，按照上面的判断，领取最后一段区间的线程扩容结束）
+        //  如果 i >= tab.length(不知道为什么这么判断)
+        //  如果 i + tab.length >= nextTable.length  （不知道为什么这么判断）
+        if (i < 0 || i >= n || i + n >= nextn) {
+            int sc;
+            if (finishing) { // 如果完成了扩容
+                nextTable = null;// 删除成员变量
+                table = nextTab;// 更新 table
+                sizeCtl = (n << 1) - (n >>> 1); // 更新阈值
+                return;// 结束方法。
+            }// 如果没完成
+            if (U.compareAndSwapInt(this, SIZECTL, sc = sizeCtl, sc - 1)) {// 尝试将 sc -1. 表示这个线程结束帮助扩容了，将 sc 的低 16 位减一。
+                if ((sc - 2) != resizeStamp(n) << RESIZE_STAMP_SHIFT)// 如果 sc - 2 不等于标识符左移 16 位。如果他们相等了，说明没有线程在帮助他们扩容了。也就是说，扩容结束了。
+                    return;// 不相等，说明没结束，当前线程结束方法。
+                finishing = advance = true;// 如果相等，扩容结束了，更新 finising 变量
+                i = n; // 再次循环检查一下整张表
+            }
+        }
+        else if ((f = tabAt(tab, i)) == null) // 获取老 tab i 下标位置的变量，如果是 null，就使用 fwd 占位。
+            advance = casTabAt(tab, i, null, fwd);// 如果成功写入 fwd 占位，再次推进一个下标
+        else if ((fh = f.hash) == MOVED)// 如果不是 null 且 hash 值是 MOVED。
+            advance = true; // already processed // 说明别的线程已经处理过了，再次推进一个下标
+        else {// 到这里，说明这个位置有实际值了，且不是占位符。对这个节点上锁。为什么上锁，防止 putVal 的时候向链表插入数据
+            synchronized (f) {
+                // 判断 i 下标处的桶节点是否和 f 相同
+                if (tabAt(tab, i) == f) {
+                    Node<K,V> ln, hn;// low, height 高位桶，低位桶
+                    // 如果 f 的 hash 值大于 0 。TreeBin 的 hash 是 -2
+                    if (fh >= 0) {
+                        // 对老长度进行与运算（第一个操作数的的第n位于第二个操作数的第n位如果都是1，那么结果的第n为也为1，否则为0）
+                        // 由于 Map 的长度都是 2 的次方（000001000 这类的数字），那么取于 length 只有 2 种结果，一种是 0，一种是1
+                        //  如果是结果是0 ，Doug Lea 将其放在低位，反之放在高位，目的是将链表重新 hash，放到对应的位置上，让新的取于算法能够击中他。
+                        int runBit = fh & n;
+                        Node<K,V> lastRun = f; // 尾节点，且和头节点的 hash 值取于不相等
+                        // 遍历这个桶
+                        for (Node<K,V> p = f.next; p != null; p = p.next) {
+                            // 取于桶中每个节点的 hash 值
+                            int b = p.hash & n;
+                            // 如果节点的 hash 值和首节点的 hash 值取于结果不同
+                            if (b != runBit) {
+                                runBit = b; // 更新 runBit，用于下面判断 lastRun 该赋值给 ln 还是 hn。
+                                lastRun = p; // 这个 lastRun 保证后面的节点与自己的取于值相同，避免后面没有必要的循环
+                            }
+                        }
+                        if (runBit == 0) {// 如果最后更新的 runBit 是 0 ，设置低位节点
+                            ln = lastRun;
+                            hn = null;
+                        }
+                        else {
+                            hn = lastRun; // 如果最后更新的 runBit 是 1， 设置高位节点
+                            ln = null;
+                        }// 再次循环，生成两个链表，lastRun 作为停止条件，这样就是避免无谓的循环（lastRun 后面都是相同的取于结果）
+                        for (Node<K,V> p = f; p != lastRun; p = p.next) {
+                            int ph = p.hash; K pk = p.key; V pv = p.val;
+                            // 如果与运算结果是 0，那么就还在低位
+                            if ((ph & n) == 0) // 如果是0 ，那么创建低位节点
+                                ln = new Node<K,V>(ph, pk, pv, ln);
+                            else // 1 则创建高位
+                                hn = new Node<K,V>(ph, pk, pv, hn);
+                        }
+                        // 其实这里类似 hashMap 
+                        // 设置低位链表放在新链表的 i
+                        setTabAt(nextTab, i, ln);
+                        // 设置高位链表，在原有长度上加 n
+                        setTabAt(nextTab, i + n, hn);
+                        // 将旧的链表设置成占位符
+                        setTabAt(tab, i, fwd);
+                        // 继续向后推进
+                        advance = true;
+                    }// 如果是红黑树
+                    else if (f instanceof TreeBin) {
+                        TreeBin<K,V> t = (TreeBin<K,V>)f;
+                        TreeNode<K,V> lo = null, loTail = null;
+                        TreeNode<K,V> hi = null, hiTail = null;
+                        int lc = 0, hc = 0;
+                        // 遍历
+                        for (Node<K,V> e = t.first; e != null; e = e.next) {
+                            int h = e.hash;
+                            TreeNode<K,V> p = new TreeNode<K,V>
+                                (h, e.key, e.val, null, null);
+                            // 和链表相同的判断，与运算 == 0 的放在低位
+                            if ((h & n) == 0) {
+                                if ((p.prev = loTail) == null)
+                                    lo = p;
+                                else
+                                    loTail.next = p;
+                                loTail = p;
+                                ++lc;
+                            } // 不是 0 的放在高位
+                            else {
+                                if ((p.prev = hiTail) == null)
+                                    hi = p;
+                                else
+                                    hiTail.next = p;
+                                hiTail = p;
+                                ++hc;
+                            }
+                        }
+                        // 如果树的节点数小于等于 6，那么转成链表，反之，创建一个新的树
+                        ln = (lc <= UNTREEIFY_THRESHOLD) ? untreeify(lo) :
+                            (hc != 0) ? new TreeBin<K,V>(lo) : t;
+                        hn = (hc <= UNTREEIFY_THRESHOLD) ? untreeify(hi) :
+                            (lc != 0) ? new TreeBin<K,V>(hi) : t;
+                        // 低位树
+                        setTabAt(nextTab, i, ln);
+                        // 高位数
+                        setTabAt(nextTab, i + n, hn);
+                        // 旧的设置成占位符
+                        setTabAt(tab, i, fwd);
+                        // 继续向后推进
+                        advance = true;
+                    }
+                }
+            }
+        }
+    }
+}
+```
 
 
 
@@ -2431,7 +3581,7 @@ public interface Set<E> extends Collection<E> {
 * 不保证迭代的顺序
 * 允许元素为null
 * 非同步
-* 底层实际上是一个HashMap，value为Object对象即也叫做dummy value
+* 底层实际上是一个HashMap，value使用的都是一个相同的Object对象
 
 
 
@@ -2456,6 +3606,25 @@ public interface Set<E> extends Collection<E> {
 * 不允许元素为null
 * 非同步
 * 底层是TreeMap
+
+
+
+
+
+### 快速失败和安全失败
+
+快速失败（fail-fast）
+
+* 在用迭代器遍历一个集合对象时，如果遍历过程中对集合对象内容进行了修改，则会抛出异常
+* 原理：集合内部维护modCount字段，每当集合被修改时，modCount会发生改变，而迭代器在遍历时会与预期的modCount进行比较，如果不一致则会快速失败
+* 场景：java.util包下的集合都是快速失败
+
+安全失败（fail-safe）
+
+* 与迭代器遍历的对象不同，采用安全失败机制的集合容器，会在复制原先的集合内容，再进行遍历
+* 原理：迭代时是在集合的拷贝下完成的
+* 缺点：不能保证遍历实时的一致性
+* 场景：java.util.concurrent包下的容器都是安全失败的
 
 
 
@@ -2749,11 +3918,29 @@ bb.clear();
 
 
 
+[JavaNIO](https://tech.meituan.com/2016/11/04/nio.html)
 
 
 
 
-## Java版本特性
+
+## JDK8版本特性
 
 
+
+### Lambda表达式
+
+
+
+### 接口增强
+
+
+
+### Stream流
+
+
+
+
+
+### CompletableFuture
 

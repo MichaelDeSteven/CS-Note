@@ -1,0 +1,1252 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="baidu-site-verification" content="3aFsC6yMzO" />
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico">
+
+    <title> 重学 Java 设计模式：实战建造者模式「各项装修物料组合套餐选配场景」 - bugstack虫洞栈 </title>
+    <meta name="keywords" content="Java、Netty、设计模式、Javassist、ASM、Byte-buddy、DDD领域驱动设计、Spring、Mybatis、算法、源码分析">
+    <meta name="description"
+          content="无论承接什么样的需求，是不是身边总有那么几个人代码写的烂，但是却时常有测试小姐姐过来聊天(求改bug)、有产品小伙伴送吃的(求写需求)、有业务小妹妹陪着改代码(求上线)，直至领导都认为他的工作很重要，而在旁边的你只能蹭点吃的。">
+
+    <link rel="canonical" href="https://bugstack.cn/itstack-demo-design/2020/05/26/%E9%87%8D%E5%AD%A6Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F.html">
+    <link rel="alternate" type="application/rss+xml" title="bugstack虫洞栈 | 沉淀、分享、成长，让自己和他人都能有所收获" href="https://bugstack.cn/feed.xml">
+
+    <!-- Third-Party CSS -->
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/octicons/octicons/octicons.css">
+    <link rel="stylesheet" href="/bower_components/hover/css/hover-min.css">
+    <link rel="stylesheet" href="/bower_components/primer-markdown/dist/user-content.min.css">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" href="/assets/css/gitalk.css">
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="/assets/css/common.css">
+
+    <!-- CSS set in page -->
+    
+
+    <!-- CSS set in layout -->
+    
+    <link rel="stylesheet" href="/assets/css/sidebar-post-nav.css">
+    
+
+    <!-- https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css -->
+    <link rel="stylesheet" type="text/css" href="https://bugstack.cn/assets/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/lock.js"></script>
+
+</head>
+
+
+    <body>
+
+    <header class="site-header">
+    <div class="site-header-topbar">
+        <div class="container">
+            <div class="topbar-menu">
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki"
+                       target="_blank"
+                       title="GitHub">
+                        GitHub
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki/%E5%80%BC%E5%BE%97%E4%B8%80%E7%9C%8B%E7%9A%84%E5%A5%BD%E4%B9%A6"
+                       target="_blank"
+                       title="电子书">
+                        电子书
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack/interview.html"
+                       target="_self"
+                       title="面试">
+                        面试
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack-code-life/itstack-code-life.html"
+                       target="_self"
+                       title="故事">
+                        故事
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/link.html"
+                       target="_self"
+                       title="友链">
+                        友链
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/about.html"
+                       target="_self"
+                       title="关于">
+                        关于
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <a id="site-header-brand" href="/" title="bugstack虫洞栈">
+            <span class="octicon octicon-smiley"></span>
+            bugstack虫洞栈
+        </a>
+        <nav class="site-header-nav" role="navigation">
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target=""
+                   title="首页">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="Java/Spring">
+                    Java/Spring
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-any/itstack-demo-any.html" 
+                           target=""
+                     >编程基础</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-code.html" 
+                           target=""
+                     >源码分析</a></li>
+                    
+                    <li><a href="/itstack-demo-algorithm/itstack-demo-algorithm.html" 
+                           target=""
+                     >野路子搞算法</a></li>
+                    
+                    <li><a href="/itstack-demo-springcloud/itstack-demo-springcloud.html" 
+                           target=""
+                     >Spring Cloud</a></li>
+                    
+                    <li><a href="/itstack-demo-jvm/itstack-demo-jvm.html" 
+                           target=""
+                     >用Java实现JVM</a></li>
+                    
+                    <li><a href="/itstack-demo-drools/itstack-demo-drools.html" 
+                           target=""
+                     >Drools·规则引擎</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/itstack-demo-netty/itstack-demo-netty.html"
+                   target="_self"
+                   title="Netty4.x专题">
+                    Netty4.x专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-1.html" 
+                           target=""
+                     >基础入门篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-2.html" 
+                           target=""
+                     >中级拓展篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-3.html" 
+                           target=""
+                     >高级应用篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-4.html" 
+                           target=""
+                     >源码分析篇</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="架构师专题">
+                    架构师专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-ark-middleware/itstack-ark-middleware.html" 
+                           target=""
+                     >中间件开发</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-bytecode.html" 
+                           target=""
+                     >字节码编程</a></li>
+                    
+                    <li><a href="/itstack-demo-agent/itstack-demo-agent.html" 
+                           target=""
+                     >调用链路监控</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-design.html" 
+                           target=""
+                     >实战设计模式</a></li>
+                    
+                    <li><a href="/itstack-demo-ddd/itstack-demo-ddd.html" 
+                           target=""
+                     >领域驱动设计</a></li>
+                    
+                    <li><a href="/itstack-demo-frame/itstack-demo-frame.html" 
+                           target=""
+                     >架构框架搭建</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/archives.html"
+                   target="_self"
+                   title="Archives">
+                    Archives
+                </a>
+                
+            </div>
+            
+        </nav>
+    </div>
+</header>
+
+
+        <div class="content">
+            <section class="jumbotron geopattern" data-pattern-id="重学 Java 设计模式：实战建造者模式「各项装修物料组合套餐选配场景」">
+    <div class="container">
+        <div id="jumbotron-meta-info">        
+            <h1>重学 Java 设计模式：实战建造者模式「各项装修物料组合套餐选配场景」</h1>
+            <span class="meta-info">
+                
+                
+                <span class="octicon octicon-calendar"></span> 2020/05/26
+                
+            </span>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function(){
+
+        $('.geopattern').each(function(){
+            $(this).geopattern($(this).data('pattern-id'));
+        });
+
+    });
+</script>
+<article class="post container need"  itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="row">
+
+        
+        <div class="col-md-9 markdown-body">
+
+            <p>作者：小傅哥
+<br />博客：<a href="https://bugstack.cn">https://bugstack.cn</a></p>
+
+<blockquote>
+  <p>沉淀、分享、成长，让自己和他人都能有所收获！😄</p>
+</blockquote>
+
+<h2 id="一前言">一、前言</h2>
+
+<p><code class="highlighter-rouge">乱码七糟 [luàn qī bā zāo]，我时常怀疑这个成语是来形容程序猿的！</code></p>
+
+<p>无论承接什么样的需求，是不是身边总有那么几个人代码写的烂，但是却时常有测试小姐姐过来聊天(<em>求改bug</em>)、有产品小伙伴送吃的(<em>求写需求</em>)、有业务小妹妹陪着改代码(<em>求上线</em>)，直至领导都认为他的工作很重要，而在旁边的你只能蹭点吃的。</p>
+
+<p><code class="highlighter-rouge">那你说，CRUD的代码还想让我怎么样？</code></p>
+
+<p>这样的小伙伴，可能把代码写的很直接，<code class="highlighter-rouge">ifelse</code>多用一点，满足于先临时支持一下，想着这也没什么的。而且这样的业务需求要的急又都是增删改查的内容，实在不想做设计。而如果有人提到说好好设计下，可能也会被反对不要过渡设计。</p>
+
+<p><code class="highlighter-rouge">贴膏药似的修修补补，一次比一次恐怖！</code></p>
+
+<p>第一次完成产品需求实在是很快，但互联网的代码不比传统企业。在传统行业可能一套代码能用十年，但在互联网高速的迭代下你的工程，一年就要变动几十次。如果从一开始就想着只要完成功能就可以，那么随之而来的是后续的需求难以承接，每次看着成片成片的代码，实在不知如何下手。</p>
+
+<p><code class="highlighter-rouge">在研发流程规范下执行，才能写出好程序！</code></p>
+
+<p>一个项目的上线往往要经历<code class="highlighter-rouge">业务需求</code>、<code class="highlighter-rouge">产品设计</code>、<code class="highlighter-rouge">研发实现</code>、<code class="highlighter-rouge">测试验证</code>、<code class="highlighter-rouge">上线部署</code>到<code class="highlighter-rouge">正式开量</code>，而这其中对研发非常重要的一换就是研发实现的过程，又可以包括为；<code class="highlighter-rouge">架构选型</code>、<code class="highlighter-rouge">功能设计</code>、<code class="highlighter-rouge">设计评审</code>、<code class="highlighter-rouge">代码实现</code>、<code class="highlighter-rouge">代码评审</code>、<code class="highlighter-rouge">单测覆盖率检查</code>、<code class="highlighter-rouge">编写文档</code>、<code class="highlighter-rouge">提交测试</code>。所以在一些流程规范下，其实很难让你随意开发代码。</p>
+
+<p>开发代码的过程不是<code class="highlighter-rouge">炫技</code>，就像盖房子如果不按照图纸来修建，回首就在山墙上搭一个厨房卫浴！可能在现实场景中这很荒唐，但在功能开发中却总有这样的代码。</p>
+
+<p><strong>所以我们也需要一些设计模式的标准思想，去建设代码结构，提升全局把控能力。</strong></p>
+
+<h2 id="二开发环境">二、开发环境</h2>
+
+<ol>
+  <li>JDK 1.8</li>
+  <li>Idea + Maven</li>
+  <li>涉及工程三个，可以通过关注<strong>公众号</strong>：<a href="https://bugstack.cn/assets/images/qrcode.png"><code class="highlighter-rouge">bugstack虫洞栈</code></a>，回复<code class="highlighter-rouge">源码下载</code>获取(打开获取的链接，找到序号18)</li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th>工程</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>itstack-demo-design-3-00</td>
+      <td>场景模拟工程，模拟装修过程中的套餐选择(豪华、田园、简约)</td>
+    </tr>
+    <tr>
+      <td>itstack-demo-design-3-01</td>
+      <td>使用一坨代码实现业务需求，也是对ifelse的使用</td>
+    </tr>
+    <tr>
+      <td>itstack-demo-design-3-02</td>
+      <td>通过设计模式优化改造代码，产生对比性从而学习</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="三建造者模式介绍">三、建造者模式介绍</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-3-01.png" alt="建造者模式，图片来自 refactoringguru.cn" /></p>
+
+<p><strong>建造者模式所完成的内容就是通过将多个简单对象通过一步步的组装构建出一个复杂对象的过程。</strong></p>
+
+<p><code class="highlighter-rouge">那么，哪里有这样的场景呢？</code></p>
+
+<p>例如你玩王者荣耀的时的初始化界面；有三条路、有树木、有野怪、有守卫塔等等，甚至依赖于你的网络情况会控制清晰度。而当你换一个场景进行其他不同模式的选择时，同样会建设道路、树木、野怪等等，但是他们的摆放和大小都有不同。这里就可以用到建造者模式来初始化游戏元素。</p>
+
+<p>而这样的根据相同的<code class="highlighter-rouge">物料</code>，不同的组装所产生出的具体的内容，就是建造者模式的最终意图，也就是；<strong>将一个复杂的构建与其表示相分离，使得同样的构建过程可以创建不同的表示。</strong></p>
+
+<h2 id="四案例场景模拟">四、案例场景模拟</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-3-02.png" alt="场景模拟；装修套餐选择(豪华、田园、简约)" /></p>
+
+<p><strong>这里我们模拟装修公司对于设计出一些套餐装修服务的场景。</strong></p>
+
+<p>很多装修公司都会给出自家的套餐服务，一般有；欧式豪华、轻奢田园、现代简约等等，而这些套餐的后面是不同的商品的组合。例如；一级&amp;二级吊顶、多乐士涂料、圣象地板、马可波罗地砖等等，按照不同的套餐的价格选取不同的品牌组合，最终再按照装修面积给出一个整体的报价。</p>
+
+<p>这里我们就模拟装修公司想推出一些套餐装修服务，按照不同的价格设定品牌选择组合，以达到使用建造者模式的过程。</p>
+
+<h3 id="1-场景模拟工程">1. 场景模拟工程</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">3</span><span class="o">-</span><span class="mo">00</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">└──</span> <span class="n">main</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+                <span class="err">├──</span> <span class="n">ceilling</span>
+                <span class="err">│</span>   <span class="err">├──</span> <span class="nc">LevelOneCeiling</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">│</span>   <span class="err">└──</span> <span class="nc">LevelTwoCeiling</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">├──</span> <span class="n">coat</span>
+                <span class="err">│</span>   <span class="err">├──</span> <span class="nc">DuluxCoat</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">│</span>   <span class="err">└──</span> <span class="nc">LiBangCoat</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">│</span>   <span class="err">└──</span> <span class="nc">LevelTwoCeiling</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">├──</span> <span class="n">floor</span>
+                <span class="err">│</span>   <span class="err">├──</span> <span class="nc">DerFloor</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">│</span>   <span class="err">└──</span> <span class="nc">ShengXiangFloor</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">├──</span> <span class="n">tile</span>
+                <span class="err">│</span>   <span class="err">├──</span> <span class="nc">DongPengTile</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">│</span>   <span class="err">└──</span> <span class="nc">MarcoPoloTile</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">└──</span> <span class="nc">Matter</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<p>在模拟工程中提供了装修中所需要的物料；<code class="highlighter-rouge">ceilling(吊顶)</code>、<code class="highlighter-rouge">coat(涂料)</code>、<code class="highlighter-rouge">floor(地板)</code>、<code class="highlighter-rouge">tile(地砖)</code>，这么四项内容。（<em>实际的装修物料要比这个多的多</em>）</p>
+
+<h3 id="2-场景简述">2. 场景简述</h3>
+
+<h4 id="21-物料接口">2.1 物料接口</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Matter</span> <span class="o">{</span>
+
+    <span class="nc">String</span> <span class="nf">scene</span><span class="o">();</span>      <span class="c1">// 场景；地板、地砖、涂料、吊顶</span>
+
+    <span class="nc">String</span> <span class="nf">brand</span><span class="o">();</span>      <span class="c1">// 品牌</span>
+
+    <span class="nc">String</span> <span class="nf">model</span><span class="o">();</span>      <span class="c1">// 型号</span>
+
+    <span class="nc">BigDecimal</span> <span class="nf">price</span><span class="o">();</span>  <span class="c1">// 价格</span>
+
+    <span class="nc">String</span> <span class="nf">desc</span><span class="o">();</span>       <span class="c1">// 描述</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>物料接口提供了基本的信息，以保证所有的装修材料都可以按照统一标准进行获取。</li>
+</ul>
+
+<h4 id="22-吊顶ceiling">2.2 吊顶(ceiling)</h4>
+
+<p><strong>一级顶</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LevelOneCeiling</span> <span class="kd">implements</span> <span class="nc">Matter</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">scene</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"吊顶"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">brand</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"装修公司自带"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">model</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"一级顶"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">BigDecimal</span> <span class="nf">price</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">BigDecimal</span><span class="o">(</span><span class="mi">260</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">desc</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"造型只做低一级，只有一个层次的吊顶，一般离顶120-150mm"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>二级顶</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LevelTwoCeiling</span>  <span class="kd">implements</span> <span class="nc">Matter</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">scene</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"吊顶"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">brand</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"装修公司自带"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">model</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"二级顶"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">BigDecimal</span> <span class="nf">price</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">BigDecimal</span><span class="o">(</span><span class="mi">850</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">desc</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"两个层次的吊顶，二级吊顶高度一般就往下吊20cm，要是层高很高，也可增加每级的厚度"</span><span class="o">;</span>
+    <span class="o">}</span>
+    
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="23-涂料coat">2.3 涂料(coat)</h4>
+
+<p><strong>多乐士</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DuluxCoat</span>  <span class="kd">implements</span> <span class="nc">Matter</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">scene</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"涂料"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">brand</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"多乐士(Dulux)"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">model</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"第二代"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">BigDecimal</span> <span class="nf">price</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">BigDecimal</span><span class="o">(</span><span class="mi">719</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">desc</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"多乐士是阿克苏诺贝尔旗下的著名建筑装饰油漆品牌，产品畅销于全球100个国家，每年全球有5000万户家庭使用多乐士油漆。"</span><span class="o">;</span>
+    <span class="o">}</span>
+    
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>立邦</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LiBangCoat</span> <span class="kd">implements</span> <span class="nc">Matter</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">scene</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"涂料"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">brand</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"立邦"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">model</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"默认级别"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">BigDecimal</span> <span class="nf">price</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">BigDecimal</span><span class="o">(</span><span class="mi">650</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">desc</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"立邦始终以开发绿色产品、注重高科技、高品质为目标，以技术力量不断推进科研和开发，满足消费者需求。"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="24-地板floor">2.4 地板(floor)</h4>
+
+<p><strong>德尔</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DerFloor</span> <span class="kd">implements</span> <span class="nc">Matter</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">scene</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"地板"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">brand</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"德尔(Der)"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">model</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"A+"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">BigDecimal</span> <span class="nf">price</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">BigDecimal</span><span class="o">(</span><span class="mi">119</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">desc</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"DER德尔集团是全球领先的专业木地板制造商，北京2008年奥运会家装和公装地板供应商"</span><span class="o">;</span>
+    <span class="o">}</span>
+    
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>圣象</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ShengXiangFloor</span> <span class="kd">implements</span> <span class="nc">Matter</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">scene</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"地板"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">brand</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"圣象"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">model</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"一级"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">BigDecimal</span> <span class="nf">price</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">BigDecimal</span><span class="o">(</span><span class="mi">318</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">desc</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"圣象地板是中国地板行业著名品牌。圣象地板拥有中国驰名商标、中国名牌、国家免检、中国环境标志认证等多项荣誉。"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="25-地砖tile">2.5 地砖(tile)</h4>
+
+<p><strong>东鹏</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DongPengTile</span> <span class="kd">implements</span> <span class="nc">Matter</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">scene</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"地砖"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">brand</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"东鹏瓷砖"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">model</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"10001"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">BigDecimal</span> <span class="nf">price</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">BigDecimal</span><span class="o">(</span><span class="mi">102</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">desc</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"东鹏瓷砖以品质铸就品牌，科技推动品牌，口碑传播品牌为宗旨，2014年品牌价值132.35亿元，位列建陶行业榜首。"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>马可波罗</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MarcoPoloTile</span> <span class="kd">implements</span> <span class="nc">Matter</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">scene</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"地砖"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">brand</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"马可波罗(MARCO POLO)"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">model</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"缺省"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">BigDecimal</span> <span class="nf">price</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">BigDecimal</span><span class="o">(</span><span class="mi">140</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">desc</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"“马可波罗”品牌诞生于1996年，作为国内最早品牌化的建陶品牌，以“文化陶瓷”占领市场，享有“仿古砖至尊”的美誉。"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>以上就是本次装修公司所提供的<code class="highlighter-rouge">装修配置单</code>，接下我们会通过案例去使用不同的物料组合出不同的套餐服务。</li>
+</ul>
+
+<h2 id="五用一坨坨代码实现">五、用一坨坨代码实现</h2>
+
+<p><code class="highlighter-rouge">讲道理没有ifelse解决不了的逻辑，不行就在加一行！</code></p>
+
+<p>每一个章节中我们都会使用这样很直白的方式去把功能实现出来，在通过设计模式去优化完善。这样的代码结构也都是非常简单的，没有复杂的类关系结构，都是直来直去的代码。除了我们经常强调的这样的代码不能很好的扩展外，做一些例子demo工程还是可以的。</p>
+
+<h3 id="1-工程结构">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">3</span><span class="o">-</span><span class="mo">01</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">└──</span> <span class="n">main</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+                <span class="err">└──</span> <span class="nc">DecorationPackageController</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<p>一个类几千行的代码你是否见过，嚯？那今天就让你见识一下有这样潜质的类！</p>
+
+<h3 id="2-ifelse实现需求">2. ifelse实现需求</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DecorationPackageController</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getMatterList</span><span class="o">(</span><span class="nc">BigDecimal</span> <span class="n">area</span><span class="o">,</span> <span class="nc">Integer</span> <span class="n">level</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Matter</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Matter</span><span class="o">&gt;();</span> <span class="c1">// 装修清单</span>
+        <span class="nc">BigDecimal</span> <span class="n">price</span> <span class="o">=</span> <span class="nc">BigDecimal</span><span class="o">.</span><span class="na">ZERO</span><span class="o">;</span>          <span class="c1">// 装修价格</span>
+
+        <span class="c1">// 豪华欧式</span>
+        <span class="k">if</span> <span class="o">(</span><span class="mi">1</span> <span class="o">==</span> <span class="n">level</span><span class="o">)</span> <span class="o">{</span>
+
+            <span class="nc">LevelTwoCeiling</span> <span class="n">levelTwoCeiling</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LevelTwoCeiling</span><span class="o">();</span> <span class="c1">// 吊顶，二级顶</span>
+            <span class="nc">DuluxCoat</span> <span class="n">duluxCoat</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DuluxCoat</span><span class="o">();</span>                   <span class="c1">// 涂料，多乐士</span>
+            <span class="nc">ShengXiangFloor</span> <span class="n">shengXiangFloor</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ShengXiangFloor</span><span class="o">();</span> <span class="c1">// 地板，圣象</span>
+
+            <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">levelTwoCeiling</span><span class="o">);</span>
+            <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">duluxCoat</span><span class="o">);</span>
+            <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">shengXiangFloor</span><span class="o">);</span>
+
+            <span class="n">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">area</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="s">"0.2"</span><span class="o">)).</span><span class="na">multiply</span><span class="o">(</span><span class="n">levelTwoCeiling</span><span class="o">.</span><span class="na">price</span><span class="o">()));</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">area</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="s">"1.4"</span><span class="o">)).</span><span class="na">multiply</span><span class="o">(</span><span class="n">duluxCoat</span><span class="o">.</span><span class="na">price</span><span class="o">()));</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">area</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="n">shengXiangFloor</span><span class="o">.</span><span class="na">price</span><span class="o">()));</span>
+
+        <span class="o">}</span>
+
+        <span class="c1">// 轻奢田园</span>
+        <span class="k">if</span> <span class="o">(</span><span class="mi">2</span> <span class="o">==</span> <span class="n">level</span><span class="o">)</span> <span class="o">{</span>
+
+            <span class="nc">LevelTwoCeiling</span> <span class="n">levelTwoCeiling</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LevelTwoCeiling</span><span class="o">();</span> <span class="c1">// 吊顶，二级顶</span>
+            <span class="nc">LiBangCoat</span> <span class="n">liBangCoat</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LiBangCoat</span><span class="o">();</span>                <span class="c1">// 涂料，立邦</span>
+            <span class="nc">MarcoPoloTile</span> <span class="n">marcoPoloTile</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MarcoPoloTile</span><span class="o">();</span>       <span class="c1">// 地砖，马可波罗</span>
+
+            <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">levelTwoCeiling</span><span class="o">);</span>
+            <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">liBangCoat</span><span class="o">);</span>
+            <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">marcoPoloTile</span><span class="o">);</span>
+
+            <span class="n">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">area</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="s">"0.2"</span><span class="o">)).</span><span class="na">multiply</span><span class="o">(</span><span class="n">levelTwoCeiling</span><span class="o">.</span><span class="na">price</span><span class="o">()));</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">area</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="s">"1.4"</span><span class="o">)).</span><span class="na">multiply</span><span class="o">(</span><span class="n">liBangCoat</span><span class="o">.</span><span class="na">price</span><span class="o">()));</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">area</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="n">marcoPoloTile</span><span class="o">.</span><span class="na">price</span><span class="o">()));</span>
+
+        <span class="o">}</span>
+
+        <span class="c1">// 现代简约</span>
+        <span class="k">if</span> <span class="o">(</span><span class="mi">3</span> <span class="o">==</span> <span class="n">level</span><span class="o">)</span> <span class="o">{</span>
+
+            <span class="nc">LevelOneCeiling</span> <span class="n">levelOneCeiling</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LevelOneCeiling</span><span class="o">();</span>  <span class="c1">// 吊顶，二级顶</span>
+            <span class="nc">LiBangCoat</span> <span class="n">liBangCoat</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LiBangCoat</span><span class="o">();</span>                 <span class="c1">// 涂料，立邦</span>
+            <span class="nc">DongPengTile</span> <span class="n">dongPengTile</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DongPengTile</span><span class="o">();</span>           <span class="c1">// 地砖，东鹏</span>
+
+            <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">levelOneCeiling</span><span class="o">);</span>
+            <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">liBangCoat</span><span class="o">);</span>
+            <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">dongPengTile</span><span class="o">);</span>
+
+            <span class="n">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">area</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="s">"0.2"</span><span class="o">)).</span><span class="na">multiply</span><span class="o">(</span><span class="n">levelOneCeiling</span><span class="o">.</span><span class="na">price</span><span class="o">()));</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">area</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="s">"1.4"</span><span class="o">)).</span><span class="na">multiply</span><span class="o">(</span><span class="n">liBangCoat</span><span class="o">.</span><span class="na">price</span><span class="o">()));</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">area</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="n">dongPengTile</span><span class="o">.</span><span class="na">price</span><span class="o">()));</span>
+        <span class="o">}</span>
+
+        <span class="nc">StringBuilder</span> <span class="n">detail</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuilder</span><span class="o">(</span><span class="s">"\r\n-------------------------------------------------------\r\n"</span> <span class="o">+</span>
+                <span class="s">"装修清单"</span> <span class="o">+</span> <span class="s">"\r\n"</span> <span class="o">+</span>
+                <span class="s">"套餐等级："</span> <span class="o">+</span> <span class="n">level</span> <span class="o">+</span> <span class="s">"\r\n"</span> <span class="o">+</span>
+                <span class="s">"套餐价格："</span> <span class="o">+</span> <span class="n">price</span><span class="o">.</span><span class="na">setScale</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="nc">BigDecimal</span><span class="o">.</span><span class="na">ROUND_HALF_UP</span><span class="o">)</span> <span class="o">+</span> <span class="s">" 元\r\n"</span> <span class="o">+</span>
+                <span class="s">"房屋面积："</span> <span class="o">+</span> <span class="n">area</span><span class="o">.</span><span class="na">doubleValue</span><span class="o">()</span> <span class="o">+</span> <span class="s">" 平米\r\n"</span> <span class="o">+</span>
+                <span class="s">"材料清单：\r\n"</span><span class="o">);</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="nc">Matter</span> <span class="nl">matter:</span> <span class="n">list</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">detail</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">matter</span><span class="o">.</span><span class="na">scene</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">"："</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">matter</span><span class="o">.</span><span class="na">brand</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">"、"</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">matter</span><span class="o">.</span><span class="na">model</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">"、平米价格："</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">matter</span><span class="o">.</span><span class="na">price</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">" 元。\n"</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">detail</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>首先这段代码所要解决的问题就是接收入参；装修面积(area)、装修等级(level)，根据不同类型的装修等级选择不同的材料。</li>
+  <li>其次在实现过程中可以看到每一段<code class="highlighter-rouge">if</code>块里，都包含着不通的材料(<em>吊顶，二级顶、涂料，立邦、地砖，马可波罗</em>)，最终生成装修清单和装修成本。</li>
+  <li>最后提供获取装修详细信息的方法，返回给调用方，用于知道装修清单。</li>
+</ul>
+
+<h3 id="3-测试验证">3. 测试验证</h3>
+
+<p>接下来我们通过junit单元测试的方式验证接口服务，强调日常编写好单测可以更好的提高系统的健壮度。</p>
+
+<p><strong>编写测试类：</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_DecorationPackageController</span><span class="o">(){</span>
+    <span class="nc">DecorationPackageController</span> <span class="n">decoration</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DecorationPackageController</span><span class="o">();</span>
+    <span class="c1">// 豪华欧式</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">decoration</span><span class="o">.</span><span class="na">getMatterList</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="s">"132.52"</span><span class="o">),</span><span class="mi">1</span><span class="o">));</span>
+    <span class="c1">// 轻奢田园</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">decoration</span><span class="o">.</span><span class="na">getMatterList</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="s">"98.25"</span><span class="o">),</span><span class="mi">2</span><span class="o">));</span>
+    <span class="c1">// 现代简约</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">decoration</span><span class="o">.</span><span class="na">getMatterList</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="s">"85.43"</span><span class="o">),</span><span class="mi">3</span><span class="o">));</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>结果：</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">-------------------------------------------------------</span>
+<span class="n">装修清单</span>
+<span class="n">套餐等级</span><span class="err">：</span><span class="mi">1</span>
+<span class="n">套餐价格</span><span class="err">：</span><span class="mf">198064.39</span> <span class="n">元</span>
+<span class="n">房屋面积</span><span class="err">：</span><span class="mf">132.52</span> <span class="n">平米</span>
+<span class="n">材料清单</span><span class="err">：</span>
+<span class="n">吊顶</span><span class="err">：</span><span class="n">装修公司自带</span><span class="err">、</span><span class="n">二级顶</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">850</span> <span class="n">元</span><span class="err">。</span>
+<span class="n">涂料</span><span class="err">：</span><span class="n">多乐士</span><span class="o">(</span><span class="nc">Dulux</span><span class="o">)</span><span class="err">、</span><span class="n">第二代</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">719</span> <span class="n">元</span><span class="err">。</span>
+<span class="n">地板</span><span class="err">：</span><span class="n">圣象</span><span class="err">、</span><span class="n">一级</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">318</span> <span class="n">元</span><span class="err">。</span>
+
+
+<span class="o">-------------------------------------------------------</span>
+<span class="n">装修清单</span>
+<span class="n">套餐等级</span><span class="err">：</span><span class="mi">2</span>
+<span class="n">套餐价格</span><span class="err">：</span><span class="mf">119865.00</span> <span class="n">元</span>
+<span class="n">房屋面积</span><span class="err">：</span><span class="mf">98.25</span> <span class="n">平米</span>
+<span class="n">材料清单</span><span class="err">：</span>
+<span class="n">吊顶</span><span class="err">：</span><span class="n">装修公司自带</span><span class="err">、</span><span class="n">二级顶</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">850</span> <span class="n">元</span><span class="err">。</span>
+<span class="n">涂料</span><span class="err">：</span><span class="n">立邦</span><span class="err">、</span><span class="n">默认级别</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">650</span> <span class="n">元</span><span class="err">。</span>
+<span class="n">地砖</span><span class="err">：</span><span class="n">马可波罗</span><span class="o">(</span><span class="no">MARCO</span> <span class="no">POLO</span><span class="o">)</span><span class="err">、</span><span class="n">缺省</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">140</span> <span class="n">元</span><span class="err">。</span>
+
+
+<span class="o">-------------------------------------------------------</span>
+<span class="n">装修清单</span>
+<span class="n">套餐等级</span><span class="err">：</span><span class="mi">3</span>
+<span class="n">套餐价格</span><span class="err">：</span><span class="mf">90897.52</span> <span class="n">元</span>
+<span class="n">房屋面积</span><span class="err">：</span><span class="mf">85.43</span> <span class="n">平米</span>
+<span class="n">材料清单</span><span class="err">：</span>
+<span class="n">吊顶</span><span class="err">：</span><span class="n">装修公司自带</span><span class="err">、</span><span class="n">一级顶</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">260</span> <span class="n">元</span><span class="err">。</span>
+<span class="n">涂料</span><span class="err">：</span><span class="n">立邦</span><span class="err">、</span><span class="n">默认级别</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">650</span> <span class="n">元</span><span class="err">。</span>
+<span class="n">地砖</span><span class="err">：</span><span class="n">东鹏瓷砖</span><span class="err">、</span><span class="mi">10001</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">102</span> <span class="n">元</span><span class="err">。</span>
+
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<ul>
+  <li>看到输出的这个结果，已经很有装修公司提供报价单的感觉了。以上这段使用<code class="highlighter-rouge">ifelse</code>方式实现的代码，目前已经满足的我们的也许功能。但随着老板对业务的快速发展要求，会提供很多的套餐针对不同的户型。那么这段实现代码将迅速扩增到几千行，甚至在修修改改中，已经像膏药一样难以维护。</li>
+</ul>
+
+<h2 id="六建造者模式重构代码">六、建造者模式重构代码</h2>
+
+<p><code class="highlighter-rouge">接下来使用建造者模式来进行代码优化，也算是一次很小的重构。</code></p>
+
+<p>建造者模式主要解决的问题是在软件系统中，有时候面临着”一个复杂对象”的创建工作，其通常由各个部分的子对象用一定的过程构成；由于需求的变化，这个复杂对象的各个部分经常面临着重大的变化，但是将它们组合在一起的过程却相对稳定。</p>
+
+<p>这里我们会把构建的过程交给<code class="highlighter-rouge">创建者</code>类，而创建者通过使用我们的<code class="highlighter-rouge">构建工具包</code>，去构建出不同的<code class="highlighter-rouge">装修套餐</code>。</p>
+
+<h3 id="1-工程结构-1">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">3</span><span class="o">-</span><span class="mo">02</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">├──</span> <span class="n">main</span>
+    <span class="err">│</span>   <span class="err">└──</span> <span class="n">java</span>
+    <span class="err">│</span>       <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+    <span class="err">│</span>           <span class="err">├──</span> <span class="nc">Builder</span><span class="o">.</span><span class="na">java</span>    
+    <span class="err">│</span>           <span class="err">├──</span> <span class="nc">DecorationPackageMenu</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">└──</span> <span class="nc">IMenu</span><span class="o">.</span><span class="na">java</span> 
+    <span class="err">└──</span> <span class="n">test</span>
+         <span class="err">└──</span> <span class="n">java</span>
+             <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span>
+                 <span class="err">└──</span> <span class="nc">ApiTest</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<p><strong>建造者模型结构</strong></p>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-3-03.png" alt="建造者模型结构" /></p>
+
+<p>工程中有三个核心类和一个测试类，核心类是建造者模式的具体实现。与<code class="highlighter-rouge">ifelse</code>实现方式相比，多出来了两个二外的类。具体功能如下；</p>
+<ul>
+  <li><code class="highlighter-rouge">Builder</code>，建造者类具体的各种组装由此类实现。</li>
+  <li><code class="highlighter-rouge">DecorationPackageMenu</code>，是<code class="highlighter-rouge">IMenu</code>接口的实现类，主要是承载建造过程中的填充器。相当于这是一套承载物料和创建者中间衔接的内容。</li>
+</ul>
+
+<p><strong>好</strong>，那么接下来会分别讲解几个类的具体实现。</p>
+
+<h3 id="2-代码实现">2. 代码实现</h3>
+
+<h4 id="21-定义装修包接口">2.1 定义装修包接口</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">IMenu</span> <span class="o">{</span>
+
+    <span class="nc">IMenu</span> <span class="nf">appendCeiling</span><span class="o">(</span><span class="nc">Matter</span> <span class="n">matter</span><span class="o">);</span> <span class="c1">// 吊顶</span>
+
+    <span class="nc">IMenu</span> <span class="nf">appendCoat</span><span class="o">(</span><span class="nc">Matter</span> <span class="n">matter</span><span class="o">);</span>    <span class="c1">// 涂料</span>
+
+    <span class="nc">IMenu</span> <span class="nf">appendFloor</span><span class="o">(</span><span class="nc">Matter</span> <span class="n">matter</span><span class="o">);</span>   <span class="c1">// 地板</span>
+
+    <span class="nc">IMenu</span> <span class="nf">appendTile</span><span class="o">(</span><span class="nc">Matter</span> <span class="n">matter</span><span class="o">);</span>    <span class="c1">// 地砖</span>
+
+    <span class="nc">String</span> <span class="nf">getDetail</span><span class="o">();</span>                 <span class="c1">// 明细 </span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>接口类中定义了填充各项物料的方法；<code class="highlighter-rouge">吊顶</code>、<code class="highlighter-rouge">涂料</code>、<code class="highlighter-rouge">地板</code>、<code class="highlighter-rouge">地砖</code>，以及最终提供获取全部明细的方法。</li>
+</ul>
+
+<h4 id="22-装修包实现">2.2 装修包实现</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DecorationPackageMenu</span> <span class="kd">implements</span> <span class="nc">IMenu</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Matter</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Matter</span><span class="o">&gt;();</span>  <span class="c1">// 装修清单</span>
+    <span class="kd">private</span> <span class="nc">BigDecimal</span> <span class="n">price</span> <span class="o">=</span> <span class="nc">BigDecimal</span><span class="o">.</span><span class="na">ZERO</span><span class="o">;</span>      <span class="c1">// 装修价格</span>
+
+    <span class="kd">private</span> <span class="nc">BigDecimal</span> <span class="n">area</span><span class="o">;</span>  <span class="c1">// 面积</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">grade</span><span class="o">;</span>     <span class="c1">// 装修等级；豪华欧式、轻奢田园、现代简约</span>
+
+    <span class="kd">private</span> <span class="nf">DecorationPackageMenu</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nf">DecorationPackageMenu</span><span class="o">(</span><span class="nc">Double</span> <span class="n">area</span><span class="o">,</span> <span class="nc">String</span> <span class="n">grade</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">area</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="n">area</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">grade</span> <span class="o">=</span> <span class="n">grade</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">IMenu</span> <span class="nf">appendCeiling</span><span class="o">(</span><span class="nc">Matter</span> <span class="n">matter</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">matter</span><span class="o">);</span>
+        <span class="n">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">area</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="s">"0.2"</span><span class="o">)).</span><span class="na">multiply</span><span class="o">(</span><span class="n">matter</span><span class="o">.</span><span class="na">price</span><span class="o">()));</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">IMenu</span> <span class="nf">appendCoat</span><span class="o">(</span><span class="nc">Matter</span> <span class="n">matter</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">matter</span><span class="o">);</span>
+        <span class="n">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">area</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="s">"1.4"</span><span class="o">)).</span><span class="na">multiply</span><span class="o">(</span><span class="n">matter</span><span class="o">.</span><span class="na">price</span><span class="o">()));</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">IMenu</span> <span class="nf">appendFloor</span><span class="o">(</span><span class="nc">Matter</span> <span class="n">matter</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">matter</span><span class="o">);</span>
+        <span class="n">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">area</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="n">matter</span><span class="o">.</span><span class="na">price</span><span class="o">()));</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">IMenu</span> <span class="nf">appendTile</span><span class="o">(</span><span class="nc">Matter</span> <span class="n">matter</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">matter</span><span class="o">);</span>
+        <span class="n">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">area</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="n">matter</span><span class="o">.</span><span class="na">price</span><span class="o">()));</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getDetail</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="nc">StringBuilder</span> <span class="n">detail</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuilder</span><span class="o">(</span><span class="s">"\r\n-------------------------------------------------------\r\n"</span> <span class="o">+</span>
+                <span class="s">"装修清单"</span> <span class="o">+</span> <span class="s">"\r\n"</span> <span class="o">+</span>
+                <span class="s">"套餐等级："</span> <span class="o">+</span> <span class="n">grade</span> <span class="o">+</span> <span class="s">"\r\n"</span> <span class="o">+</span>
+                <span class="s">"套餐价格："</span> <span class="o">+</span> <span class="n">price</span><span class="o">.</span><span class="na">setScale</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="nc">BigDecimal</span><span class="o">.</span><span class="na">ROUND_HALF_UP</span><span class="o">)</span> <span class="o">+</span> <span class="s">" 元\r\n"</span> <span class="o">+</span>
+                <span class="s">"房屋面积："</span> <span class="o">+</span> <span class="n">area</span><span class="o">.</span><span class="na">doubleValue</span><span class="o">()</span> <span class="o">+</span> <span class="s">" 平米\r\n"</span> <span class="o">+</span>
+                <span class="s">"材料清单：\r\n"</span><span class="o">);</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="nc">Matter</span> <span class="nl">matter:</span> <span class="n">list</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">detail</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">matter</span><span class="o">.</span><span class="na">scene</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">"："</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">matter</span><span class="o">.</span><span class="na">brand</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">"、"</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">matter</span><span class="o">.</span><span class="na">model</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">"、平米价格："</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">matter</span><span class="o">.</span><span class="na">price</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">" 元。\n"</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">detail</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>装修包的实现中每一个方法都会了 <code class="highlighter-rouge">this</code>，也就可以非常方便的用于连续填充各项物料。</li>
+  <li>同时在填充时也会根据物料计算平米数下的报价，吊顶和涂料按照平米数适量乘以常熟计算。</li>
+  <li>最后同样提供了统一的获取装修清单的明细方法。</li>
+</ul>
+
+<h4 id="23-建造者方法">2.3 建造者方法</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Builder</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nc">IMenu</span> <span class="nf">levelOne</span><span class="o">(</span><span class="nc">Double</span> <span class="n">area</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">DecorationPackageMenu</span><span class="o">(</span><span class="n">area</span><span class="o">,</span> <span class="s">"豪华欧式"</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">appendCeiling</span><span class="o">(</span><span class="k">new</span> <span class="nc">LevelTwoCeiling</span><span class="o">())</span>    <span class="c1">// 吊顶，二级顶</span>
+                <span class="o">.</span><span class="na">appendCoat</span><span class="o">(</span><span class="k">new</span> <span class="nc">DuluxCoat</span><span class="o">())</span>             <span class="c1">// 涂料，多乐士</span>
+                <span class="o">.</span><span class="na">appendFloor</span><span class="o">(</span><span class="k">new</span> <span class="nc">ShengXiangFloor</span><span class="o">());</span>     <span class="c1">// 地板，圣象</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">IMenu</span> <span class="nf">levelTwo</span><span class="o">(</span><span class="nc">Double</span> <span class="n">area</span><span class="o">){</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">DecorationPackageMenu</span><span class="o">(</span><span class="n">area</span><span class="o">,</span> <span class="s">"轻奢田园"</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">appendCeiling</span><span class="o">(</span><span class="k">new</span> <span class="nc">LevelTwoCeiling</span><span class="o">())</span>   <span class="c1">// 吊顶，二级顶</span>
+                <span class="o">.</span><span class="na">appendCoat</span><span class="o">(</span><span class="k">new</span> <span class="nc">LiBangCoat</span><span class="o">())</span>           <span class="c1">// 涂料，立邦</span>
+                <span class="o">.</span><span class="na">appendTile</span><span class="o">(</span><span class="k">new</span> <span class="nc">MarcoPoloTile</span><span class="o">());</span>       <span class="c1">// 地砖，马可波罗</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">IMenu</span> <span class="nf">levelThree</span><span class="o">(</span><span class="nc">Double</span> <span class="n">area</span><span class="o">){</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">DecorationPackageMenu</span><span class="o">(</span><span class="n">area</span><span class="o">,</span> <span class="s">"现代简约"</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">appendCeiling</span><span class="o">(</span><span class="k">new</span> <span class="nc">LevelOneCeiling</span><span class="o">())</span>   <span class="c1">// 吊顶，二级顶</span>
+                <span class="o">.</span><span class="na">appendCoat</span><span class="o">(</span><span class="k">new</span> <span class="nc">LiBangCoat</span><span class="o">())</span>           <span class="c1">// 涂料，立邦</span>
+                <span class="o">.</span><span class="na">appendTile</span><span class="o">(</span><span class="k">new</span> <span class="nc">DongPengTile</span><span class="o">());</span>        <span class="c1">// 地砖，东鹏</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>建造者的使用中就已经非常容易了，统一的建造方式，通过不同物料填充出不同的装修风格；<code class="highlighter-rouge">豪华欧式</code>、<code class="highlighter-rouge">轻奢田园</code>、<code class="highlighter-rouge">现代简约</code>，如果将来业务扩展也可以将这部分内容配置到数据库自动生成。但整体的思想还可以使用创建者模式进行搭建。</li>
+</ul>
+
+<h3 id="3-测试验证-1">3. 测试验证</h3>
+
+<p><strong>编写测试类：</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_Builder</span><span class="o">(){</span>
+    <span class="nc">Builder</span> <span class="n">builder</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Builder</span><span class="o">();</span>
+    <span class="c1">// 豪华欧式</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">builder</span><span class="o">.</span><span class="na">levelOne</span><span class="o">(</span><span class="mf">132.52</span><span class="no">D</span><span class="o">).</span><span class="na">getDetail</span><span class="o">());</span>
+    <span class="c1">// 轻奢田园</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">builder</span><span class="o">.</span><span class="na">levelTwo</span><span class="o">(</span><span class="mf">98.25</span><span class="no">D</span><span class="o">).</span><span class="na">getDetail</span><span class="o">());</span>
+    <span class="c1">// 现代简约</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">builder</span><span class="o">.</span><span class="na">levelThree</span><span class="o">(</span><span class="mf">85.43</span><span class="no">D</span><span class="o">).</span><span class="na">getDetail</span><span class="o">());</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>结果：</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">-------------------------------------------------------</span>
+<span class="n">装修清单</span>
+<span class="n">套餐等级</span><span class="err">：</span><span class="n">豪华欧式</span>
+<span class="n">套餐价格</span><span class="err">：</span><span class="mf">198064.39</span> <span class="n">元</span>
+<span class="n">房屋面积</span><span class="err">：</span><span class="mf">132.52</span> <span class="n">平米</span>
+<span class="n">材料清单</span><span class="err">：</span>
+<span class="n">吊顶</span><span class="err">：</span><span class="n">装修公司自带</span><span class="err">、</span><span class="n">二级顶</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">850</span> <span class="n">元</span><span class="err">。</span>
+<span class="n">涂料</span><span class="err">：</span><span class="n">多乐士</span><span class="o">(</span><span class="nc">Dulux</span><span class="o">)</span><span class="err">、</span><span class="n">第二代</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">719</span> <span class="n">元</span><span class="err">。</span>
+<span class="n">地板</span><span class="err">：</span><span class="n">圣象</span><span class="err">、</span><span class="n">一级</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">318</span> <span class="n">元</span><span class="err">。</span>
+
+
+<span class="o">-------------------------------------------------------</span>
+<span class="n">装修清单</span>
+<span class="n">套餐等级</span><span class="err">：</span><span class="n">轻奢田园</span>
+<span class="n">套餐价格</span><span class="err">：</span><span class="mf">119865.00</span> <span class="n">元</span>
+<span class="n">房屋面积</span><span class="err">：</span><span class="mf">98.25</span> <span class="n">平米</span>
+<span class="n">材料清单</span><span class="err">：</span>
+<span class="n">吊顶</span><span class="err">：</span><span class="n">装修公司自带</span><span class="err">、</span><span class="n">二级顶</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">850</span> <span class="n">元</span><span class="err">。</span>
+<span class="n">涂料</span><span class="err">：</span><span class="n">立邦</span><span class="err">、</span><span class="n">默认级别</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">650</span> <span class="n">元</span><span class="err">。</span>
+<span class="n">地砖</span><span class="err">：</span><span class="n">马可波罗</span><span class="o">(</span><span class="no">MARCO</span> <span class="no">POLO</span><span class="o">)</span><span class="err">、</span><span class="n">缺省</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">140</span> <span class="n">元</span><span class="err">。</span>
+
+
+<span class="o">-------------------------------------------------------</span>
+<span class="n">装修清单</span>
+<span class="n">套餐等级</span><span class="err">：</span><span class="n">现代简约</span>
+<span class="n">套餐价格</span><span class="err">：</span><span class="mf">90897.52</span> <span class="n">元</span>
+<span class="n">房屋面积</span><span class="err">：</span><span class="mf">85.43</span> <span class="n">平米</span>
+<span class="n">材料清单</span><span class="err">：</span>
+<span class="n">吊顶</span><span class="err">：</span><span class="n">装修公司自带</span><span class="err">、</span><span class="n">一级顶</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">260</span> <span class="n">元</span><span class="err">。</span>
+<span class="n">涂料</span><span class="err">：</span><span class="n">立邦</span><span class="err">、</span><span class="n">默认级别</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">650</span> <span class="n">元</span><span class="err">。</span>
+<span class="n">地砖</span><span class="err">：</span><span class="n">东鹏瓷砖</span><span class="err">、</span><span class="mi">10001</span><span class="err">、</span><span class="n">平米价格</span><span class="err">：</span><span class="mi">102</span> <span class="n">元</span><span class="err">。</span>
+       
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<ul>
+  <li>测试结果是一样的，调用方式也基本类似。但是目前的代码结构却可以让你很方便的很有调理的进行扩展业务开发。而不是以往一样把所有代码都写到<code class="highlighter-rouge">ifelse</code>里面。</li>
+</ul>
+
+<h2 id="七总结">七、总结</h2>
+
+<ul>
+  <li>通过上面对建造者模式的使用，已经可以摸索出一点心得。那就是什么时候会选择这样的设计模式，当：<code class="highlighter-rouge">一些基本物料不会变，而其组合经常变化的时候</code>，就可以选择这样的设计模式来构建代码。</li>
+  <li>此设计模式满足了单一职责原则以及可复用的技术、建造者独立、易扩展、便于控制细节风险。但同时当出现特别多的物料以及很多的组合后，类的不断扩展也会造成难以维护的问题。但这种设计结构模型可以把重复的内容抽象到数据库中，按照需要配置。这样就可以减少代码中大量的重复。</li>
+  <li>设计模式能带给你的是一些思想，但在平时的开发中怎么样清晰的提炼出符合此思路的建造模块，是比较难的。需要经过一些锻炼和不断承接更多的项目，从而获得这部分经验。有的时候你的代码写的好，往往是倒逼的，复杂的业务频繁的变化，不断的挑战！</li>
+</ul>
+
+
+
+            <div>
+   <div align="center" class="copyright">
+	   <div class="cmower">bugstack虫洞栈</div>
+	   <div class="brief">沉淀、分享、成长，让自己和他人都能有所收获</div>
+       <img src="/assets/images/qrcode.png" >
+	   <div class="saoma">微信扫描二维码，关注我的公众号</div>
+   </div>
+   <p align="center" style="margin-top: 15px; font-size: 11px;color: #cc0000;">
+       <strong>（转载本站文章请注明作者和出处 <a href="https://bugstack.cn">微信公众号：bugstack虫洞栈 | 作者：小傅哥</a>）</strong>
+   </p>
+</div>
+
+
+            <!-- Comments -->
+            <div class="comment">
+             
+
+  
+    <a href="#" class="show_disqus_comment" onclick="return false;">Show Disqus Comments</a>
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_config = function () {
+        this.page.url = 'https://bugstack.cn/itstack-demo-design/2020/05/26/%E9%87%8D%E5%AD%A6Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F.html';
+        this.page.identifier = '/itstack-demo-design/2020/05/26/%E9%87%8D%E5%AD%A6Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F.html';
+        this.page.title = '重学 Java 设计模式：实战建造者模式「各项装修物料组合套餐选配场景」';
+    };
+    var disqus_loaded = false;
+    $(function() {
+        $('.show_disqus_comment').on('click', function() { // DON'T EDIT BELOW THIS LINE
+            $(this).html('加载中...');
+            var that = this;
+            if (!disqus_loaded) {
+                var d = document, s = d.createElement('script');
+
+                s.type = 'text/javascript';
+                s.async = true;
+                var shortname = 'fuzhengwei';
+
+                s.src = '//' + shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+
+                disqus_loaded = true;
+            }
+            $(that).remove();
+        })
+    })
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  
+
+  
+        <div id="gitalk-container"></div>
+        <script src="/assets/js/gitalk.min.js"></script>
+        <script src="/assets/js/md5.js"></script>
+        <script>
+        var gitalk = new Gitalk({
+            id: md5(decodeURI('/itstack-demo-design/2020/05/26/%E9%87%8D%E5%AD%A6Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F.html')),
+            clientID: 'df8beab2190bec20352a',
+            clientSecret: '7eeeb4369d699c933f02a026ae8bb1e2a9c80e90',
+            repo: 'CodeGuide',
+            owner: 'fuzhengwei',
+            admin: ['fuzhengwei'],
+            labels: ['gitment'],
+            perPage: 50,
+        })
+        gitalk.render('gitalk-container')
+        </script>
+  
+
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <h3>Post Directory</h3>
+<div id="post-directory-module">
+<section class="post-directory">
+    <!-- Links that trigger the jumping -->
+    <!-- Added by javascript below -->
+    <dl></dl>
+</section>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $( "article h2" ).each(function( index ) {
+            $(".post-directory dl").append("<dt><a class=\"jumper\" hre=#" +
+                    $(this).attr("id")
+                    + ">"
+                    + $(this).text()
+                    + "</a></dt>");
+
+            var children = $(this).nextUntil("h2", "h3")
+
+            children.each(function( index ) {
+                $(".post-directory dl").append("<dd><a class=\"jumper\" hre=#" +
+                        $(this).attr("id")
+                        + ">"
+                        + "&nbsp;&nbsp;- " + $(this).text()
+                        + "</a></dd>");
+            });
+        });
+
+        var fixmeTop = $('#post-directory-module').offset().top - 100;       // get initial position of the element
+
+        $(window).scroll(function() {                  // assign scroll event listener
+
+            var currentScroll = $(window).scrollTop(); // get current position
+
+            if (currentScroll >= fixmeTop) {           // apply position: fixed if you
+                $('#post-directory-module').css({      // scroll to that element or below it
+                    top: '100px',
+                    position: 'fixed',
+                    width: 'inherit'
+                });
+            } else {                                   // apply position: static
+                $('#post-directory-module').css({      // if you scroll above it
+                    position: 'inherit',
+                    width: 'inherit'
+                });
+            }
+
+        });
+
+        $("a.jumper").on("click", function( e ) {
+
+            e.preventDefault();
+
+            $("body, html").animate({
+                scrollTop: ($( $(this).attr('hre') ).offset().top - 100)
+            }, 600);
+
+        });
+    });
+
+</script>
+        </div>
+        
+
+    </div>
+    
+    <div class="asb-post-01">
+        <div class="mask"></div>
+			<div class="info">
+	    		<div>扫码或搜索：<span style="color: #E9405A; font-weight: bold;">bugstack虫洞栈</span></div>
+	    	<div>
+	        <span>发送 </span><span class="token" style="color: #e9415a; font-weight: bold; font-size: 17px; margin-bottom: 45px;">290992</span>
+	    	<div>
+	       	 	即可<span style="color: #e9415a; font-weight: bold;">立即永久</span>解锁本站全部文章
+	    	</div>
+	    	<img class="code-img" style="width: 300px;display:unset" src="/assets/images/qrcode.png">
+		</div>
+ 	</div>
+</article>
+
+        </div>
+
+    <footer class="container">
+    <div class="site-footer">
+        <div class="card text-center">
+            <ul class="list-inline" style="margin-left: 0;">
+                <li>
+                    <a target="_blank" href="https://github.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://www.zhihu.com/people/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-1x fa-inverse">知</i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://weibo.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="site-footer-links mobile-hidden">
+            
+            <a href="https://github.com/fuzhengwei" title="Git仓库" target="_blank">Git仓库</a>
+            
+            <a href="/gitchat.html" title="GitChat" target="_blank">GitChat</a>
+            
+        </div>
+        <div class="site-footer-icons">
+            <a href="http://beian.miit.gov.cn" target="_blank">京ICP备19031103号-1</a>
+        </div>
+        <div class="scrolltop">
+            bugstack虫洞栈
+            <a href="javascript:window.scrollTo(0,0)">TOP</a>
+        </div>
+        <div class="rss">
+            <a href="/feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a>
+            Power by <a href="https://github.com/DONGChuan/Yummy-Jekyll">Yummy Jekyll</a>
+        </div>
+    </div>
+    <!-- Third-Party JS -->
+    <script type="text/javascript" src="/bower_components/geopattern/js/geopattern.min.js"></script>
+    <!-- My JS -->
+    <script type="text/javascript" src="/assets/js/script.js"></script>
+    
+
+    <!-- 百度统计&友盟统计 -->
+    <div style="display:none">
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+              var hm = document.createElement("script");
+              hm.src = "https://hm.baidu.com/hm.js?0b31b4c146bf7126aed5009e1a4a11c8";
+              var s = document.getElementsByTagName("script")[0];
+              s.parentNode.insertBefore(hm, s);
+            })();
+
+        </script>
+
+        <script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1278232949&web_id=1278232949"></script>
+    </div>
+    <!-- 百度统计 -->
+</footer>
+
+
+    </body>
+
+</html>

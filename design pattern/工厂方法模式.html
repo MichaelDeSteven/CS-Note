@@ -1,0 +1,1005 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="baidu-site-verification" content="3aFsC6yMzO" />
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico">
+
+    <title> 重学 Java 设计模式：实战工厂方法模式「多种类型商品不同接口，统一发奖服务搭建场景」 - bugstack虫洞栈 </title>
+    <meta name="keywords" content="Java、Netty、设计模式、Javassist、ASM、Byte-buddy、DDD领域驱动设计、Spring、Mybatis、算法、源码分析">
+    <meta name="description"
+          content="通过模拟真实案例场景重构代码，实战方式学习设计模式。大部分新人往往看了很多设计模式的资料但是没有多少收获，主要是由于没有业务诉求很难将理论知识运用到实际开发，就像开车的驾驶证考下来了但是还不敢上路。">
+
+    <link rel="canonical" href="https://bugstack.cn/itstack-demo-design/2020/05/20/%E9%87%8D%E5%AD%A6Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F.html">
+    <link rel="alternate" type="application/rss+xml" title="bugstack虫洞栈 | 沉淀、分享、成长，让自己和他人都能有所收获" href="https://bugstack.cn/feed.xml">
+
+    <!-- Third-Party CSS -->
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/octicons/octicons/octicons.css">
+    <link rel="stylesheet" href="/bower_components/hover/css/hover-min.css">
+    <link rel="stylesheet" href="/bower_components/primer-markdown/dist/user-content.min.css">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" href="/assets/css/gitalk.css">
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="/assets/css/common.css">
+
+    <!-- CSS set in page -->
+    
+
+    <!-- CSS set in layout -->
+    
+    <link rel="stylesheet" href="/assets/css/sidebar-post-nav.css">
+    
+
+    <!-- https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css -->
+    <link rel="stylesheet" type="text/css" href="https://bugstack.cn/assets/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/lock.js"></script>
+
+</head>
+
+
+    <body>
+
+    <header class="site-header">
+    <div class="site-header-topbar">
+        <div class="container">
+            <div class="topbar-menu">
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki"
+                       target="_blank"
+                       title="GitHub">
+                        GitHub
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki/%E5%80%BC%E5%BE%97%E4%B8%80%E7%9C%8B%E7%9A%84%E5%A5%BD%E4%B9%A6"
+                       target="_blank"
+                       title="电子书">
+                        电子书
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack/interview.html"
+                       target="_self"
+                       title="面试">
+                        面试
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack-code-life/itstack-code-life.html"
+                       target="_self"
+                       title="故事">
+                        故事
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/link.html"
+                       target="_self"
+                       title="友链">
+                        友链
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/about.html"
+                       target="_self"
+                       title="关于">
+                        关于
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <a id="site-header-brand" href="/" title="bugstack虫洞栈">
+            <span class="octicon octicon-smiley"></span>
+            bugstack虫洞栈
+        </a>
+        <nav class="site-header-nav" role="navigation">
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target=""
+                   title="首页">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="Java/Spring">
+                    Java/Spring
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-any/itstack-demo-any.html" 
+                           target=""
+                     >编程基础</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-code.html" 
+                           target=""
+                     >源码分析</a></li>
+                    
+                    <li><a href="/itstack-demo-algorithm/itstack-demo-algorithm.html" 
+                           target=""
+                     >野路子搞算法</a></li>
+                    
+                    <li><a href="/itstack-demo-springcloud/itstack-demo-springcloud.html" 
+                           target=""
+                     >Spring Cloud</a></li>
+                    
+                    <li><a href="/itstack-demo-jvm/itstack-demo-jvm.html" 
+                           target=""
+                     >用Java实现JVM</a></li>
+                    
+                    <li><a href="/itstack-demo-drools/itstack-demo-drools.html" 
+                           target=""
+                     >Drools·规则引擎</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/itstack-demo-netty/itstack-demo-netty.html"
+                   target="_self"
+                   title="Netty4.x专题">
+                    Netty4.x专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-1.html" 
+                           target=""
+                     >基础入门篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-2.html" 
+                           target=""
+                     >中级拓展篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-3.html" 
+                           target=""
+                     >高级应用篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-4.html" 
+                           target=""
+                     >源码分析篇</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="架构师专题">
+                    架构师专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-ark-middleware/itstack-ark-middleware.html" 
+                           target=""
+                     >中间件开发</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-bytecode.html" 
+                           target=""
+                     >字节码编程</a></li>
+                    
+                    <li><a href="/itstack-demo-agent/itstack-demo-agent.html" 
+                           target=""
+                     >调用链路监控</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-design.html" 
+                           target=""
+                     >实战设计模式</a></li>
+                    
+                    <li><a href="/itstack-demo-ddd/itstack-demo-ddd.html" 
+                           target=""
+                     >领域驱动设计</a></li>
+                    
+                    <li><a href="/itstack-demo-frame/itstack-demo-frame.html" 
+                           target=""
+                     >架构框架搭建</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/archives.html"
+                   target="_self"
+                   title="Archives">
+                    Archives
+                </a>
+                
+            </div>
+            
+        </nav>
+    </div>
+</header>
+
+
+        <div class="content">
+            <section class="jumbotron geopattern" data-pattern-id="重学 Java 设计模式：实战工厂方法模式「多种类型商品不同接口，统一发奖服务搭建场景」">
+    <div class="container">
+        <div id="jumbotron-meta-info">        
+            <h1>重学 Java 设计模式：实战工厂方法模式「多种类型商品不同接口，统一发奖服务搭建场景」</h1>
+            <span class="meta-info">
+                
+                
+                <span class="octicon octicon-calendar"></span> 2020/05/20
+                
+            </span>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function(){
+
+        $('.geopattern').each(function(){
+            $(this).geopattern($(this).data('pattern-id'));
+        });
+
+    });
+</script>
+<article class="post container need"  itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="row">
+
+        
+        <div class="col-md-9 markdown-body">
+
+            <p>作者：小傅哥
+<br />博客：<a href="https://bugstack.cn">https://bugstack.cn</a></p>
+
+<blockquote>
+  <p>沉淀、分享、成长，让自己和他人都能有所收获！😄</p>
+</blockquote>
+
+<h2 id="一前言">一、前言</h2>
+
+<p><code class="highlighter-rouge">好看的代码千篇一律，恶心的程序升职加薪。</code></p>
+
+<p>该说不说几乎是程序员就都知道或者了解设计模式，但大部分小伙伴写代码总是习惯于一把梭。无论多少业务逻辑就一个类几千行，这样的开发也可以归纳为三步；定义属性、创建方法、调用展示，Done！只不过开发一时爽，重构火葬场。</p>
+
+<p>好的代码不只为了完成现有功能，也会考虑后续扩展。在结构设计上松耦合易读易扩展，在领域实现上高内聚不对外暴漏实现细节不被外部干扰。而这就有点像家里三居(MVC)室、四居(DDD)室的装修，你不会允许几十万的房子把走线水管裸漏在外面，也不会允许把马桶放到厨房，炉灶安装到卫生间。</p>
+
+<p><strong>谁发明了设计模式？</strong> 设计模式的概念最早是由 <code class="highlighter-rouge">克里斯托佛·亚历山大</code> 在其著作 <code class="highlighter-rouge">《建筑模式语言》</code> 中首次提出的。 本书介绍了城市设计的 “语言”，提供了253个描述城镇、邻里、住宅、花园、房间及西部构造的模式， 而此类 “语言” 的基本单元就是模式。后来，<code class="highlighter-rouge">埃里希·伽玛</code>、 <code class="highlighter-rouge">约翰·弗利赛德斯</code>、 <code class="highlighter-rouge">拉尔夫·约翰逊</code> 和 <code class="highlighter-rouge">理查德·赫尔姆</code> 这四位作者接受了模式的概念。 1994 年， 他们出版了 <code class="highlighter-rouge">《设计模式： 可复用面向对象软件的基础》</code> 一书， 将设计模式的概念应用到程序开发领域中。</p>
+
+<p>其实有一部分人并没有仔细阅读过设计模式的相关书籍和资料，但依旧可以编写出优秀的代码。这主要是由于在经过众多项目的锤炼和对程序设计的不断追求，从而在多年编程历程上提炼出来的心得体会。而这份经验最终会与设计模式提到的内容几乎一致，同样会要求高内聚、低耦合、可扩展、可复用。你可能也遇到类似的经历，在学习一些框架的源码时，发现它里的某些设计和你在做开发时一样。</p>
+
+<p><strong>我怎么学不会设计模式？</strong> 钱也花了，书也买了。代码还是一坨一坨的！设计模式是由多年的经验提炼出来开发指导思想。就像我告诉你自行车怎么骑、汽车怎么开，但只要你没跑过几千公里，你能记住的只是理论，想上道依旧很慌！</p>
+
+<p><strong>所以</strong>，本设计模式专题系列开始，会带着你使用设计模式的思想去优化代码。从而学习设计模式的心得并融入给自己。当然这里还需要多加练习，一定是<em>人车合一</em>，才能站在设计模式的基础上构建出更加合理的代码。</p>
+
+<h2 id="二开发环境">二、开发环境</h2>
+
+<ol>
+  <li>JDK 1.8</li>
+  <li>Idea + Maven</li>
+  <li>
+    <p>涉及工程三个，可以通过关注<strong>公众号</strong>：<code class="highlighter-rouge">bugstack虫洞栈</code>，回复<code class="highlighter-rouge">源码下载</code>获取。<em>你会获得一个连接打开后的列表中编号<code class="highlighter-rouge">18</code>：<code class="highlighter-rouge">itstack-demo-design</code></em></p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>工程</th>
+          <th>描述</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>itstack-demo-design-1-00</td>
+          <td>场景模拟工程，用于提供三组不同奖品的发放接口</td>
+        </tr>
+        <tr>
+          <td>itstack-demo-design-1-01</td>
+          <td>使用一坨代码实现业务需求，也是对ifelse的使用</td>
+        </tr>
+        <tr>
+          <td>itstack-demo-design-1-02</td>
+          <td>通过设计模式优化改造代码，产生对比性从而学习</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ul>
+      <li>1-00，1 代表着第一个设计模式，工厂方法模式</li>
+      <li>1-00，00 代表模拟的场景</li>
+      <li>1-01，01 代表第一种实现方案，后续 02 03 以此类推</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="三工厂方法模式介绍">三、工厂方法模式介绍</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-1-01.png" alt="工厂方法模式，图片来自 refactoringguru.cn" /></p>
+
+<ul>
+  <li><em>工厂方法模式，图片来自 refactoringguru.cn</em></li>
+</ul>
+
+<p>工厂模式又称工厂方法模式，是一种创建型设计模式，其在父类中提供一个创建对象的方法， 允许子类决定实例化对象的类型。</p>
+
+<p>这种设计模式也是 Java 开发中最常见的一种模式，它的主要意图是定义一个创建对象的接口，让其子类自己决定实例化哪一个工厂类，工厂模式使其创建过程延迟到子类进行。</p>
+
+<p>简单说就是为了提供代码结构的扩展性，屏蔽每一个功能类中的具体实现逻辑。让外部可以更加简单的只是知道调用即可，同时，这也是去掉众多<code class="highlighter-rouge">ifelse</code>的方式。当然这可能也有一些缺点，比如需要实现的类非常多，如何去维护，怎样减低开发成本。但这些问题都可以在后续的设计模式结合使用中，逐步降低。</p>
+
+<h2 id="四模拟发奖多种商品">四、模拟发奖多种商品</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-1-02.png" alt="模拟发奖多种商品，bugstack虫洞栈" /></p>
+
+<p>为了可以让整个学习的案例更加贴近实际开发，这里模拟互联网中在营销场景下的业务。由于营销场景的复杂、多变、临时的特性，它所需要的设计需要更加深入，否则会经常面临各种紧急CRUD操作，从而让代码结构混乱不堪，难以维护。</p>
+
+<p>在营销场景中经常会有某个用户做了一些操作；打卡、分享、留言、邀请注册等等，进行返利积分，最后通过积分在兑换商品，从而促活和拉新。</p>
+
+<p>那么在这里我们模拟积分兑换中的发放多种类型商品，假如现在我们有如下三种类型的商品接口；</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>序号</th>
+      <th>类型</th>
+      <th>接口</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>优惠券</td>
+      <td><code class="highlighter-rouge">CouponResult sendCoupon(String uId, String couponNumber, String uuid)</code></td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>实物商品</td>
+      <td><code class="highlighter-rouge">Boolean deliverGoods(DeliverReq req)</code></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>第三方爱奇艺兑换卡</td>
+      <td><code class="highlighter-rouge">void grantToken(String bindMobileNumber, String cardId)</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>从以上接口来看有如下信息：</strong></p>
+
+<ul>
+  <li>三个接口返回类型不同，有对象类型、布尔类型、还有一个空类型。</li>
+  <li>入参不同，发放优惠券需要仿重、兑换卡需要卡ID、实物商品需要发货位置(对象中含有)。</li>
+  <li>另外可能会随着后续的业务的发展，会新增其他种商品类型。因为你所有的开发需求都是随着业务对市场的拓展而带来的。</li>
+</ul>
+
+<h2 id="五用一坨坨代码实现">五、用一坨坨代码实现</h2>
+
+<p>如果不考虑任何扩展性，只为了尽快满足需求，那么对这么几种奖励发放只需使用ifelse语句判断，调用不同的接口即可满足需求。可能这也是一些刚入门编程的小伙伴，常用的方式。接下来我们就先按照这样的方式来实现业务的需求。</p>
+
+<h3 id="1-工程结构">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mo">01</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">├──</span> <span class="n">main</span>
+    <span class="err">│</span>   <span class="err">└──</span> <span class="n">java</span>
+    <span class="err">│</span>       <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+    <span class="err">│</span>           <span class="err">├──</span> <span class="nc">AwardReq</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">├──</span> <span class="nc">AwardRes</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">└──</span> <span class="nc">PrizeController</span><span class="o">.</span><span class="na">java</span> 
+    <span class="err">└──</span> <span class="n">test</span>
+         <span class="err">└──</span> <span class="n">java</span>
+             <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span>
+                 <span class="err">└──</span> <span class="nc">ApiTest</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<ul>
+  <li>工程结构上非常简单，一个入参对象 <code class="highlighter-rouge">AwardReq</code> 、一个出参对象 <code class="highlighter-rouge">AwardRes</code>，以及一个接口类 <code class="highlighter-rouge">PrizeController</code></li>
+</ul>
+
+<h3 id="2-ifelse实现需求">2. ifelse实现需求</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">PrizeController</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">PrizeController</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="kd">public</span> <span class="nc">AwardRes</span> <span class="nf">awardToUser</span><span class="o">(</span><span class="nc">AwardReq</span> <span class="n">req</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">reqJson</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">req</span><span class="o">);</span>
+        <span class="nc">AwardRes</span> <span class="n">awardRes</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"奖品发放开始{}。req:{}"</span><span class="o">,</span> <span class="n">req</span><span class="o">.</span><span class="na">getuId</span><span class="o">(),</span> <span class="n">reqJson</span><span class="o">);</span>
+            <span class="c1">// 按照不同类型方法商品[1优惠券、2实物商品、3第三方兑换卡(爱奇艺)]</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getAwardType</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+                <span class="nc">CouponService</span> <span class="n">couponService</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">CouponService</span><span class="o">();</span>
+                <span class="nc">CouponResult</span> <span class="n">couponResult</span> <span class="o">=</span> <span class="n">couponService</span><span class="o">.</span><span class="na">sendCoupon</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getuId</span><span class="o">(),</span> <span class="n">req</span><span class="o">.</span><span class="na">getAwardNumber</span><span class="o">(),</span> <span class="n">req</span><span class="o">.</span><span class="na">getBizId</span><span class="o">());</span>
+                <span class="k">if</span> <span class="o">(</span><span class="s">"0000"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">couponResult</span><span class="o">.</span><span class="na">getCode</span><span class="o">()))</span> <span class="o">{</span>
+                    <span class="n">awardRes</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AwardRes</span><span class="o">(</span><span class="s">"0000"</span><span class="o">,</span> <span class="s">"发放成功"</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                    <span class="n">awardRes</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AwardRes</span><span class="o">(</span><span class="s">"0001"</span><span class="o">,</span> <span class="n">couponResult</span><span class="o">.</span><span class="na">getInfo</span><span class="o">());</span>
+                <span class="o">}</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getAwardType</span><span class="o">()</span> <span class="o">==</span> <span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
+                <span class="nc">GoodsService</span> <span class="n">goodsService</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">GoodsService</span><span class="o">();</span>
+                <span class="nc">DeliverReq</span> <span class="n">deliverReq</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DeliverReq</span><span class="o">();</span>
+                <span class="n">deliverReq</span><span class="o">.</span><span class="na">setUserName</span><span class="o">(</span><span class="n">queryUserName</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getuId</span><span class="o">()));</span>
+                <span class="n">deliverReq</span><span class="o">.</span><span class="na">setUserPhone</span><span class="o">(</span><span class="n">queryUserPhoneNumber</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getuId</span><span class="o">()));</span>
+                <span class="n">deliverReq</span><span class="o">.</span><span class="na">setSku</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getAwardNumber</span><span class="o">());</span>
+                <span class="n">deliverReq</span><span class="o">.</span><span class="na">setOrderId</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getBizId</span><span class="o">());</span>
+                <span class="n">deliverReq</span><span class="o">.</span><span class="na">setConsigneeUserName</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getExtMap</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">"consigneeUserName"</span><span class="o">));</span>
+                <span class="n">deliverReq</span><span class="o">.</span><span class="na">setConsigneeUserPhone</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getExtMap</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">"consigneeUserPhone"</span><span class="o">));</span>
+                <span class="n">deliverReq</span><span class="o">.</span><span class="na">setConsigneeUserAddress</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getExtMap</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">"consigneeUserAddress"</span><span class="o">));</span>
+                <span class="nc">Boolean</span> <span class="n">isSuccess</span> <span class="o">=</span> <span class="n">goodsService</span><span class="o">.</span><span class="na">deliverGoods</span><span class="o">(</span><span class="n">deliverReq</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">isSuccess</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">awardRes</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AwardRes</span><span class="o">(</span><span class="s">"0000"</span><span class="o">,</span> <span class="s">"发放成功"</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                    <span class="n">awardRes</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AwardRes</span><span class="o">(</span><span class="s">"0001"</span><span class="o">,</span> <span class="s">"发放失败"</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getAwardType</span><span class="o">()</span> <span class="o">==</span> <span class="mi">3</span><span class="o">)</span> <span class="o">{</span>
+                <span class="nc">String</span> <span class="n">bindMobileNumber</span> <span class="o">=</span> <span class="n">queryUserPhoneNumber</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getuId</span><span class="o">());</span>
+                <span class="nc">IQiYiCardService</span> <span class="n">iQiYiCardService</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">IQiYiCardService</span><span class="o">();</span>
+                <span class="n">iQiYiCardService</span><span class="o">.</span><span class="na">grantToken</span><span class="o">(</span><span class="n">bindMobileNumber</span><span class="o">,</span> <span class="n">req</span><span class="o">.</span><span class="na">getAwardNumber</span><span class="o">());</span>
+                <span class="n">awardRes</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AwardRes</span><span class="o">(</span><span class="s">"0000"</span><span class="o">,</span> <span class="s">"发放成功"</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"奖品发放完成{}。"</span><span class="o">,</span> <span class="n">req</span><span class="o">.</span><span class="na">getuId</span><span class="o">());</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"奖品发放失败{}。req:{}"</span><span class="o">,</span> <span class="n">req</span><span class="o">.</span><span class="na">getuId</span><span class="o">(),</span> <span class="n">reqJson</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+            <span class="n">awardRes</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AwardRes</span><span class="o">(</span><span class="s">"0001"</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">awardRes</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="nf">queryUserName</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"花花"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="nf">queryUserPhoneNumber</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"15200101232"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>如上就是使用 <code class="highlighter-rouge">ifelse</code> 非常直接的实现出来业务需求的一坨代码，如果仅从业务角度看，研发如期甚至提前实现了功能。</li>
+  <li>那这样的代码目前来看并不会有什么问题，但如果在经过几次的迭代和拓展，接手这段代码的研发将十分痛苦。重构成本高需要理清之前每一个接口的使用，测试回归验证时间长，需要全部验证一次。这也就是很多人并不愿意接手别人的代码，如果接手了又被压榨开发时间。那么可想而知这样的 <code class="highlighter-rouge">ifelse</code> 还会继续增加。</li>
+</ul>
+
+<h3 id="3-测试验证">3. 测试验证</h3>
+
+<p>写一个单元测试来验证上面编写的接口方式，养成单元测试的好习惯会为你增强代码质量。</p>
+
+<p><strong>编写测试类：</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_awardToUser</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">PrizeController</span> <span class="n">prizeController</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PrizeController</span><span class="o">();</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"\r\n模拟发放优惠券测试\r\n"</span><span class="o">);</span>
+    <span class="c1">// 模拟发放优惠券测试</span>
+    <span class="nc">AwardReq</span> <span class="n">req01</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AwardReq</span><span class="o">();</span>
+    <span class="n">req01</span><span class="o">.</span><span class="na">setuId</span><span class="o">(</span><span class="s">"10001"</span><span class="o">);</span>
+    <span class="n">req01</span><span class="o">.</span><span class="na">setAwardType</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+    <span class="n">req01</span><span class="o">.</span><span class="na">setAwardNumber</span><span class="o">(</span><span class="s">"EGM1023938910232121323432"</span><span class="o">);</span>
+    <span class="n">req01</span><span class="o">.</span><span class="na">setBizId</span><span class="o">(</span><span class="s">"791098764902132"</span><span class="o">);</span>
+    <span class="nc">AwardRes</span> <span class="n">awardRes01</span> <span class="o">=</span> <span class="n">prizeController</span><span class="o">.</span><span class="na">awardToUser</span><span class="o">(</span><span class="n">req01</span><span class="o">);</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"请求参数：{}"</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSON</span><span class="o">(</span><span class="n">req01</span><span class="o">));</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSON</span><span class="o">(</span><span class="n">awardRes01</span><span class="o">));</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"\r\n模拟方法实物商品\r\n"</span><span class="o">);</span>
+    <span class="c1">// 模拟方法实物商品</span>
+    <span class="nc">AwardReq</span> <span class="n">req02</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AwardReq</span><span class="o">();</span>
+    <span class="n">req02</span><span class="o">.</span><span class="na">setuId</span><span class="o">(</span><span class="s">"10001"</span><span class="o">);</span>
+    <span class="n">req02</span><span class="o">.</span><span class="na">setAwardType</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+    <span class="n">req02</span><span class="o">.</span><span class="na">setAwardNumber</span><span class="o">(</span><span class="s">"9820198721311"</span><span class="o">);</span>
+    <span class="n">req02</span><span class="o">.</span><span class="na">setBizId</span><span class="o">(</span><span class="s">"1023000020112221113"</span><span class="o">);</span>
+    <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">extMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">String</span><span class="o">&gt;();</span>
+    <span class="n">extMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"consigneeUserName"</span><span class="o">,</span> <span class="s">"谢飞机"</span><span class="o">);</span>
+    <span class="n">extMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"consigneeUserPhone"</span><span class="o">,</span> <span class="s">"15200292123"</span><span class="o">);</span>
+    <span class="n">extMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"consigneeUserAddress"</span><span class="o">,</span> <span class="s">"吉林省.长春市.双阳区.XX街道.檀溪苑小区.#18-2109"</span><span class="o">);</span>
+    <span class="n">req02</span><span class="o">.</span><span class="na">setExtMap</span><span class="o">(</span><span class="n">extMap</span><span class="o">);</span>
+
+    <span class="n">commodityService_2</span><span class="o">.</span><span class="na">sendCommodity</span><span class="o">(</span><span class="s">"10001"</span><span class="o">,</span><span class="s">"9820198721311"</span><span class="o">,</span><span class="s">"1023000020112221113"</span><span class="o">,</span> <span class="n">extMap</span><span class="o">);</span>
+
+    <span class="nc">AwardRes</span> <span class="n">awardRes02</span> <span class="o">=</span> <span class="n">prizeController</span><span class="o">.</span><span class="na">awardToUser</span><span class="o">(</span><span class="n">req02</span><span class="o">);</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"请求参数：{}"</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSON</span><span class="o">(</span><span class="n">req02</span><span class="o">));</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSON</span><span class="o">(</span><span class="n">awardRes02</span><span class="o">));</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"\r\n第三方兑换卡(爱奇艺)\r\n"</span><span class="o">);</span>
+    <span class="nc">AwardReq</span> <span class="n">req03</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AwardReq</span><span class="o">();</span>
+    <span class="n">req03</span><span class="o">.</span><span class="na">setuId</span><span class="o">(</span><span class="s">"10001"</span><span class="o">);</span>
+    <span class="n">req03</span><span class="o">.</span><span class="na">setAwardType</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>
+    <span class="n">req03</span><span class="o">.</span><span class="na">setAwardNumber</span><span class="o">(</span><span class="s">"AQY1xjkUodl8LO975GdfrYUio"</span><span class="o">);</span>
+    <span class="nc">AwardRes</span> <span class="n">awardRes03</span> <span class="o">=</span> <span class="n">prizeController</span><span class="o">.</span><span class="na">awardToUser</span><span class="o">(</span><span class="n">req03</span><span class="o">);</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"请求参数：{}"</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSON</span><span class="o">(</span><span class="n">req03</span><span class="o">));</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSON</span><span class="o">(</span><span class="n">awardRes03</span><span class="o">));</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>结果：</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">模拟发放优惠券测试</span>
+
+<span class="mi">22</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mf">55.668</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">o</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">PrizeController</span> <span class="o">-</span> <span class="n">奖品发放开始10001</span><span class="err">。</span><span class="nl">req:</span><span class="o">{</span><span class="s">"awardNumber"</span><span class="o">:</span><span class="s">"EGM1023938910232121323432"</span><span class="o">,</span><span class="s">"awardType"</span><span class="o">:</span><span class="mi">1</span><span class="o">,</span><span class="s">"bizId"</span><span class="o">:</span><span class="s">"791098764902132"</span><span class="o">,</span><span class="s">"uId"</span><span class="o">:</span><span class="s">"10001"</span><span class="o">}</span>
+<span class="n">模拟发放优惠券一张</span><span class="err">：</span><span class="mi">10001</span><span class="o">,</span><span class="no">EGM1023938910232121323432</span><span class="o">,</span><span class="mi">791098764902132</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mf">55.671</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">o</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">PrizeController</span> <span class="o">-</span> <span class="n">奖品发放完成10001</span><span class="err">。</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mf">55.673</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">请求参数</span><span class="err">：</span><span class="o">{</span><span class="s">"uId"</span><span class="o">:</span><span class="s">"10001"</span><span class="o">,</span><span class="s">"bizId"</span><span class="o">:</span><span class="s">"791098764902132"</span><span class="o">,</span><span class="s">"awardNumber"</span><span class="o">:</span><span class="s">"EGM1023938910232121323432"</span><span class="o">,</span><span class="s">"awardType"</span><span class="o">:</span><span class="mi">1</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mf">55.674</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="o">{</span><span class="s">"code"</span><span class="o">:</span><span class="s">"0000"</span><span class="o">,</span><span class="s">"info"</span><span class="o">:</span><span class="s">"发放成功"</span><span class="o">}</span>
+
+<span class="n">模拟方法实物商品</span>
+
+<span class="mi">22</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mf">55.675</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">o</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">PrizeController</span> <span class="o">-</span> <span class="n">奖品发放开始10001</span><span class="err">。</span><span class="nl">req:</span><span class="o">{</span><span class="s">"awardNumber"</span><span class="o">:</span><span class="s">"9820198721311"</span><span class="o">,</span><span class="s">"awardType"</span><span class="o">:</span><span class="mi">2</span><span class="o">,</span><span class="s">"bizId"</span><span class="o">:</span><span class="s">"1023000020112221113"</span><span class="o">,</span><span class="s">"extMap"</span><span class="o">:{</span><span class="s">"consigneeUserName"</span><span class="o">:</span><span class="s">"谢飞机"</span><span class="o">,</span><span class="s">"consigneeUserPhone"</span><span class="o">:</span><span class="s">"15200292123"</span><span class="o">,</span><span class="s">"consigneeUserAddress"</span><span class="o">:</span><span class="s">"吉林省.长春市.双阳区.XX街道.檀溪苑小区.#18-2109"</span><span class="o">},</span><span class="s">"uId"</span><span class="o">:</span><span class="s">"10001"</span><span class="o">}</span>
+<span class="n">模拟发货实物商品一个</span><span class="err">：</span><span class="o">{</span><span class="s">"consigneeUserAddress"</span><span class="o">:</span><span class="s">"吉林省.长春市.双阳区.XX街道.檀溪苑小区.#18-2109"</span><span class="o">,</span><span class="s">"consigneeUserName"</span><span class="o">:</span><span class="s">"谢飞机"</span><span class="o">,</span><span class="s">"consigneeUserPhone"</span><span class="o">:</span><span class="s">"15200292123"</span><span class="o">,</span><span class="s">"orderId"</span><span class="o">:</span><span class="s">"1023000020112221113"</span><span class="o">,</span><span class="s">"sku"</span><span class="o">:</span><span class="s">"9820198721311"</span><span class="o">,</span><span class="s">"userName"</span><span class="o">:</span><span class="s">"花花"</span><span class="o">,</span><span class="s">"userPhone"</span><span class="o">:</span><span class="s">"15200101232"</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mf">55.677</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">o</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">PrizeController</span> <span class="o">-</span> <span class="n">奖品发放完成10001</span><span class="err">。</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mf">55.677</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">请求参数</span><span class="err">：</span><span class="o">{</span><span class="s">"extMap"</span><span class="o">:{</span><span class="s">"consigneeUserName"</span><span class="o">:</span><span class="s">"谢飞机"</span><span class="o">,</span><span class="s">"consigneeUserAddress"</span><span class="o">:</span><span class="s">"吉林省.长春市.双阳区.XX街道.檀溪苑小区.#18-2109"</span><span class="o">,</span><span class="s">"consigneeUserPhone"</span><span class="o">:</span><span class="s">"15200292123"</span><span class="o">},</span><span class="s">"uId"</span><span class="o">:</span><span class="s">"10001"</span><span class="o">,</span><span class="s">"bizId"</span><span class="o">:</span><span class="s">"1023000020112221113"</span><span class="o">,</span><span class="s">"awardNumber"</span><span class="o">:</span><span class="s">"9820198721311"</span><span class="o">,</span><span class="s">"awardType"</span><span class="o">:</span><span class="mi">2</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mf">55.677</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="o">{</span><span class="s">"code"</span><span class="o">:</span><span class="s">"0000"</span><span class="o">,</span><span class="s">"info"</span><span class="o">:</span><span class="s">"发放成功"</span><span class="o">}</span>
+
+<span class="n">第三方兑换卡</span><span class="o">(</span><span class="n">爱奇艺</span><span class="o">)</span>
+
+<span class="mi">22</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mf">55.678</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">o</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">PrizeController</span> <span class="o">-</span> <span class="n">奖品发放开始10001</span><span class="err">。</span><span class="nl">req:</span><span class="o">{</span><span class="s">"awardNumber"</span><span class="o">:</span><span class="s">"AQY1xjkUodl8LO975GdfrYUio"</span><span class="o">,</span><span class="s">"awardType"</span><span class="o">:</span><span class="mi">3</span><span class="o">,</span><span class="s">"uId"</span><span class="o">:</span><span class="s">"10001"</span><span class="o">}</span>
+<span class="n">模拟发放爱奇艺会员卡一张</span><span class="err">：</span><span class="mi">15200101232</span><span class="err">，</span><span class="nc">AQY1xjkUodl8LO975GdfrYUio</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mf">55.678</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">o</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">PrizeController</span> <span class="o">-</span> <span class="n">奖品发放完成10001</span><span class="err">。</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mf">55.678</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">请求参数</span><span class="err">：</span><span class="o">{</span><span class="s">"uId"</span><span class="o">:</span><span class="s">"10001"</span><span class="o">,</span><span class="s">"awardNumber"</span><span class="o">:</span><span class="s">"AQY1xjkUodl8LO975GdfrYUio"</span><span class="o">,</span><span class="s">"awardType"</span><span class="o">:</span><span class="mi">3</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mf">55.678</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="o">{</span><span class="s">"code"</span><span class="o">:</span><span class="s">"0000"</span><span class="o">,</span><span class="s">"info"</span><span class="o">:</span><span class="s">"发放成功"</span><span class="o">}</span>
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<ul>
+  <li>运行结果正常，满足当前所有业务产品需求，写的还很快。但！实在难以为维护！</li>
+</ul>
+
+<h2 id="六工厂模式优化代码">六、工厂模式优化代码</h2>
+
+<p>接下来使用工厂方法模式来进行代码优化，也算是一次很小的<strong>重构</strong>。整理重构会你会发现代码结构清晰了、也具备了下次新增业务需求的扩展性。但在实际使用中还会对此进行完善，目前的只是抽离出最核心的部分体现到你面前，方便学习。</p>
+
+<h3 id="1-工程结构-1">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mo">02</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">├──</span> <span class="n">main</span>
+    <span class="err">│</span>   <span class="err">└──</span> <span class="n">java</span>
+    <span class="err">│</span>       <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+    <span class="err">│</span>           <span class="err">├──</span> <span class="n">store</span>    
+    <span class="err">│</span>           <span class="err">│</span>   <span class="err">├──</span> <span class="n">impl</span>
+    <span class="err">│</span>           <span class="err">│</span>   <span class="err">│</span>   <span class="err">├──</span> <span class="nc">CardCommodityService</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">│</span>   <span class="err">│</span>   <span class="err">├──</span> <span class="nc">CouponCommodityService</span><span class="o">.</span><span class="na">java</span> 
+    <span class="err">│</span>           <span class="err">│</span>   <span class="err">│</span>   <span class="err">└──</span> <span class="nc">GoodsCommodityService</span><span class="o">.</span><span class="na">java</span>  
+    <span class="err">│</span>           <span class="err">│</span>   <span class="err">└──</span> <span class="nc">ICommodity</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">└──</span> <span class="nc">StoreFactory</span><span class="o">.</span><span class="na">java</span> 
+    <span class="err">└──</span> <span class="n">test</span>
+         <span class="err">└──</span> <span class="n">java</span>
+             <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span>
+                 <span class="err">└──</span> <span class="nc">ApiTest</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<ul>
+  <li>首先，从上面的工程结构中你是否一些感觉，比如；它看上去清晰了、这样分层可以更好扩展了、似乎可以想象到每一个类做了什么。</li>
+  <li>如果还不能理解为什么这样修改，也没有关系。因为你是在通过这样的文章，来学习设计模式的魅力。并且再获取源码后，进行实际操作几次也就慢慢掌握了<code class="highlighter-rouge">工厂模式</code>的技巧。</li>
+</ul>
+
+<h3 id="2-代码实现">2. 代码实现</h3>
+
+<h4 id="21-定义发奖接口">2.1 定义发奖接口</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ICommodity</span> <span class="o">{</span>
+
+    <span class="kt">void</span> <span class="nf">sendCommodity</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">commodityId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">bizId</span><span class="o">,</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">extMap</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span><span class="o">;</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>所有的奖品无论是实物、虚拟还是第三方，都需要通过我们的程序实现此接口进行处理，以保证最终入参出参的统一性。</li>
+  <li>接口的入参包括；<code class="highlighter-rouge">用户ID</code>、<code class="highlighter-rouge">奖品ID</code>、<code class="highlighter-rouge">业务ID</code>以及<code class="highlighter-rouge">扩展字段</code>用于处理发放实物商品时的收获地址。</li>
+</ul>
+
+<h4 id="22-实现奖品发放接口">2.2 实现奖品发放接口</h4>
+
+<p><strong>优惠券</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CouponCommodityService</span> <span class="kd">implements</span> <span class="nc">ICommodity</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">CouponCommodityService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="kd">private</span> <span class="nc">CouponService</span> <span class="n">couponService</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">CouponService</span><span class="o">();</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">sendCommodity</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">commodityId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">bizId</span><span class="o">,</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">extMap</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="nc">CouponResult</span> <span class="n">couponResult</span> <span class="o">=</span> <span class="n">couponService</span><span class="o">.</span><span class="na">sendCoupon</span><span class="o">(</span><span class="n">uId</span><span class="o">,</span> <span class="n">commodityId</span><span class="o">,</span> <span class="n">bizId</span><span class="o">);</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"请求参数[优惠券] =&gt; uId：{} commodityId：{} bizId：{} extMap：{}"</span><span class="o">,</span> <span class="n">uId</span><span class="o">,</span> <span class="n">commodityId</span><span class="o">,</span> <span class="n">bizId</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSON</span><span class="o">(</span><span class="n">extMap</span><span class="o">));</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果[优惠券]：{}"</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSON</span><span class="o">(</span><span class="n">couponResult</span><span class="o">));</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="s">"0000"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">couponResult</span><span class="o">.</span><span class="na">getCode</span><span class="o">()))</span> <span class="k">throw</span> <span class="k">new</span> <span class="nc">RuntimeException</span><span class="o">(</span><span class="n">couponResult</span><span class="o">.</span><span class="na">getInfo</span><span class="o">());</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>实物商品</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">GoodsCommodityService</span> <span class="kd">implements</span> <span class="nc">ICommodity</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">GoodsCommodityService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="kd">private</span> <span class="nc">GoodsService</span> <span class="n">goodsService</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">GoodsService</span><span class="o">();</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">sendCommodity</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">commodityId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">bizId</span><span class="o">,</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">extMap</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="nc">DeliverReq</span> <span class="n">deliverReq</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DeliverReq</span><span class="o">();</span>
+        <span class="n">deliverReq</span><span class="o">.</span><span class="na">setUserName</span><span class="o">(</span><span class="n">queryUserName</span><span class="o">(</span><span class="n">uId</span><span class="o">));</span>
+        <span class="n">deliverReq</span><span class="o">.</span><span class="na">setUserPhone</span><span class="o">(</span><span class="n">queryUserPhoneNumber</span><span class="o">(</span><span class="n">uId</span><span class="o">));</span>
+        <span class="n">deliverReq</span><span class="o">.</span><span class="na">setSku</span><span class="o">(</span><span class="n">commodityId</span><span class="o">);</span>
+        <span class="n">deliverReq</span><span class="o">.</span><span class="na">setOrderId</span><span class="o">(</span><span class="n">bizId</span><span class="o">);</span>
+        <span class="n">deliverReq</span><span class="o">.</span><span class="na">setConsigneeUserName</span><span class="o">(</span><span class="n">extMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"consigneeUserName"</span><span class="o">));</span>
+        <span class="n">deliverReq</span><span class="o">.</span><span class="na">setConsigneeUserPhone</span><span class="o">(</span><span class="n">extMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"consigneeUserPhone"</span><span class="o">));</span>
+        <span class="n">deliverReq</span><span class="o">.</span><span class="na">setConsigneeUserAddress</span><span class="o">(</span><span class="n">extMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"consigneeUserAddress"</span><span class="o">));</span>
+
+        <span class="nc">Boolean</span> <span class="n">isSuccess</span> <span class="o">=</span> <span class="n">goodsService</span><span class="o">.</span><span class="na">deliverGoods</span><span class="o">(</span><span class="n">deliverReq</span><span class="o">);</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"请求参数[优惠券] =&gt; uId：{} commodityId：{} bizId：{} extMap：{}"</span><span class="o">,</span> <span class="n">uId</span><span class="o">,</span> <span class="n">commodityId</span><span class="o">,</span> <span class="n">bizId</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSON</span><span class="o">(</span><span class="n">extMap</span><span class="o">));</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果[优惠券]：{}"</span><span class="o">,</span> <span class="n">isSuccess</span><span class="o">);</span>
+
+        <span class="k">if</span> <span class="o">(!</span><span class="n">isSuccess</span><span class="o">)</span> <span class="k">throw</span> <span class="k">new</span> <span class="nc">RuntimeException</span><span class="o">(</span><span class="s">"实物商品发放失败"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="nf">queryUserName</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"花花"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="nf">queryUserPhoneNumber</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"15200101232"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>第三方兑换卡</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CardCommodityService</span> <span class="kd">implements</span> <span class="nc">ICommodity</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">CardCommodityService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="c1">// 模拟注入</span>
+    <span class="kd">private</span> <span class="nc">IQiYiCardService</span> <span class="n">iQiYiCardService</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">IQiYiCardService</span><span class="o">();</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">sendCommodity</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">commodityId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">bizId</span><span class="o">,</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">extMap</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">mobile</span> <span class="o">=</span> <span class="n">queryUserMobile</span><span class="o">(</span><span class="n">uId</span><span class="o">);</span>
+        <span class="n">iQiYiCardService</span><span class="o">.</span><span class="na">grantToken</span><span class="o">(</span><span class="n">mobile</span><span class="o">,</span> <span class="n">bizId</span><span class="o">);</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"请求参数[爱奇艺兑换卡] =&gt; uId：{} commodityId：{} bizId：{} extMap：{}"</span><span class="o">,</span> <span class="n">uId</span><span class="o">,</span> <span class="n">commodityId</span><span class="o">,</span> <span class="n">bizId</span><span class="o">,</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSON</span><span class="o">(</span><span class="n">extMap</span><span class="o">));</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果[爱奇艺兑换卡]：success"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="nf">queryUserMobile</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"15200101232"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>从上面可以看到每一种奖品的实现都包括在自己的类中，新增、修改或者删除都不会影响其他奖品功能的测试，降低回归测试的可能。</li>
+  <li>后续在新增的奖品只需要按照此结构进行填充即可，非常易于维护和扩展。</li>
+  <li>在统一了入参以及出参后，调用方不在需要关心奖品发放的内部逻辑，按照统一的方式即可处理。</li>
+</ul>
+
+<h4 id="23-创建商店工厂">2.3 创建商店工厂</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">StoreFactory</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nc">ICommodity</span> <span class="nf">getCommodityService</span><span class="o">(</span><span class="nc">Integer</span> <span class="n">commodityType</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">commodityType</span><span class="o">)</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="mi">1</span> <span class="o">==</span> <span class="n">commodityType</span><span class="o">)</span> <span class="k">return</span> <span class="k">new</span> <span class="nc">CouponCommodityService</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="mi">2</span> <span class="o">==</span> <span class="n">commodityType</span><span class="o">)</span> <span class="k">return</span> <span class="k">new</span> <span class="nc">GoodsCommodityService</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="mi">3</span> <span class="o">==</span> <span class="n">commodityType</span><span class="o">)</span> <span class="k">return</span> <span class="k">new</span> <span class="nc">CardCommodityService</span><span class="o">();</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">(</span><span class="s">"不存在的商品服务类型"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里我们定义了一个商店的工厂类，在里面按照类型实现各种商品的服务。可以非常干净整洁的处理你的代码，后续新增的商品在这里扩展即可。如果你不喜欢<code class="highlighter-rouge">if</code>判断，也可以使用<code class="highlighter-rouge">switch</code>或者<code class="highlighter-rouge">map</code>配置结构，会让代码更加干净。</li>
+  <li>另外很多代码检查软件和编码要求，不喜欢if语句后面不写扩展，这里是为了更加干净的向你体现逻辑。在实际的业务编码中可以添加括号。</li>
+</ul>
+
+<h3 id="3-测试验证-1">3. 测试验证</h3>
+
+<p><strong>编写测试类：</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_commodity</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+    <span class="nc">StoreFactory</span> <span class="n">storeFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StoreFactory</span><span class="o">();</span>
+    <span class="c1">// 1. 优惠券</span>
+    <span class="nc">ICommodity</span> <span class="n">commodityService_1</span> <span class="o">=</span> <span class="n">storeFactory</span><span class="o">.</span><span class="na">getCommodityService</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+    <span class="n">commodityService_1</span><span class="o">.</span><span class="na">sendCommodity</span><span class="o">(</span><span class="s">"10001"</span><span class="o">,</span> <span class="s">"EGM1023938910232121323432"</span><span class="o">,</span> <span class="s">"791098764902132"</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+    <span class="c1">// 2. 实物商品</span>
+    <span class="nc">ICommodity</span> <span class="n">commodityService_2</span> <span class="o">=</span> <span class="n">storeFactory</span><span class="o">.</span><span class="na">getCommodityService</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+    
+    <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">extMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">String</span><span class="o">&gt;();</span>
+    <span class="n">extMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"consigneeUserName"</span><span class="o">,</span> <span class="s">"谢飞机"</span><span class="o">);</span>
+    <span class="n">extMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"consigneeUserPhone"</span><span class="o">,</span> <span class="s">"15200292123"</span><span class="o">);</span>
+    <span class="n">extMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"consigneeUserAddress"</span><span class="o">,</span> <span class="s">"吉林省.长春市.双阳区.XX街道.檀溪苑小区.#18-2109"</span><span class="o">);</span>
+
+    <span class="n">commodityService_2</span><span class="o">.</span><span class="na">sendCommodity</span><span class="o">(</span><span class="s">"10001"</span><span class="o">,</span><span class="s">"9820198721311"</span><span class="o">,</span><span class="s">"1023000020112221113"</span><span class="o">,</span> <span class="n">extMap</span><span class="o">);</span>
+    <span class="c1">// 3. 第三方兑换卡(爱奇艺)</span>
+    <span class="nc">ICommodity</span> <span class="n">commodityService_3</span> <span class="o">=</span> <span class="n">storeFactory</span><span class="o">.</span><span class="na">getCommodityService</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>
+    <span class="n">commodityService_3</span><span class="o">.</span><span class="na">sendCommodity</span><span class="o">(</span><span class="s">"10001"</span><span class="o">,</span><span class="s">"AQY1xjkUodl8LO975GdfrYUio"</span><span class="o">,</span><span class="kc">null</span><span class="o">,</span><span class="kc">null</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>结果：</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">模拟发放优惠券一张</span><span class="err">：</span><span class="mi">10001</span><span class="o">,</span><span class="no">EGM1023938910232121323432</span><span class="o">,</span><span class="mi">791098764902132</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">48</span><span class="o">:</span><span class="mf">10.922</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">o</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">d</span><span class="o">.</span><span class="na">d</span><span class="o">.</span><span class="na">s</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">CouponCommodityService</span> <span class="o">-</span> <span class="n">请求参数</span><span class="o">[</span><span class="n">优惠券</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="n">uId</span><span class="err">：</span><span class="mi">10001</span> <span class="n">commodityId</span><span class="err">：</span><span class="no">EGM1023938910232121323432</span> <span class="n">bizId</span><span class="err">：</span><span class="mi">791098764902132</span> <span class="n">extMap</span><span class="err">：</span><span class="kc">null</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">48</span><span class="o">:</span><span class="mf">10.957</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">o</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">d</span><span class="o">.</span><span class="na">d</span><span class="o">.</span><span class="na">s</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">CouponCommodityService</span> <span class="o">-</span> <span class="n">测试结果</span><span class="o">[</span><span class="n">优惠券</span><span class="o">]</span><span class="err">：</span><span class="o">{</span><span class="s">"code"</span><span class="o">:</span><span class="s">"0000"</span><span class="o">,</span><span class="s">"info"</span><span class="o">:</span><span class="s">"发放成功"</span><span class="o">}</span>
+<span class="n">模拟发货实物商品一个</span><span class="err">：</span><span class="o">{</span><span class="s">"consigneeUserAddress"</span><span class="o">:</span><span class="s">"吉林省.长春市.双阳区.XX街道.檀溪苑小区.#18-2109"</span><span class="o">,</span><span class="s">"consigneeUserName"</span><span class="o">:</span><span class="s">"谢飞机"</span><span class="o">,</span><span class="s">"consigneeUserPhone"</span><span class="o">:</span><span class="s">"15200292123"</span><span class="o">,</span><span class="s">"orderId"</span><span class="o">:</span><span class="s">"1023000020112221113"</span><span class="o">,</span><span class="s">"sku"</span><span class="o">:</span><span class="s">"9820198721311"</span><span class="o">,</span><span class="s">"userName"</span><span class="o">:</span><span class="s">"花花"</span><span class="o">,</span><span class="s">"userPhone"</span><span class="o">:</span><span class="s">"15200101232"</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">48</span><span class="o">:</span><span class="mf">10.962</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">o</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">d</span><span class="o">.</span><span class="na">d</span><span class="o">.</span><span class="na">s</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">GoodsCommodityService</span> <span class="o">-</span> <span class="n">请求参数</span><span class="o">[</span><span class="n">优惠券</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="n">uId</span><span class="err">：</span><span class="mi">10001</span> <span class="n">commodityId</span><span class="err">：</span><span class="mi">9820198721311</span> <span class="n">bizId</span><span class="err">：</span><span class="mi">1023000020112221113</span> <span class="n">extMap</span><span class="err">：</span><span class="o">{</span><span class="s">"consigneeUserName"</span><span class="o">:</span><span class="s">"谢飞机"</span><span class="o">,</span><span class="s">"consigneeUserAddress"</span><span class="o">:</span><span class="s">"吉林省.长春市.双阳区.XX街道.檀溪苑小区.#18-2109"</span><span class="o">,</span><span class="s">"consigneeUserPhone"</span><span class="o">:</span><span class="s">"15200292123"</span><span class="o">}</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">48</span><span class="o">:</span><span class="mf">10.962</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">o</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">d</span><span class="o">.</span><span class="na">d</span><span class="o">.</span><span class="na">s</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">GoodsCommodityService</span> <span class="o">-</span> <span class="n">测试结果</span><span class="o">[</span><span class="n">优惠券</span><span class="o">]</span><span class="err">：</span><span class="kc">true</span>
+<span class="n">模拟发放爱奇艺会员卡一张</span><span class="err">：</span><span class="mi">15200101232</span><span class="err">，</span><span class="kc">null</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">48</span><span class="o">:</span><span class="mf">10.963</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">o</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">d</span><span class="o">.</span><span class="na">d</span><span class="o">.</span><span class="na">s</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">CardCommodityService</span> <span class="o">-</span> <span class="n">请求参数</span><span class="o">[</span><span class="n">爱奇艺兑换卡</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="n">uId</span><span class="err">：</span><span class="mi">10001</span> <span class="n">commodityId</span><span class="err">：</span><span class="nc">AQY1xjkUodl8LO975GdfrYUio</span> <span class="n">bizId</span><span class="err">：</span><span class="kc">null</span> <span class="n">extMap</span><span class="err">：</span><span class="kc">null</span>
+<span class="mi">22</span><span class="o">:</span><span class="mi">48</span><span class="o">:</span><span class="mf">10.963</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">o</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">d</span><span class="o">.</span><span class="na">d</span><span class="o">.</span><span class="na">s</span><span class="o">.</span><span class="na">impl</span><span class="o">.</span><span class="na">CardCommodityService</span> <span class="o">-</span> <span class="n">测试结果</span><span class="o">[</span><span class="n">爱奇艺兑换卡</span><span class="o">]</span><span class="err">：</span><span class="n">success</span>
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<ul>
+  <li>运行结果正常，既满足了业务产品需求，也满足了自己对代码的追求。这样的代码部署上线运行，内心不会恐慌，不会觉得半夜会有电话。</li>
+  <li>另外从运行测试结果上也可以看出来，在进行封装后可以非常清晰的看到一整套发放奖品服务的完整性，统一了入参、统一了结果。</li>
+</ul>
+
+<h2 id="七总结">七、总结</h2>
+
+<ul>
+  <li>从上到下的优化来看，工厂方法模式并不复杂，甚至这样的开发结构在你有所理解后，会发现更加简单了。</li>
+  <li>那么这样的开发的好处知道后，也可以总结出来它的优点；<code class="highlighter-rouge">避免创建者与具体的产品逻辑耦合</code>、<code class="highlighter-rouge">满足单一职责，每一个业务逻辑实现都在所属自己的类中完成</code>、<code class="highlighter-rouge">满足开闭原则，无需更改使用调用方就可以在程序中引入新的产品类型</code>。但这样也会带来一些问题，比如有非常多的奖品类型，那么实现的子类会极速扩张。因此也需要使用其他的模式进行优化，这些在后续的设计模式中会逐步涉及到。</li>
+  <li>从案例入手看设计模式往往要比看理论学的更加容易，因为案例是缩短理论到上手的最佳方式，如果你已经有所收获，一定要去尝试实操。</li>
+</ul>
+
+
+            <div>
+   <div align="center" class="copyright">
+	   <div class="cmower">bugstack虫洞栈</div>
+	   <div class="brief">沉淀、分享、成长，让自己和他人都能有所收获</div>
+       <img src="/assets/images/qrcode.png" >
+	   <div class="saoma">微信扫描二维码，关注我的公众号</div>
+   </div>
+   <p align="center" style="margin-top: 15px; font-size: 11px;color: #cc0000;">
+       <strong>（转载本站文章请注明作者和出处 <a href="https://bugstack.cn">微信公众号：bugstack虫洞栈 | 作者：小傅哥</a>）</strong>
+   </p>
+</div>
+
+
+            <!-- Comments -->
+            <div class="comment">
+             
+
+  
+    <a href="#" class="show_disqus_comment" onclick="return false;">Show Disqus Comments</a>
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_config = function () {
+        this.page.url = 'https://bugstack.cn/itstack-demo-design/2020/05/20/%E9%87%8D%E5%AD%A6Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F.html';
+        this.page.identifier = '/itstack-demo-design/2020/05/20/%E9%87%8D%E5%AD%A6Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F.html';
+        this.page.title = '重学 Java 设计模式：实战工厂方法模式「多种类型商品不同接口，统一发奖服务搭建场景」';
+    };
+    var disqus_loaded = false;
+    $(function() {
+        $('.show_disqus_comment').on('click', function() { // DON'T EDIT BELOW THIS LINE
+            $(this).html('加载中...');
+            var that = this;
+            if (!disqus_loaded) {
+                var d = document, s = d.createElement('script');
+
+                s.type = 'text/javascript';
+                s.async = true;
+                var shortname = 'fuzhengwei';
+
+                s.src = '//' + shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+
+                disqus_loaded = true;
+            }
+            $(that).remove();
+        })
+    })
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  
+
+  
+        <div id="gitalk-container"></div>
+        <script src="/assets/js/gitalk.min.js"></script>
+        <script src="/assets/js/md5.js"></script>
+        <script>
+        var gitalk = new Gitalk({
+            id: md5(decodeURI('/itstack-demo-design/2020/05/20/%E9%87%8D%E5%AD%A6Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F.html')),
+            clientID: 'df8beab2190bec20352a',
+            clientSecret: '7eeeb4369d699c933f02a026ae8bb1e2a9c80e90',
+            repo: 'CodeGuide',
+            owner: 'fuzhengwei',
+            admin: ['fuzhengwei'],
+            labels: ['gitment'],
+            perPage: 50,
+        })
+        gitalk.render('gitalk-container')
+        </script>
+  
+
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <h3>Post Directory</h3>
+<div id="post-directory-module">
+<section class="post-directory">
+    <!-- Links that trigger the jumping -->
+    <!-- Added by javascript below -->
+    <dl></dl>
+</section>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $( "article h2" ).each(function( index ) {
+            $(".post-directory dl").append("<dt><a class=\"jumper\" hre=#" +
+                    $(this).attr("id")
+                    + ">"
+                    + $(this).text()
+                    + "</a></dt>");
+
+            var children = $(this).nextUntil("h2", "h3")
+
+            children.each(function( index ) {
+                $(".post-directory dl").append("<dd><a class=\"jumper\" hre=#" +
+                        $(this).attr("id")
+                        + ">"
+                        + "&nbsp;&nbsp;- " + $(this).text()
+                        + "</a></dd>");
+            });
+        });
+
+        var fixmeTop = $('#post-directory-module').offset().top - 100;       // get initial position of the element
+
+        $(window).scroll(function() {                  // assign scroll event listener
+
+            var currentScroll = $(window).scrollTop(); // get current position
+
+            if (currentScroll >= fixmeTop) {           // apply position: fixed if you
+                $('#post-directory-module').css({      // scroll to that element or below it
+                    top: '100px',
+                    position: 'fixed',
+                    width: 'inherit'
+                });
+            } else {                                   // apply position: static
+                $('#post-directory-module').css({      // if you scroll above it
+                    position: 'inherit',
+                    width: 'inherit'
+                });
+            }
+
+        });
+
+        $("a.jumper").on("click", function( e ) {
+
+            e.preventDefault();
+
+            $("body, html").animate({
+                scrollTop: ($( $(this).attr('hre') ).offset().top - 100)
+            }, 600);
+
+        });
+    });
+
+</script>
+        </div>
+        
+
+    </div>
+    
+    <div class="asb-post-01">
+        <div class="mask"></div>
+			<div class="info">
+	    		<div>扫码或搜索：<span style="color: #E9405A; font-weight: bold;">bugstack虫洞栈</span></div>
+	    	<div>
+	        <span>发送 </span><span class="token" style="color: #e9415a; font-weight: bold; font-size: 17px; margin-bottom: 45px;">290992</span>
+	    	<div>
+	       	 	即可<span style="color: #e9415a; font-weight: bold;">立即永久</span>解锁本站全部文章
+	    	</div>
+	    	<img class="code-img" style="width: 300px;display:unset" src="/assets/images/qrcode.png">
+		</div>
+ 	</div>
+</article>
+
+        </div>
+
+    <footer class="container">
+    <div class="site-footer">
+        <div class="card text-center">
+            <ul class="list-inline" style="margin-left: 0;">
+                <li>
+                    <a target="_blank" href="https://github.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://www.zhihu.com/people/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-1x fa-inverse">知</i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://weibo.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="site-footer-links mobile-hidden">
+            
+            <a href="https://github.com/fuzhengwei" title="Git仓库" target="_blank">Git仓库</a>
+            
+            <a href="/gitchat.html" title="GitChat" target="_blank">GitChat</a>
+            
+        </div>
+        <div class="site-footer-icons">
+            <a href="http://beian.miit.gov.cn" target="_blank">京ICP备19031103号-1</a>
+        </div>
+        <div class="scrolltop">
+            bugstack虫洞栈
+            <a href="javascript:window.scrollTo(0,0)">TOP</a>
+        </div>
+        <div class="rss">
+            <a href="/feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a>
+            Power by <a href="https://github.com/DONGChuan/Yummy-Jekyll">Yummy Jekyll</a>
+        </div>
+    </div>
+    <!-- Third-Party JS -->
+    <script type="text/javascript" src="/bower_components/geopattern/js/geopattern.min.js"></script>
+    <!-- My JS -->
+    <script type="text/javascript" src="/assets/js/script.js"></script>
+    
+
+    <!-- 百度统计&友盟统计 -->
+    <div style="display:none">
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+              var hm = document.createElement("script");
+              hm.src = "https://hm.baidu.com/hm.js?0b31b4c146bf7126aed5009e1a4a11c8";
+              var s = document.getElementsByTagName("script")[0];
+              s.parentNode.insertBefore(hm, s);
+            })();
+
+        </script>
+
+        <script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1278232949&web_id=1278232949"></script>
+    </div>
+    <!-- 百度统计 -->
+</footer>
+
+
+    </body>
+
+</html>

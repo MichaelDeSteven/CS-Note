@@ -1,0 +1,833 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="baidu-site-verification" content="3aFsC6yMzO" />
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico">
+
+    <title> 重学 Java 设计模式：实战模版模式「模拟爬虫各类电商商品，生成营销推广海报场景」 - bugstack虫洞栈 </title>
+    <meta name="keywords" content="Java、Netty、设计模式、Javassist、ASM、Byte-buddy、DDD领域驱动设计、Spring、Mybatis、算法、源码分析">
+    <meta name="description"
+          content="键盘侠⌨、网络喷壶🤩，不要被哪些根本不能让你成长的人影响你奋斗的方向。黎明前的坚守是最后的冲锋，岁月不会辜负任何一个努力拼搏的人。也许有一天你会万分感谢自己以前自己坚持下来的决定，没有任何人知道你能行。">
+
+    <link rel="canonical" href="https://bugstack.cn/itstack-demo-design/2020/07/07/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F.html">
+    <link rel="alternate" type="application/rss+xml" title="bugstack虫洞栈 | 沉淀、分享、成长，让自己和他人都能有所收获" href="https://bugstack.cn/feed.xml">
+
+    <!-- Third-Party CSS -->
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/octicons/octicons/octicons.css">
+    <link rel="stylesheet" href="/bower_components/hover/css/hover-min.css">
+    <link rel="stylesheet" href="/bower_components/primer-markdown/dist/user-content.min.css">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" href="/assets/css/gitalk.css">
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="/assets/css/common.css">
+
+    <!-- CSS set in page -->
+    
+
+    <!-- CSS set in layout -->
+    
+    <link rel="stylesheet" href="/assets/css/sidebar-post-nav.css">
+    
+
+    <!-- https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css -->
+    <link rel="stylesheet" type="text/css" href="https://bugstack.cn/assets/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/lock.js"></script>
+
+</head>
+
+
+    <body>
+
+    <header class="site-header">
+    <div class="site-header-topbar">
+        <div class="container">
+            <div class="topbar-menu">
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki"
+                       target="_blank"
+                       title="GitHub">
+                        GitHub
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki/%E5%80%BC%E5%BE%97%E4%B8%80%E7%9C%8B%E7%9A%84%E5%A5%BD%E4%B9%A6"
+                       target="_blank"
+                       title="电子书">
+                        电子书
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack/interview.html"
+                       target="_self"
+                       title="面试">
+                        面试
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack-code-life/itstack-code-life.html"
+                       target="_self"
+                       title="故事">
+                        故事
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/link.html"
+                       target="_self"
+                       title="友链">
+                        友链
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/about.html"
+                       target="_self"
+                       title="关于">
+                        关于
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <a id="site-header-brand" href="/" title="bugstack虫洞栈">
+            <span class="octicon octicon-smiley"></span>
+            bugstack虫洞栈
+        </a>
+        <nav class="site-header-nav" role="navigation">
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target=""
+                   title="首页">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="Java/Spring">
+                    Java/Spring
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-any/itstack-demo-any.html" 
+                           target=""
+                     >编程基础</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-code.html" 
+                           target=""
+                     >源码分析</a></li>
+                    
+                    <li><a href="/itstack-demo-algorithm/itstack-demo-algorithm.html" 
+                           target=""
+                     >野路子搞算法</a></li>
+                    
+                    <li><a href="/itstack-demo-springcloud/itstack-demo-springcloud.html" 
+                           target=""
+                     >Spring Cloud</a></li>
+                    
+                    <li><a href="/itstack-demo-jvm/itstack-demo-jvm.html" 
+                           target=""
+                     >用Java实现JVM</a></li>
+                    
+                    <li><a href="/itstack-demo-drools/itstack-demo-drools.html" 
+                           target=""
+                     >Drools·规则引擎</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/itstack-demo-netty/itstack-demo-netty.html"
+                   target="_self"
+                   title="Netty4.x专题">
+                    Netty4.x专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-1.html" 
+                           target=""
+                     >基础入门篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-2.html" 
+                           target=""
+                     >中级拓展篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-3.html" 
+                           target=""
+                     >高级应用篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-4.html" 
+                           target=""
+                     >源码分析篇</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="架构师专题">
+                    架构师专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-ark-middleware/itstack-ark-middleware.html" 
+                           target=""
+                     >中间件开发</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-bytecode.html" 
+                           target=""
+                     >字节码编程</a></li>
+                    
+                    <li><a href="/itstack-demo-agent/itstack-demo-agent.html" 
+                           target=""
+                     >调用链路监控</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-design.html" 
+                           target=""
+                     >实战设计模式</a></li>
+                    
+                    <li><a href="/itstack-demo-ddd/itstack-demo-ddd.html" 
+                           target=""
+                     >领域驱动设计</a></li>
+                    
+                    <li><a href="/itstack-demo-frame/itstack-demo-frame.html" 
+                           target=""
+                     >架构框架搭建</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/archives.html"
+                   target="_self"
+                   title="Archives">
+                    Archives
+                </a>
+                
+            </div>
+            
+        </nav>
+    </div>
+</header>
+
+
+        <div class="content">
+            <section class="jumbotron geopattern" data-pattern-id="重学 Java 设计模式：实战模版模式「模拟爬虫各类电商商品，生成营销推广海报场景」">
+    <div class="container">
+        <div id="jumbotron-meta-info">        
+            <h1>重学 Java 设计模式：实战模版模式「模拟爬虫各类电商商品，生成营销推广海报场景」</h1>
+            <span class="meta-info">
+                
+                
+                <span class="octicon octicon-calendar"></span> 2020/07/07
+                
+            </span>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function(){
+
+        $('.geopattern').each(function(){
+            $(this).geopattern($(this).data('pattern-id'));
+        });
+
+    });
+</script>
+<article class="post container need"  itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="row">
+
+        
+        <div class="col-md-9 markdown-body">
+
+            <p>作者：小傅哥
+<br />博客：<a href="https://bugstack.cn">https://bugstack.cn</a></p>
+
+<blockquote>
+  <p>沉淀、分享、成长，让自己和他人都能有所收获！😄</p>
+</blockquote>
+
+<h2 id="一前言">一、前言</h2>
+
+<p><code class="highlighter-rouge">黎明前的坚守，的住吗？</code></p>
+
+<p>有人举过这样一个例子，先给你张北大的录取通知书，但要求你每天5点起床，12点睡觉😪，刻苦学习，勤奋上进。只要你坚持三年，这张通知书就有效。如果是你，你能坚持吗？其实对于这个例子很难在我们的人生中出现，因为它目标明确，有准确的行军路线。就像你是土豪家庭，家里给你安排的明明白白一样，只要你按照这个方式走就不会有问题。可大多数时候我们并没有这样的路线，甚至不知道多久到达自己的黎明。但！谁又不渴望见到黎明呢，坚持吧！</p>
+
+<p><code class="highlighter-rouge">不要轻易被洗脑</code></p>
+
+<p><code class="highlighter-rouge">键盘侠⌨</code>、<code class="highlighter-rouge">网络喷壶</code>，几乎当你努力坚持一件事的时候，在这条路上会遇到形形色色的人和事。有时候接收建议完善自己是有必要的，但不能放弃自己的初心和底线，有时候只坚持自己也是难能可贵的。<code class="highlighter-rouge">子路之勇，子贡之辩，冉有之智，此三子者，皆天下之所谓难能而可贵者也</code>。阳光和努力是这个世界最温暖的东西，加油坚持好自己的选的路。</p>
+
+<p><code class="highlighter-rouge">有时还好坚持了</code></p>
+
+<p>当你为自己的一个决定而感到万分开心😄时，是不是也非常感谢自己还好坚持了。坚持、努力、终身学习，似乎在程序员这个行业是离不开的，当你意愿于把这当做一份可以努力的爱好时，你就会愿意为此而努力。而我们很难说只在机会要来时准备，而是一直努力等待机会。也就是很多人说的别人抓住机会是因为一直在准备着。</p>
+
+<h2 id="二开发环境">二、开发环境</h2>
+
+<ol>
+  <li>JDK 1.8</li>
+  <li>Idea + Maven</li>
+  <li>涉及工程三个，可以通过关注<strong>公众号</strong>：<a href="https://bugstack.cn/assets/images/qrcode.png"><code class="highlighter-rouge">bugstack虫洞栈</code></a>，回复<code class="highlighter-rouge">源码下载</code>获取(打开获取的链接，找到序号18)</li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th>工程</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>itstack-demo-design-21-00</td>
+      <td>场景模拟工程；模拟爬虫商品生成海报场景</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="三模版模式介绍">三、模版模式介绍</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-21-01.png" alt="模版模式，图片来自 refactoringguru.cn" /></p>
+
+<p>模板模式的核心设计思路是通过在，抽象类中定义抽象方法的执行顺序，并将抽象方法设定为只有子类实现，但不设计<code class="highlighter-rouge">独立访问</code>的方法。简单说也就是把你安排的明明白白的。</p>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-21-02.png" alt="西游记，孙悟空打妖怪" /></p>
+
+<p>就像西游记的99八十一难，基本每一关都是；师傅被掳走、打妖怪、妖怪被收走，具体什么妖怪你自己定义，怎么打你想办法，最后收走还是弄死看你本事，我只定义执行顺序和基本策略，具体的每一难由观音来安排。</p>
+
+<h2 id="四案例场景模拟">四、案例场景模拟</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-21-03.png" alt="场景模拟；爬虫电商商品，组装优惠推广" /></p>
+
+<p><strong>在本案例中我们模拟爬虫各类电商商品，生成营销推广海报场景</strong></p>
+
+<p>关于模版模式的核心点在于由抽象类定义抽象方法执行策略，也就是说父类规定了好一系列的执行标准，这些标准的串联成一整套业务流程。</p>
+
+<p>在这个场景中我们模拟爬虫爬取各类商家的商品信息，生成推广海报(<code class="highlighter-rouge">海报中含带个人的邀请码</code>)赚取商品返利。<em>声明，这里是模拟爬取，并没有真的爬取</em></p>
+
+<p>而整个的爬取过程分为；模拟登录、爬取信息、生成海报，这三个步骤，另外；</p>
+<ol>
+  <li>因为有些商品只有登录后才可以爬取，并且登录可以看到一些特定的价格这与未登录用户看到的价格不同。</li>
+  <li>不同的电商网站爬取方式不同，解析方式也不同，因此可以作为每一个实现类中的特定实现。</li>
+  <li>生成海报的步骤基本一样，但会有特定的商品来源标识。所以这样三个步骤可以使用模版模式来设定，并有具体的场景做子类实现。</li>
+</ol>
+
+<h2 id="五模版模式搭建工程">五、模版模式搭建工程</h2>
+
+<p>模版模式的业务场景可能在平时的开发中并不是很多，主要因为这个设计模式会在抽象类中定义逻辑行为的执行顺序。一般情况下，我们用的抽象类定义的逻辑行为都比较轻量级或者没有，只是提供一些基本方法公共调用和实现。</p>
+
+<p>但如果遇到适合的场景使用这样的设计模式也是非常方便的，因为他可以控制整套逻辑的执行顺序和统一的输入、输出，而对于实现方只需要关心好自己的业务逻辑即可。</p>
+
+<p>而在我们这个场景中，只需要记住这三步的实现即可；<code class="highlighter-rouge">模拟登录</code>、<code class="highlighter-rouge">爬取信息</code>、<code class="highlighter-rouge">生成海报</code></p>
+
+<h3 id="1-工程结构">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">21</span><span class="o">-</span><span class="mo">00</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">├──</span> <span class="n">main</span>
+    <span class="err">│</span>   <span class="err">└──</span> <span class="n">java</span>
+    <span class="err">│</span>       <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+    <span class="err">│</span>           <span class="err">├──</span> <span class="n">group</span>
+    <span class="err">│</span>           <span class="err">│</span>	  <span class="err">├──</span> <span class="nc">DangDangNetMall</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">│</span>	  <span class="err">├──</span> <span class="nc">JDNetMall</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">│</span>	  <span class="err">└──</span> <span class="nc">TaoBaoNetMall</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">├──</span>  <span class="nc">HttpClient</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">│</span>           <span class="err">└──</span>  <span class="nc">NetMall</span><span class="o">.</span><span class="na">java</span>
+    <span class="err">└──</span> <span class="n">test</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span>
+                <span class="err">└──</span> <span class="nc">ApiTest</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<p><strong>模版模式模型结构</strong></p>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-21-04.png" alt="模版模式模型结构" /></p>
+
+<ul>
+  <li>以上的代码结构还是比较简单的，一个定义了抽象方法执行顺序的核心抽象类，以及三个模拟具体的实现(<code class="highlighter-rouge">京东</code>、<code class="highlighter-rouge">淘宝</code>、<code class="highlighter-rouge">当当</code>)的电商服务。</li>
+</ul>
+
+<h3 id="2-代码实现">2. 代码实现</h3>
+
+<h4 id="21-定义执行顺序的抽象类">2.1 定义执行顺序的抽象类</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 基础电商推广服务
+ * 1. 生成最优价商品海报
+ * 2. 海报含带推广邀请码
+ */</span>
+<span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">NetMall</span> <span class="o">{</span>
+
+    <span class="kd">protected</span> <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">NetMall</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="nc">String</span> <span class="n">uId</span><span class="o">;</span>   <span class="c1">// 用户ID</span>
+    <span class="nc">String</span> <span class="n">uPwd</span><span class="o">;</span>  <span class="c1">// 用户密码</span>
+
+    <span class="kd">public</span> <span class="nf">NetMall</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">uPwd</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">uId</span> <span class="o">=</span> <span class="n">uId</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">uPwd</span> <span class="o">=</span> <span class="n">uPwd</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 生成商品推广海报
+     *
+     * @param skuUrl 商品地址(京东、淘宝、当当)
+     * @return 海报图片base64位信息
+     */</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">generateGoodsPoster</span><span class="o">(</span><span class="nc">String</span> <span class="n">skuUrl</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">login</span><span class="o">(</span><span class="n">uId</span><span class="o">,</span> <span class="n">uPwd</span><span class="o">))</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>             <span class="c1">// 1. 验证登录</span>
+        <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">reptile</span> <span class="o">=</span> <span class="n">reptile</span><span class="o">(</span><span class="n">skuUrl</span><span class="o">);</span>  <span class="c1">// 2. 爬虫商品</span>
+        <span class="k">return</span> <span class="nf">createBase64</span><span class="o">(</span><span class="n">reptile</span><span class="o">);</span>                   <span class="c1">// 3. 组装海报</span>
+    <span class="o">}</span>
+
+    <span class="c1">// 模拟登录</span>
+    <span class="kd">protected</span> <span class="kd">abstract</span> <span class="nc">Boolean</span> <span class="nf">login</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">uPwd</span><span class="o">);</span>
+
+    <span class="c1">// 爬虫提取商品信息(登录后的优惠价格)</span>
+    <span class="kd">protected</span> <span class="kd">abstract</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="nf">reptile</span><span class="o">(</span><span class="nc">String</span> <span class="n">skuUrl</span><span class="o">);</span>
+
+    <span class="c1">// 生成商品海报信息</span>
+    <span class="kd">protected</span> <span class="kd">abstract</span> <span class="nc">String</span> <span class="nf">createBase64</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">goodsInfo</span><span class="o">);</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这个类是此设计模式的灵魂</li>
+  <li>定义可被外部访问的方法<code class="highlighter-rouge">generateGoodsPoster</code>，用于生成商品推广海报</li>
+  <li><code class="highlighter-rouge">generateGoodsPoster</code> 在方法中定义抽象方法的执行顺序 1 2 3 步</li>
+  <li>提供三个具体的抽象方法，让外部继承方实现；模拟登录(<code class="highlighter-rouge">login</code>)、模拟爬取(<code class="highlighter-rouge">reptile</code>)、生成海报(<code class="highlighter-rouge">createBase64</code>)</li>
+</ul>
+
+<h4 id="22-模拟爬虫京东">2.2 模拟爬虫京东</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JDNetMall</span> <span class="kd">extends</span> <span class="nc">NetMall</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nf">JDNetMall</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">uPwd</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">uId</span><span class="o">,</span> <span class="n">uPwd</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">login</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">uPwd</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"模拟京东用户登录 uId：{} uPwd：{}"</span><span class="o">,</span> <span class="n">uId</span><span class="o">,</span> <span class="n">uPwd</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="nf">reptile</span><span class="o">(</span><span class="nc">String</span> <span class="n">skuUrl</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">str</span> <span class="o">=</span> <span class="nc">HttpClient</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">skuUrl</span><span class="o">);</span>
+        <span class="nc">Pattern</span> <span class="n">p9</span> <span class="o">=</span> <span class="nc">Pattern</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">"(?&lt;=title\\&gt;).*(?=&lt;/title)"</span><span class="o">);</span>
+        <span class="nc">Matcher</span> <span class="n">m9</span> <span class="o">=</span> <span class="n">p9</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
+        <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ConcurrentHashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">m9</span><span class="o">.</span><span class="na">find</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"name"</span><span class="o">,</span> <span class="n">m9</span><span class="o">.</span><span class="na">group</span><span class="o">());</span>
+        <span class="o">}</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"price"</span><span class="o">,</span> <span class="s">"5999.00"</span><span class="o">);</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"模拟京东商品爬虫解析：{} | {} 元 {}"</span><span class="o">,</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"name"</span><span class="o">),</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"price"</span><span class="o">),</span> <span class="n">skuUrl</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">map</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">createBase64</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">goodsInfo</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">BASE64Encoder</span> <span class="n">encoder</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BASE64Encoder</span><span class="o">();</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"模拟生成京东商品base64海报"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">encoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="no">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">goodsInfo</span><span class="o">).</span><span class="na">getBytes</span><span class="o">());</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>模拟登录</li>
+  <li>爬取信息，这里只是把<code class="highlighter-rouge">title</code>的信息爬取后的结果截取出来。</li>
+  <li>模拟创建<code class="highlighter-rouge">base64</code>图片的方法</li>
+</ul>
+
+<h4 id="23-模拟爬虫淘宝">2.3 模拟爬虫淘宝</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TaoBaoNetMall</span> <span class="kd">extends</span> <span class="nc">NetMall</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nf">TaoBaoNetMall</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">uPwd</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">uId</span><span class="o">,</span> <span class="n">uPwd</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">login</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">uPwd</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"模拟淘宝用户登录 uId：{} uPwd：{}"</span><span class="o">,</span> <span class="n">uId</span><span class="o">,</span> <span class="n">uPwd</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="nf">reptile</span><span class="o">(</span><span class="nc">String</span> <span class="n">skuUrl</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">str</span> <span class="o">=</span> <span class="nc">HttpClient</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">skuUrl</span><span class="o">);</span>
+        <span class="nc">Pattern</span> <span class="n">p9</span> <span class="o">=</span> <span class="nc">Pattern</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">"(?&lt;=title\\&gt;).*(?=&lt;/title)"</span><span class="o">);</span>
+        <span class="nc">Matcher</span> <span class="n">m9</span> <span class="o">=</span> <span class="n">p9</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
+        <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ConcurrentHashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">m9</span><span class="o">.</span><span class="na">find</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"name"</span><span class="o">,</span> <span class="n">m9</span><span class="o">.</span><span class="na">group</span><span class="o">());</span>
+        <span class="o">}</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"price"</span><span class="o">,</span> <span class="s">"4799.00"</span><span class="o">);</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"模拟淘宝商品爬虫解析：{} | {} 元 {}"</span><span class="o">,</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"name"</span><span class="o">),</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"price"</span><span class="o">),</span> <span class="n">skuUrl</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">map</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">createBase64</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">goodsInfo</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">BASE64Encoder</span> <span class="n">encoder</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BASE64Encoder</span><span class="o">();</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"模拟生成淘宝商品base64海报"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">encoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="no">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">goodsInfo</span><span class="o">).</span><span class="na">getBytes</span><span class="o">());</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>同上，模拟登录和爬取以及创建图片的<code class="highlighter-rouge">base64</code></li>
+</ul>
+
+<h4 id="24-模拟爬虫当当">2.4 模拟爬虫当当</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DangDangNetMall</span> <span class="kd">extends</span> <span class="nc">NetMall</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nf">DangDangNetMall</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">uPwd</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">uId</span><span class="o">,</span> <span class="n">uPwd</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">login</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">uPwd</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"模拟当当用户登录 uId：{} uPwd：{}"</span><span class="o">,</span> <span class="n">uId</span><span class="o">,</span> <span class="n">uPwd</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="nf">reptile</span><span class="o">(</span><span class="nc">String</span> <span class="n">skuUrl</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">str</span> <span class="o">=</span> <span class="nc">HttpClient</span><span class="o">.</span><span class="na">doGet</span><span class="o">(</span><span class="n">skuUrl</span><span class="o">);</span>
+        <span class="nc">Pattern</span> <span class="n">p9</span> <span class="o">=</span> <span class="nc">Pattern</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">"(?&lt;=title\\&gt;).*(?=&lt;/title)"</span><span class="o">);</span>
+        <span class="nc">Matcher</span> <span class="n">m9</span> <span class="o">=</span> <span class="n">p9</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
+        <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ConcurrentHashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">m9</span><span class="o">.</span><span class="na">find</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"name"</span><span class="o">,</span> <span class="n">m9</span><span class="o">.</span><span class="na">group</span><span class="o">());</span>
+        <span class="o">}</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"price"</span><span class="o">,</span> <span class="s">"4548.00"</span><span class="o">);</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"模拟当当商品爬虫解析：{} | {} 元 {}"</span><span class="o">,</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"name"</span><span class="o">),</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"price"</span><span class="o">),</span> <span class="n">skuUrl</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">map</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">createBase64</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">goodsInfo</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">BASE64Encoder</span> <span class="n">encoder</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BASE64Encoder</span><span class="o">();</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"模拟生成当当商品base64海报"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">encoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="no">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">goodsInfo</span><span class="o">).</span><span class="na">getBytes</span><span class="o">());</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+<ul>
+  <li>同上，模拟登录和爬取以及创建图片的<code class="highlighter-rouge">base64</code></li>
+</ul>
+
+<h3 id="3-测试验证">3. 测试验证</h3>
+
+<h4 id="31-编写测试类">3.1 编写测试类</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * 测试链接
+ * 京东；https://item.jd.com/100008348542.html
+ * 淘宝；https://detail.tmall.com/item.htm
+ * 当当；http://product.dangdang.com/1509704171.html
+ */</span>
+<span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_NetMall</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">NetMall</span> <span class="n">netMall</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JDNetMall</span><span class="o">(</span><span class="s">"1000001"</span><span class="o">,</span><span class="s">"*******"</span><span class="o">);</span>
+    <span class="nc">String</span> <span class="n">base64</span> <span class="o">=</span> <span class="n">netMall</span><span class="o">.</span><span class="na">generateGoodsPoster</span><span class="o">(</span><span class="s">"https://item.jd.com/100008348542.html"</span><span class="o">);</span>
+    <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"测试结果：{}"</span><span class="o">,</span> <span class="n">base64</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>测试类提供了三个商品链接，也可以是其他商品的链接</li>
+  <li>爬取的过程模拟爬取京东商品，可以替换为其他商品服务<code class="highlighter-rouge">new JDNetMall</code>、<code class="highlighter-rouge">new TaoBaoNetMall</code>、<code class="highlighter-rouge">new DangDangNetMall</code></li>
+</ul>
+
+<h4 id="32-测试结果">3.2 测试结果</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">23</span><span class="o">:</span><span class="mi">33</span><span class="o">:</span><span class="mf">13.616</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">NetMall</span> <span class="o">-</span> <span class="n">模拟京东用户登录</span> <span class="n">uId</span><span class="err">：</span><span class="mi">1000001</span> <span class="n">uPwd</span><span class="err">：</span><span class="o">*******</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">33</span><span class="o">:</span><span class="mf">15.038</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">NetMall</span> <span class="o">-</span> <span class="n">模拟京东商品爬虫解析</span><span class="err">：【</span><span class="nc">AppleiPhone</span> <span class="mi">11</span><span class="err">】</span><span class="nc">Apple</span> <span class="n">iPhone</span> <span class="mi">11</span> <span class="o">(</span><span class="no">A2223</span><span class="o">)</span> <span class="mi">128</span><span class="no">GB</span> <span class="n">黑色</span> <span class="n">移动联通电信4G手机</span> <span class="n">双卡双待</span><span class="err">【</span><span class="n">行情</span> <span class="n">报价</span> <span class="n">价格</span> <span class="n">评测</span><span class="err">】</span><span class="o">-</span><span class="n">京东</span> <span class="o">|</span> <span class="mf">5999.00</span> <span class="n">元</span> <span class="nl">https:</span><span class="c1">//item.jd.com/100008348542.html</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">33</span><span class="o">:</span><span class="mf">15.038</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">NetMall</span> <span class="o">-</span> <span class="n">模拟生成京东商品base64海报</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">33</span><span class="o">:</span><span class="mf">15.086</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">ApiTest</span> <span class="o">-</span> <span class="n">测试结果</span><span class="err">：</span><span class="n">eyJwcmljZSI6IjU5OTkuMDAiLCJuYW1lIjoi44CQQXBwbGVpUGhvbmUgMTHjgJFBcHBsZSBpUGhv</span>
+<span class="n">bmUgMTEgKEEyMjIzKSAxMjhHQiDpu5HoibIg56e75Yqo6IGU6YCa55S15L</span><span class="o">+</span><span class="n">hNEfmiYvmnLog5Y</span><span class="o">+</span><span class="no">M</span>
+<span class="mi">5</span><span class="nc">Y2h5Y</span><span class="o">+</span><span class="nc">M5b6F44CQ6KGM5oOFIOaKpeS7tyDku7fmoLwg6K</span><span class="o">+</span><span class="nc">E5rWL44CRLeS6rOS4nCJ9</span>
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<h2 id="六总结">六、总结</h2>
+
+<ul>
+  <li>通过上面的实现可以看到<code class="highlighter-rouge">模版模式</code>在定义统一结构也就是执行标准上非常方便，也就很好的控制了后续的实现者不用关心调用逻辑，按照统一方式执行。那么类的继承者只需要关心具体的业务逻辑实现即可。</li>
+  <li>另外模版模式也是为了解决子类通用方法，放到父类中设计的优化。让每一个子类只做子类需要完成的内容，而不需要关心其他逻辑。这样提取公用代码，行为由父类管理，扩展可变部分，也就非常有利于开发拓展和迭代。</li>
+  <li>但每一种设计模式都有自己的特定场景，如果超过场景外的建设就需要额外考虑🤔其他模式的运用。而不是非要生搬硬套，否则自己不清楚为什么这么做，也很难让后续者继续维护代码。而想要活学活用就需要多加练习，有实践的经历。</li>
+</ul>
+
+
+            <div>
+   <div align="center" class="copyright">
+	   <div class="cmower">bugstack虫洞栈</div>
+	   <div class="brief">沉淀、分享、成长，让自己和他人都能有所收获</div>
+       <img src="/assets/images/qrcode.png" >
+	   <div class="saoma">微信扫描二维码，关注我的公众号</div>
+   </div>
+   <p align="center" style="margin-top: 15px; font-size: 11px;color: #cc0000;">
+       <strong>（转载本站文章请注明作者和出处 <a href="https://bugstack.cn">微信公众号：bugstack虫洞栈 | 作者：小傅哥</a>）</strong>
+   </p>
+</div>
+
+
+            <!-- Comments -->
+            <div class="comment">
+             
+
+  
+    <a href="#" class="show_disqus_comment" onclick="return false;">Show Disqus Comments</a>
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_config = function () {
+        this.page.url = 'https://bugstack.cn/itstack-demo-design/2020/07/07/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F.html';
+        this.page.identifier = '/itstack-demo-design/2020/07/07/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F.html';
+        this.page.title = '重学 Java 设计模式：实战模版模式「模拟爬虫各类电商商品，生成营销推广海报场景」';
+    };
+    var disqus_loaded = false;
+    $(function() {
+        $('.show_disqus_comment').on('click', function() { // DON'T EDIT BELOW THIS LINE
+            $(this).html('加载中...');
+            var that = this;
+            if (!disqus_loaded) {
+                var d = document, s = d.createElement('script');
+
+                s.type = 'text/javascript';
+                s.async = true;
+                var shortname = 'fuzhengwei';
+
+                s.src = '//' + shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+
+                disqus_loaded = true;
+            }
+            $(that).remove();
+        })
+    })
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  
+
+  
+        <div id="gitalk-container"></div>
+        <script src="/assets/js/gitalk.min.js"></script>
+        <script src="/assets/js/md5.js"></script>
+        <script>
+        var gitalk = new Gitalk({
+            id: md5(decodeURI('/itstack-demo-design/2020/07/07/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E6%A8%A1%E6%9D%BF%E6%A8%A1%E5%BC%8F.html')),
+            clientID: 'df8beab2190bec20352a',
+            clientSecret: '7eeeb4369d699c933f02a026ae8bb1e2a9c80e90',
+            repo: 'CodeGuide',
+            owner: 'fuzhengwei',
+            admin: ['fuzhengwei'],
+            labels: ['gitment'],
+            perPage: 50,
+        })
+        gitalk.render('gitalk-container')
+        </script>
+  
+
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <h3>Post Directory</h3>
+<div id="post-directory-module">
+<section class="post-directory">
+    <!-- Links that trigger the jumping -->
+    <!-- Added by javascript below -->
+    <dl></dl>
+</section>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $( "article h2" ).each(function( index ) {
+            $(".post-directory dl").append("<dt><a class=\"jumper\" hre=#" +
+                    $(this).attr("id")
+                    + ">"
+                    + $(this).text()
+                    + "</a></dt>");
+
+            var children = $(this).nextUntil("h2", "h3")
+
+            children.each(function( index ) {
+                $(".post-directory dl").append("<dd><a class=\"jumper\" hre=#" +
+                        $(this).attr("id")
+                        + ">"
+                        + "&nbsp;&nbsp;- " + $(this).text()
+                        + "</a></dd>");
+            });
+        });
+
+        var fixmeTop = $('#post-directory-module').offset().top - 100;       // get initial position of the element
+
+        $(window).scroll(function() {                  // assign scroll event listener
+
+            var currentScroll = $(window).scrollTop(); // get current position
+
+            if (currentScroll >= fixmeTop) {           // apply position: fixed if you
+                $('#post-directory-module').css({      // scroll to that element or below it
+                    top: '100px',
+                    position: 'fixed',
+                    width: 'inherit'
+                });
+            } else {                                   // apply position: static
+                $('#post-directory-module').css({      // if you scroll above it
+                    position: 'inherit',
+                    width: 'inherit'
+                });
+            }
+
+        });
+
+        $("a.jumper").on("click", function( e ) {
+
+            e.preventDefault();
+
+            $("body, html").animate({
+                scrollTop: ($( $(this).attr('hre') ).offset().top - 100)
+            }, 600);
+
+        });
+    });
+
+</script>
+        </div>
+        
+
+    </div>
+    
+    <div class="asb-post-01">
+        <div class="mask"></div>
+			<div class="info">
+	    		<div>扫码或搜索：<span style="color: #E9405A; font-weight: bold;">bugstack虫洞栈</span></div>
+	    	<div>
+	        <span>发送 </span><span class="token" style="color: #e9415a; font-weight: bold; font-size: 17px; margin-bottom: 45px;">290992</span>
+	    	<div>
+	       	 	即可<span style="color: #e9415a; font-weight: bold;">立即永久</span>解锁本站全部文章
+	    	</div>
+	    	<img class="code-img" style="width: 300px;display:unset" src="/assets/images/qrcode.png">
+		</div>
+ 	</div>
+</article>
+
+        </div>
+
+    <footer class="container">
+    <div class="site-footer">
+        <div class="card text-center">
+            <ul class="list-inline" style="margin-left: 0;">
+                <li>
+                    <a target="_blank" href="https://github.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://www.zhihu.com/people/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-1x fa-inverse">知</i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://weibo.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="site-footer-links mobile-hidden">
+            
+            <a href="https://github.com/fuzhengwei" title="Git仓库" target="_blank">Git仓库</a>
+            
+            <a href="/gitchat.html" title="GitChat" target="_blank">GitChat</a>
+            
+        </div>
+        <div class="site-footer-icons">
+            <a href="http://beian.miit.gov.cn" target="_blank">京ICP备19031103号-1</a>
+        </div>
+        <div class="scrolltop">
+            bugstack虫洞栈
+            <a href="javascript:window.scrollTo(0,0)">TOP</a>
+        </div>
+        <div class="rss">
+            <a href="/feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a>
+            Power by <a href="https://github.com/DONGChuan/Yummy-Jekyll">Yummy Jekyll</a>
+        </div>
+    </div>
+    <!-- Third-Party JS -->
+    <script type="text/javascript" src="/bower_components/geopattern/js/geopattern.min.js"></script>
+    <!-- My JS -->
+    <script type="text/javascript" src="/assets/js/script.js"></script>
+    
+
+    <!-- 百度统计&友盟统计 -->
+    <div style="display:none">
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+              var hm = document.createElement("script");
+              hm.src = "https://hm.baidu.com/hm.js?0b31b4c146bf7126aed5009e1a4a11c8";
+              var s = document.getElementsByTagName("script")[0];
+              s.parentNode.insertBefore(hm, s);
+            })();
+
+        </script>
+
+        <script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1278232949&web_id=1278232949"></script>
+    </div>
+    <!-- 百度统计 -->
+</footer>
+
+
+    </body>
+
+</html>

@@ -1,0 +1,983 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="baidu-site-verification" content="3aFsC6yMzO" />
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico">
+
+    <title> 重学 Java 设计模式：实战适配器模式「从多个MQ消息体中，抽取指定字段值场景」 - bugstack虫洞栈 </title>
+    <meta name="keywords" content="Java、Netty、设计模式、Javassist、ASM、Byte-buddy、DDD领域驱动设计、Spring、Mybatis、算法、源码分析">
+    <meta name="description"
+          content="擦屁屁纸80%的面积都是保护手的！就像阅读源码一样很多时候核心代码都被包裹了，并且运用了大量的设计模式，例如Spring中的；UserCredentialsDataSourceAdapter，就是我们本文要讲的适配器模式。">
+
+    <link rel="canonical" href="https://bugstack.cn/itstack-demo-design/2020/06/02/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F.html">
+    <link rel="alternate" type="application/rss+xml" title="bugstack虫洞栈 | 沉淀、分享、成长，让自己和他人都能有所收获" href="https://bugstack.cn/feed.xml">
+
+    <!-- Third-Party CSS -->
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/octicons/octicons/octicons.css">
+    <link rel="stylesheet" href="/bower_components/hover/css/hover-min.css">
+    <link rel="stylesheet" href="/bower_components/primer-markdown/dist/user-content.min.css">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" href="/assets/css/gitalk.css">
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="/assets/css/common.css">
+
+    <!-- CSS set in page -->
+    
+
+    <!-- CSS set in layout -->
+    
+    <link rel="stylesheet" href="/assets/css/sidebar-post-nav.css">
+    
+
+    <!-- https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css -->
+    <link rel="stylesheet" type="text/css" href="https://bugstack.cn/assets/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/lock.js"></script>
+
+</head>
+
+
+    <body>
+
+    <header class="site-header">
+    <div class="site-header-topbar">
+        <div class="container">
+            <div class="topbar-menu">
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki"
+                       target="_blank"
+                       title="GitHub">
+                        GitHub
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="https://github.com/fuzhengwei/CodeGuide/wiki/%E5%80%BC%E5%BE%97%E4%B8%80%E7%9C%8B%E7%9A%84%E5%A5%BD%E4%B9%A6"
+                       target="_blank"
+                       title="电子书">
+                        电子书
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack/interview.html"
+                       target="_self"
+                       title="面试">
+                        面试
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/itstack-code-life/itstack-code-life.html"
+                       target="_self"
+                       title="故事">
+                        故事
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/link.html"
+                       target="_self"
+                       title="友链">
+                        友链
+                    </a>
+                </div>
+                
+                <div class="item">
+                    <a href="/about.html"
+                       target="_self"
+                       title="关于">
+                        关于
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <a id="site-header-brand" href="/" title="bugstack虫洞栈">
+            <span class="octicon octicon-smiley"></span>
+            bugstack虫洞栈
+        </a>
+        <nav class="site-header-nav" role="navigation">
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target=""
+                   title="首页">
+                    首页
+                </a>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="Java/Spring">
+                    Java/Spring
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-any/itstack-demo-any.html" 
+                           target=""
+                     >编程基础</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-code.html" 
+                           target=""
+                     >源码分析</a></li>
+                    
+                    <li><a href="/itstack-demo-algorithm/itstack-demo-algorithm.html" 
+                           target=""
+                     >野路子搞算法</a></li>
+                    
+                    <li><a href="/itstack-demo-springcloud/itstack-demo-springcloud.html" 
+                           target=""
+                     >Spring Cloud</a></li>
+                    
+                    <li><a href="/itstack-demo-jvm/itstack-demo-jvm.html" 
+                           target=""
+                     >用Java实现JVM</a></li>
+                    
+                    <li><a href="/itstack-demo-drools/itstack-demo-drools.html" 
+                           target=""
+                     >Drools·规则引擎</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/itstack-demo-netty/itstack-demo-netty.html"
+                   target="_self"
+                   title="Netty4.x专题">
+                    Netty4.x专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-1.html" 
+                           target=""
+                     >基础入门篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-2.html" 
+                           target=""
+                     >中级拓展篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-3.html" 
+                           target=""
+                     >高级应用篇</a></li>
+                    
+                    <li><a href="/itstack-demo-netty/itstack-demo-netty-4.html" 
+                           target=""
+                     >源码分析篇</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/"
+                   target="_self"
+                   title="架构师专题">
+                    架构师专题
+                </a>
+                
+                <ul class="submenu">
+                    
+                    <li><a href="/itstack-ark-middleware/itstack-ark-middleware.html" 
+                           target=""
+                     >中间件开发</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-bytecode.html" 
+                           target=""
+                     >字节码编程</a></li>
+                    
+                    <li><a href="/itstack-demo-agent/itstack-demo-agent.html" 
+                           target=""
+                     >调用链路监控</a></li>
+                    
+                    <li><a href="/itstack/itstack-demo-design.html" 
+                           target=""
+                     >实战设计模式</a></li>
+                    
+                    <li><a href="/itstack-demo-ddd/itstack-demo-ddd.html" 
+                           target=""
+                     >领域驱动设计</a></li>
+                    
+                    <li><a href="/itstack-demo-frame/itstack-demo-frame.html" 
+                           target=""
+                     >架构框架搭建</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class=" site-header-nav-item hvr-underline-from-center">
+                <a href="/archives.html"
+                   target="_self"
+                   title="Archives">
+                    Archives
+                </a>
+                
+            </div>
+            
+        </nav>
+    </div>
+</header>
+
+
+        <div class="content">
+            <section class="jumbotron geopattern" data-pattern-id="重学 Java 设计模式：实战适配器模式「从多个MQ消息体中，抽取指定字段值场景」">
+    <div class="container">
+        <div id="jumbotron-meta-info">        
+            <h1>重学 Java 设计模式：实战适配器模式「从多个MQ消息体中，抽取指定字段值场景」</h1>
+            <span class="meta-info">
+                
+                
+                <span class="octicon octicon-calendar"></span> 2020/06/02
+                
+            </span>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function(){
+
+        $('.geopattern').each(function(){
+            $(this).geopattern($(this).data('pattern-id'));
+        });
+
+    });
+</script>
+<article class="post container need"  itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="row">
+
+        
+        <div class="col-md-9 markdown-body">
+
+            <p>作者：小傅哥
+<br />博客：<a href="https://bugstack.cn">https://bugstack.cn</a></p>
+
+<blockquote>
+  <p>沉淀、分享、成长，让自己和他人都能有所收获！😄</p>
+</blockquote>
+
+<h2 id="一前言">一、前言</h2>
+
+<p><code class="highlighter-rouge">擦屁屁纸80%的面积都是保护手的！</code></p>
+
+<p>工作到3年左右很大一部分程序员都想提升自己的技术栈，开始尝试去阅读一些源码，例如<code class="highlighter-rouge">Spring</code>、<code class="highlighter-rouge">Mybaits</code>、<code class="highlighter-rouge">Dubbo</code>等，但读着读着发现越来越难懂，一会从这过来一会跑到那去。甚至怀疑自己技术太差，慢慢也就不愿意再触碰这部分知识。</p>
+
+<p>而这主要的原因是一个框架随着时间的发展，它的复杂程度是越来越高的，从最开始只有一个非常核心的点到最后开枝散叶。这就像你自己开发的业务代码或者某个组件一样，最开始的那部分核心代码也许只能占到20%，而其他大部分代码都是为了保证核心流程能正常运行的。所以这也是你读源码费劲的一部分原因。</p>
+
+<p><code class="highlighter-rouge">框架中用到了设计模式吗？</code></p>
+
+<p>框架中不仅用到设计模式还用了很多，而且有些时候根本不是一个模式的单独使用，而是多种设计模式的综合运用。与大部分小伙伴平时开发的CRUD可就不一样了，如果都是if语句从上到下，也就算得不上什么框架了。就像你到Spring的源码中搜关键字<code class="highlighter-rouge">Adapter</code>，就会出现很多实现类，例如；<code class="highlighter-rouge">UserCredentialsDataSourceAdapter</code>。而这种设计模式就是我们本文要介绍的适配器模式。</p>
+
+<p><code class="highlighter-rouge">适配器在生活里随处可见</code></p>
+
+<p>如果提到在日常生活中就很多适配器的存在你会想到什么？在没有看后文之前可以先思考下。</p>
+
+<h2 id="二开发环境">二、开发环境</h2>
+
+<ol>
+  <li>JDK 1.8</li>
+  <li>Idea + Maven</li>
+  <li>涉及工程三个，可以通过关注<strong>公众号</strong>：<a href="https://bugstack.cn/assets/images/qrcode.png"><code class="highlighter-rouge">bugstack虫洞栈</code></a>，回复<code class="highlighter-rouge">源码下载</code>获取(打开获取的链接，找到序号18)</li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th>工程</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>itstack-demo-design-6-00</td>
+      <td>场景模拟工程；模拟多个MQ消息体</td>
+    </tr>
+    <tr>
+      <td>itstack-demo-design-6-01</td>
+      <td>使用一坨代码实现业务需求</td>
+    </tr>
+    <tr>
+      <td>itstack-demo-design-6-02</td>
+      <td>通过设计模式优化改造代码，产生对比性从而学习</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="三适配器模式介绍">三、适配器模式介绍</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-6-01.png" alt="适配器模式，图片来自 refactoringguru.cn" /></p>
+
+<p>适配器模式的主要作用就是把原本不兼容的接口，通过适配修改做到统一。使得用户方便使用，就像我们提到的万能充、数据线、MAC笔记本的转换头、出国旅游买个插座等等，他们都是为了适配各种不同的<code class="highlighter-rouge">口</code>，做的兼容。。</p>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-6-02.png" alt="万能充、数据线" /></p>
+
+<p><strong>除了我们生活中出现的各种适配的场景，那么在业务开发中呢？</strong></p>
+
+<p>在业务开发中我们会经常的需要做不同接口的兼容，尤其是中台服务，中台需要把各个业务线的各种类型服务做统一包装，再对外提供接口进行使用。而这在我们平常的开发中也是非常常见的。</p>
+
+<h2 id="四案例场景模拟">四、案例场景模拟</h2>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-6-03.png" alt="场景模拟；接收多类型MQ消息" /></p>
+
+<p>随着公司的业务的不断发展，当基础的系统逐步成型以后。业务运营就需要开始做用户的拉新和促活，从而保障<code class="highlighter-rouge">DAU</code>的增速以及最终<code class="highlighter-rouge">ROI</code>转换。</p>
+
+<p>而这时候就会需要做一些营销系统，大部分常见的都是裂变、拉客，例如；你邀请一个用户开户、或者邀请一个用户下单，那么平台就会给你返利，多邀多得。同时随着拉新的量越来越多开始设置每月下单都会给首单奖励，等等，各种营销场景。</p>
+
+<p>那么这个时候做这样一个系统就会接收各种各样的MQ消息或者接口，如果一个个的去开发，就会耗费很大的成本，同时对于后期的拓展也有一定的难度。此时就会希望有一个系统可以配置一下就把外部的MQ接入进行，这些MQ就像上面提到的可能是一些注册开户消息、商品下单消息等等。</p>
+
+<p>而适配器的思想方式也恰恰可以运用到这里，并且我想强调一下，适配器不只是可以适配接口往往还可以适配一些属性信息。</p>
+
+<h3 id="1-场景模拟工程">1. 场景模拟工程</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="mo">00</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">└──</span> <span class="n">main</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+                <span class="err">├──</span> <span class="n">mq</span>
+                <span class="err">│</span>   <span class="err">├──</span> <span class="n">create_account</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">│</span>   <span class="err">├──</span> <span class="nc">OrderMq</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">│</span>   <span class="err">└──</span> <span class="nc">POPOrderDelivered</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">└──</span> <span class="n">service</span>
+                    <span class="err">├──</span> <span class="nc">OrderServicejava</span>
+                    <span class="err">└──</span> <span class="nc">POPOrderService</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这里模拟了三个不同类型的MQ消息，而在消息体中都有一些必要的字段，比如；用户ID、时间、业务ID，但是每个MQ的字段属性并不一样。就像用户ID在不同的MQ里也有不同的字段：uId、userId等。</li>
+  <li>同时还提供了两个不同类型的接口，一个用于查询内部订单订单下单数量，一个用于查询第三方是否首单。</li>
+  <li>后面会把这些不同类型的MQ和接口做适配兼容。</li>
+</ul>
+
+<h3 id="2-场景简述">2. 场景简述</h3>
+
+<h4 id="11-注册开户mq">1.1 注册开户MQ</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">create_account</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">number</span><span class="o">;</span>      <span class="c1">// 开户编号</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">address</span><span class="o">;</span>     <span class="c1">// 开户地</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">accountDate</span><span class="o">;</span>   <span class="c1">// 开户时间</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">desc</span><span class="o">;</span>        <span class="c1">// 开户描述</span>
+
+    <span class="c1">// ... get/set     </span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="12-内部订单mq">1.2 内部订单MQ</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">OrderMq</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">uid</span><span class="o">;</span>           <span class="c1">// 用户ID</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">sku</span><span class="o">;</span>           <span class="c1">// 商品</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">orderId</span><span class="o">;</span>       <span class="c1">// 订单ID</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">createOrderTime</span><span class="o">;</span> <span class="c1">// 下单时间     </span>
+
+    <span class="c1">// ... get/set      </span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="13-第三方订单mq">1.3 第三方订单MQ</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">POPOrderDelivered</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">uId</span><span class="o">;</span>     <span class="c1">// 用户ID</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">orderId</span><span class="o">;</span> <span class="c1">// 订单号</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">orderTime</span><span class="o">;</span> <span class="c1">// 下单时间</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">sku</span><span class="o">;</span>       <span class="c1">// 商品</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">skuName</span><span class="o">;</span>   <span class="c1">// 商品名称</span>
+    <span class="kd">private</span> <span class="nc">BigDecimal</span> <span class="n">decimal</span><span class="o">;</span> <span class="c1">// 金额</span>
+
+    <span class="c1">// ... get/set      </span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="14-查询用户内部下单数量接口">1.4 查询用户内部下单数量接口</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">OrderService</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">POPOrderService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="kd">public</span> <span class="kt">long</span> <span class="nf">queryUserOrderCount</span><span class="o">(</span><span class="nc">String</span> <span class="n">userId</span><span class="o">){</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"自营商家，查询用户的订单是否为首单：{}"</span><span class="o">,</span> <span class="n">userId</span><span class="o">);</span>
+        <span class="k">return</span> <span class="mi">10L</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="15-查询用户第三方下单首单接口">1.5 查询用户第三方下单首单接口</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">POPOrderService</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">POPOrderService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isFirstOrder</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"POP商家，查询用户的订单是否为首单：{}"</span><span class="o">,</span> <span class="n">uId</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>以上这几项就是不同的MQ以及不同的接口的一个体现，后面我们将使用这样的MQ消息和接口，给它们做相应的适配。</li>
+</ul>
+
+<h2 id="五用一坨坨代码实现">五、用一坨坨代码实现</h2>
+
+<p><code class="highlighter-rouge">其实大部分时候接MQ消息都是创建一个类用于消费，通过转换他的MQ消息属性给自己的方法。</code></p>
+
+<p>我们接下来也是先体现一下这种方式的实现模拟，但是这样的实现有一个很大的问题就是，当MQ消息越来越多后，甚至几十几百以后，你作为中台要怎么优化呢？</p>
+
+<h3 id="1-工程结构">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="mo">01</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">└──</span> <span class="n">main</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+                <span class="err">└──</span> <span class="n">create_accountMqService</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">└──</span> <span class="nc">OrderMqService</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">└──</span> <span class="nc">POPOrderDeliveredService</span><span class="o">.</span><span class="na">java</span>
+</code></pre></div></div>
+
+<ul>
+  <li>目前需要接收三个MQ消息，所有就有了三个对应的类，和我们平时的代码几乎一样。如果你的MQ量不多，这样的写法也没什么问题，但是随着数量的增加，就需要考虑用一些设计模式来解决。</li>
+</ul>
+
+<h3 id="2-mq接收消息实现">2. Mq接收消息实现</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">create_accountMqService</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onMessage</span><span class="o">(</span><span class="nc">String</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="n">create_account</span> <span class="n">mq</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">.</span><span class="na">parseObject</span><span class="o">(</span><span class="n">message</span><span class="o">,</span> <span class="n">create_account</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+        <span class="n">mq</span><span class="o">.</span><span class="na">getNumber</span><span class="o">();</span>
+        <span class="n">mq</span><span class="o">.</span><span class="na">getAccountDate</span><span class="o">();</span>
+
+        <span class="c1">// ... 处理自己的业务</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>三组MQ的消息都是一样模拟使用，就不一一展示了。可以获取源码后学习。</li>
+</ul>
+
+<h2 id="六适配器模式重构代码">六、适配器模式重构代码</h2>
+
+<p><code class="highlighter-rouge">接下来使用适配器模式来进行代码优化，也算是一次很小的重构。</code></p>
+
+<p>适配器模式要解决的主要问题就是多种差异化类型的接口做统一输出，这在我们学习工厂方法模式中也有所提到不同种类的奖品处理，其实那也是适配器的应用。</p>
+
+<p>在本文中我们还会再另外体现出一个多种MQ接收，使用MQ的场景。来把不同类型的消息做统一的处理，便于减少后续对MQ接收。</p>
+
+<p>在这里如果你之前没要开发过接收MQ消息，可能听上去会有些不理解这样的场景。对此，我个人建议先了解下MQ。另外就算不了解也没关系，不会影响对思路的体会。</p>
+
+<p>再者，本文所展示的MQ兼容的核心部分，也就是处理适配不同的类型字段。而如果我们接收MQ后，在配置不同的消费类时，如果不希望一个个开发类，那么可以使用代理类的方式进行处理。</p>
+
+<h3 id="1-工程结构-1">1. 工程结构</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">itstack</span><span class="o">-</span><span class="n">demo</span><span class="o">-</span><span class="n">design</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="mo">02</span>
+<span class="err">└──</span> <span class="n">src</span>
+    <span class="err">└──</span> <span class="n">main</span>
+        <span class="err">└──</span> <span class="n">java</span>
+            <span class="err">└──</span> <span class="n">org</span><span class="o">.</span><span class="na">itstack</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">design</span>
+                <span class="err">├──</span> <span class="n">impl</span>
+                <span class="err">│</span>   <span class="err">├──</span> <span class="nc">InsideOrderService</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">│</span>   <span class="err">└──</span> <span class="nc">POPOrderAdapterServiceImpl</span><span class="o">.</span><span class="na">java</span>
+                <span class="err">├──</span> <span class="nc">MQAdapter</span><span class="o">,</span><span class="n">java</span>
+                <span class="err">├──</span> <span class="nc">OrderAdapterService</span><span class="o">,</span><span class="n">java</span>
+                <span class="err">└──</span> <span class="nc">RebateInfo</span><span class="o">,</span><span class="n">java</span>
+</code></pre></div></div>
+
+<p><strong>适配器模型结构</strong></p>
+
+<p><img src="https://bugstack.cn/assets/images/2020/itstack-demo-design-6-04.png" alt="适配器模型结构" /></p>
+
+<ul>
+  <li>这里包括了两个类型的适配；接口适配、MQ适配。之所以不只是模拟接口适配，因为很多时候大家都很常见了，所以把适配的思想换一下到MQ消息体上，增加大家多设计模式的认知。</li>
+  <li><strong>先是做MQ适配</strong>，接收各种各样的MQ消息。当业务发展的很快，需要对下单用户首单才给奖励，在这样的场景下再增加对<strong>接口的适配</strong>操作。</li>
+</ul>
+
+<h3 id="2-代码实现mq消息适配">2. 代码实现(MQ消息适配)</h3>
+
+<h4 id="21-统一的mq消息体">2.1 统一的MQ消息体</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">RebateInfo</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">userId</span><span class="o">;</span>  <span class="c1">// 用户ID</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">bizId</span><span class="o">;</span>   <span class="c1">// 业务ID</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">bizTime</span><span class="o">;</span>   <span class="c1">// 业务时间</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">desc</span><span class="o">;</span>    <span class="c1">// 业务描述</span>
+    
+    <span class="c1">// ... get/set</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>MQ消息中会有多种多样的类型属性，虽然他们都有同样的值提供给使用方，但是如果都这样接入那么当MQ消息特别多时候就会很麻烦。</li>
+  <li>所以在这个案例中我们定义了通用的MQ消息体，后续把所有接入进来的消息进行统一的处理。</li>
+</ul>
+
+<h4 id="22-mq消息体适配类">2.2 MQ消息体适配类</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MQAdapter</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">RebateInfo</span> <span class="nf">filter</span><span class="o">(</span><span class="nc">String</span> <span class="n">strJson</span><span class="o">,</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">link</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">NoSuchMethodException</span><span class="o">,</span> <span class="nc">InvocationTargetException</span><span class="o">,</span> <span class="nc">IllegalAccessException</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">filter</span><span class="o">(</span><span class="no">JSON</span><span class="o">.</span><span class="na">parseObject</span><span class="o">(</span><span class="n">strJson</span><span class="o">,</span> <span class="nc">Map</span><span class="o">.</span><span class="na">class</span><span class="o">),</span> <span class="n">link</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">RebateInfo</span> <span class="nf">filter</span><span class="o">(</span><span class="nc">Map</span> <span class="n">obj</span><span class="o">,</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">link</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">NoSuchMethodException</span><span class="o">,</span> <span class="nc">InvocationTargetException</span><span class="o">,</span> <span class="nc">IllegalAccessException</span> <span class="o">{</span>
+        <span class="nc">RebateInfo</span> <span class="n">rebateInfo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RebateInfo</span><span class="o">();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="n">key</span> <span class="o">:</span> <span class="n">link</span><span class="o">.</span><span class="na">keySet</span><span class="o">())</span> <span class="o">{</span>
+            <span class="nc">Object</span> <span class="n">val</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">link</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">));</span>
+            <span class="nc">RebateInfo</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">"set"</span> <span class="o">+</span> <span class="n">key</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">).</span><span class="na">toUpperCase</span><span class="o">()</span> <span class="o">+</span> <span class="n">key</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">1</span><span class="o">),</span> <span class="nc">String</span><span class="o">.</span><span class="na">class</span><span class="o">).</span><span class="na">invoke</span><span class="o">(</span><span class="n">rebateInfo</span><span class="o">,</span> <span class="n">val</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">rebateInfo</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>这个类里的方法非常重要，主要用于把不同类型MQ种的各种属性，映射成我们需要的属性并返回。就像一个属性中有<code class="highlighter-rouge">用户ID;uId</code>，映射到我们需要的；<code class="highlighter-rouge">userId</code>，做统一处理。</li>
+  <li>而在这个处理过程中需要把映射管理传递给<code class="highlighter-rouge">Map&lt;String, String&gt; link</code>，也就是准确的描述了，当前MQ中某个属性名称，映射为我们的某个属性名称。</li>
+  <li>最终因为我们接收到的<code class="highlighter-rouge">mq</code>消息基本都是<code class="highlighter-rouge">json</code>格式，可以转换为MAP结构。最后使用反射调用的方式给我们的类型赋值。</li>
+</ul>
+
+<h4 id="23-测试适配类">2.3 测试适配类</h4>
+
+<h5 id="231-编写单元测试类">2.3.1 编写单元测试类</h5>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_MQAdapter</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">NoSuchMethodException</span><span class="o">,</span> <span class="nc">IllegalAccessException</span><span class="o">,</span> <span class="nc">InvocationTargetException</span> <span class="o">{</span>
+    <span class="n">create_account</span> <span class="n">create_account</span> <span class="o">=</span> <span class="k">new</span> <span class="n">create_account</span><span class="o">();</span>
+    <span class="n">create_account</span><span class="o">.</span><span class="na">setNumber</span><span class="o">(</span><span class="s">"100001"</span><span class="o">);</span>
+    <span class="n">create_account</span><span class="o">.</span><span class="na">setAddress</span><span class="o">(</span><span class="s">"河北省.廊坊市.广阳区.大学里职业技术学院"</span><span class="o">);</span>
+    <span class="n">create_account</span><span class="o">.</span><span class="na">setAccountDate</span><span class="o">(</span><span class="k">new</span> <span class="nc">Date</span><span class="o">());</span>
+    <span class="n">create_account</span><span class="o">.</span><span class="na">setDesc</span><span class="o">(</span><span class="s">"在校开户"</span><span class="o">);</span>          
+
+    <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">link01</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;();</span>
+    <span class="n">link01</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"userId"</span><span class="o">,</span> <span class="s">"number"</span><span class="o">);</span>
+    <span class="n">link01</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"bizId"</span><span class="o">,</span> <span class="s">"number"</span><span class="o">);</span>
+    <span class="n">link01</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"bizTime"</span><span class="o">,</span> <span class="s">"accountDate"</span><span class="o">);</span>
+    <span class="n">link01</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"desc"</span><span class="o">,</span> <span class="s">"desc"</span><span class="o">);</span>
+    <span class="nc">RebateInfo</span> <span class="n">rebateInfo01</span> <span class="o">=</span> <span class="nc">MQAdapter</span><span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">create_account</span><span class="o">.</span><span class="na">toString</span><span class="o">(),</span> <span class="n">link01</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"mq.create_account(适配前)"</span> <span class="o">+</span> <span class="n">create_account</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"mq.create_account(适配后)"</span> <span class="o">+</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">rebateInfo01</span><span class="o">));</span>
+
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">""</span><span class="o">);</span>
+
+    <span class="nc">OrderMq</span> <span class="n">orderMq</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">OrderMq</span><span class="o">();</span>
+    <span class="n">orderMq</span><span class="o">.</span><span class="na">setUid</span><span class="o">(</span><span class="s">"100001"</span><span class="o">);</span>
+    <span class="n">orderMq</span><span class="o">.</span><span class="na">setSku</span><span class="o">(</span><span class="s">"10928092093111123"</span><span class="o">);</span>
+    <span class="n">orderMq</span><span class="o">.</span><span class="na">setOrderId</span><span class="o">(</span><span class="s">"100000890193847111"</span><span class="o">);</span>
+    <span class="n">orderMq</span><span class="o">.</span><span class="na">setCreateOrderTime</span><span class="o">(</span><span class="k">new</span> <span class="nc">Date</span><span class="o">());</span> 
+
+    <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">link02</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;();</span>
+    <span class="n">link02</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"userId"</span><span class="o">,</span> <span class="s">"uid"</span><span class="o">);</span>
+    <span class="n">link02</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"bizId"</span><span class="o">,</span> <span class="s">"orderId"</span><span class="o">);</span>
+    <span class="n">link02</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"bizTime"</span><span class="o">,</span> <span class="s">"createOrderTime"</span><span class="o">);</span>
+    <span class="nc">RebateInfo</span> <span class="n">rebateInfo02</span> <span class="o">=</span> <span class="nc">MQAdapter</span><span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">orderMq</span><span class="o">.</span><span class="na">toString</span><span class="o">(),</span> <span class="n">link02</span><span class="o">);</span>
+
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"mq.orderMq(适配前)"</span> <span class="o">+</span> <span class="n">orderMq</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"mq.orderMq(适配后)"</span> <span class="o">+</span> <span class="no">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">rebateInfo02</span><span class="o">));</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>在这里我们分别模拟传入了两个不同的MQ消息，并设置字段的映射关系。</li>
+  <li>等真的业务场景开发中，就可以配这种映射配置关系交给配置文件或者数据库后台配置，减少编码。</li>
+</ul>
+
+<h5 id="232-测试结果">2.3.2 测试结果</h5>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mq</span><span class="o">.</span><span class="na">create_account</span><span class="o">(</span><span class="n">适配前</span><span class="o">){</span><span class="s">"accountDate"</span><span class="o">:</span><span class="mi">1591024816000</span><span class="o">,</span><span class="s">"address"</span><span class="o">:</span><span class="s">"河北省.廊坊市.广阳区.大学里职业技术学院"</span><span class="o">,</span><span class="s">"desc"</span><span class="o">:</span><span class="s">"在校开户"</span><span class="o">,</span><span class="s">"number"</span><span class="o">:</span><span class="s">"100001"</span><span class="o">}</span>
+<span class="n">mq</span><span class="o">.</span><span class="na">create_account</span><span class="o">(</span><span class="n">适配后</span><span class="o">){</span><span class="s">"bizId"</span><span class="o">:</span><span class="s">"100001"</span><span class="o">,</span><span class="s">"bizTime"</span><span class="o">:</span><span class="mi">1591077840669</span><span class="o">,</span><span class="s">"desc"</span><span class="o">:</span><span class="s">"在校开户"</span><span class="o">,</span><span class="s">"userId"</span><span class="o">:</span><span class="s">"100001"</span><span class="o">}</span>
+
+<span class="n">mq</span><span class="o">.</span><span class="na">orderMq</span><span class="o">(</span><span class="n">适配前</span><span class="o">){</span><span class="s">"createOrderTime"</span><span class="o">:</span><span class="mi">1591024816000</span><span class="o">,</span><span class="s">"orderId"</span><span class="o">:</span><span class="s">"100000890193847111"</span><span class="o">,</span><span class="s">"sku"</span><span class="o">:</span><span class="s">"10928092093111123"</span><span class="o">,</span><span class="s">"uid"</span><span class="o">:</span><span class="s">"100001"</span><span class="o">}</span>
+<span class="n">mq</span><span class="o">.</span><span class="na">orderMq</span><span class="o">(</span><span class="n">适配后</span><span class="o">){</span><span class="s">"bizId"</span><span class="o">:</span><span class="s">"100000890193847111"</span><span class="o">,</span><span class="s">"bizTime"</span><span class="o">:</span><span class="mi">1591077840669</span><span class="o">,</span><span class="s">"userId"</span><span class="o">:</span><span class="s">"100001"</span><span class="o">}</span>
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<ul>
+  <li>从上面可以看到，同样的字段值在做了适配前后分别有统一的字段属性，进行处理。这样业务开发中也就非常简单了。</li>
+  <li>另外有一个非常重要的地方，在实际业务开发中，除了反射的使用外，还可以加入<strong>代理类</strong>把映射的配置交给它。这样就可以不需要每一个mq都手动创建类了。</li>
+</ul>
+
+<h3 id="3-代码实现接口使用适配">3. 代码实现(接口使用适配)</h3>
+
+<p>就像我们前面提到随着业务的发展，营销活动本身要修改，不能只是接了MQ就发奖励。因为此时已经拉新的越来越多了，需要做一些限制。</p>
+
+<p>因为增加了只有首单用户才给奖励，也就是你一年或者新人或者一个月的第一单才给你奖励，而不是你之前每一次下单都给奖励。</p>
+
+<p>那么就需要对此种方式进行限制，而此时MQ中并没有判断首单的属性。只能通过接口进行查询，而拿到的接口如下；</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>接口</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>org.itstack.demo.design.service.OrderService.queryUserOrderCount(String userId)</td>
+      <td>出参long，查询订单数量</td>
+    </tr>
+    <tr>
+      <td>org.itstack.demo.design.service.OrderService.POPOrderService.isFirstOrder(String uId)</td>
+      <td>出参boolean，判断是否首单</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>两个接口的判断逻辑和使用方式都不同，不同的接口提供方，也有不同的出参。一个是直接判断是否首单，另外一个需要根据订单数量判断。</li>
+  <li>因此这里需要使用到适配器的模式来实现，当然如果你去编写if语句也是可以实现的，但是我们经常会提到这样的代码很难维护。</li>
+</ul>
+
+<h4 id="31-定义统一适配接口">3.1 定义统一适配接口</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">OrderAdapterService</span> <span class="o">{</span>
+
+    <span class="kt">boolean</span> <span class="nf">isFirst</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">);</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>后面的实现类都需要完成此接口，并把具体的逻辑包装到指定的类中，满足单一职责。</li>
+</ul>
+
+<h4 id="32-分别实现两个不同的接口">3.2 分别实现两个不同的接口</h4>
+
+<p><strong>内部商品接口</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">InsideOrderService</span> <span class="kd">implements</span> <span class="nc">OrderAdapterService</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">OrderService</span> <span class="n">orderService</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">OrderService</span><span class="o">();</span>
+
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isFirst</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">orderService</span><span class="o">.</span><span class="na">queryUserOrderCount</span><span class="o">(</span><span class="n">uId</span><span class="o">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>第三方商品接口</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">POPOrderAdapterServiceImpl</span> <span class="kd">implements</span> <span class="nc">OrderAdapterService</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">POPOrderService</span> <span class="n">popOrderService</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">POPOrderService</span><span class="o">();</span>
+
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isFirst</span><span class="o">(</span><span class="nc">String</span> <span class="n">uId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">popOrderService</span><span class="o">.</span><span class="na">isFirstOrder</span><span class="o">(</span><span class="n">uId</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>在这两个接口中都实现了各自的判断方式，尤其像是提供订单数量的接口，需要自己判断当前接到mq时订单数量是否<code class="highlighter-rouge">&lt;= 1</code>，以此判断是否为首单。</li>
+</ul>
+
+<h4 id="33-测试适配类">3.3 测试适配类</h4>
+
+<h5 id="331-编写单元测试类">3.3.1 编写单元测试类</h5>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">test_itfAdapter</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">OrderAdapterService</span> <span class="n">popOrderAdapterService</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">POPOrderAdapterServiceImpl</span><span class="o">();</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"判断首单，接口适配(POP)："</span> <span class="o">+</span> <span class="n">popOrderAdapterService</span><span class="o">.</span><span class="na">isFirst</span><span class="o">(</span><span class="s">"100001"</span><span class="o">));</span>   
+
+    <span class="nc">OrderAdapterService</span> <span class="n">insideOrderService</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">InsideOrderService</span><span class="o">();</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"判断首单，接口适配(自营)："</span> <span class="o">+</span> <span class="n">insideOrderService</span><span class="o">.</span><span class="na">isFirst</span><span class="o">(</span><span class="s">"100001"</span><span class="o">));</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h5 id="332-测试结果">3.3.2 测试结果</h5>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">23</span><span class="o">:</span><span class="mi">25</span><span class="o">:</span><span class="mf">47.076</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">o</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">d</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">service</span><span class="o">.</span><span class="na">POPOrderService</span> <span class="o">-</span> <span class="nc">POP商家</span><span class="err">，</span><span class="n">查询用户的订单是否为首单</span><span class="err">：</span><span class="mi">100001</span>
+<span class="n">判断首单</span><span class="err">，</span><span class="n">接口适配</span><span class="o">(</span><span class="no">POP</span><span class="o">)</span><span class="err">：</span><span class="kc">true</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">25</span><span class="o">:</span><span class="mf">47.079</span> <span class="o">[</span><span class="n">main</span><span class="o">]</span> <span class="no">INFO</span>  <span class="n">o</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">d</span><span class="o">.</span><span class="na">design</span><span class="o">.</span><span class="na">service</span><span class="o">.</span><span class="na">POPOrderService</span> <span class="o">-</span> <span class="n">自营商家</span><span class="err">，</span><span class="n">查询用户的订单是否为首单</span><span class="err">：</span><span class="mi">100001</span>
+<span class="n">判断首单</span><span class="err">，</span><span class="n">接口适配</span><span class="o">(</span><span class="n">自营</span><span class="o">)</span><span class="err">：</span><span class="kc">false</span>
+
+<span class="nc">Process</span> <span class="n">finished</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<ul>
+  <li>从测试结果上来看，此时已经的接口已经做了统一的包装，外部使用时候就不需要关心内部的具体逻辑了。而且在调用的时候只需要传入统一的参数即可，这样就满足了适配的作用。</li>
+</ul>
+
+<h2 id="七总结">七、总结</h2>
+
+<ul>
+  <li>从上文可以看到不使用适配器模式这些功能同样可以实现，但是使用了适配器模式就可以让代码：干净整洁易于维护、减少大量重复的判断和使用、让代码更加易于维护和拓展。</li>
+  <li>尤其是我们对MQ这样的多种消息体中不同属性同类的值，进行适配再加上代理类，就可以使用简单的配置方式接入对方提供的MQ消息，而不需要大量重复的开发。非常利于拓展。</li>
+  <li>设计模式的学习学习过程可能会在一些章节中涉及到其他设计模式的体现，只不过不会重点讲解，避免喧宾夺主。但在实际的使用中，往往很多设计模式是综合使用的，并不会单一出现。</li>
+</ul>
+
+
+
+            <div>
+   <div align="center" class="copyright">
+	   <div class="cmower">bugstack虫洞栈</div>
+	   <div class="brief">沉淀、分享、成长，让自己和他人都能有所收获</div>
+       <img src="/assets/images/qrcode.png" >
+	   <div class="saoma">微信扫描二维码，关注我的公众号</div>
+   </div>
+   <p align="center" style="margin-top: 15px; font-size: 11px;color: #cc0000;">
+       <strong>（转载本站文章请注明作者和出处 <a href="https://bugstack.cn">微信公众号：bugstack虫洞栈 | 作者：小傅哥</a>）</strong>
+   </p>
+</div>
+
+
+            <!-- Comments -->
+            <div class="comment">
+             
+
+  
+    <a href="#" class="show_disqus_comment" onclick="return false;">Show Disqus Comments</a>
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_config = function () {
+        this.page.url = 'https://bugstack.cn/itstack-demo-design/2020/06/02/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F.html';
+        this.page.identifier = '/itstack-demo-design/2020/06/02/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F.html';
+        this.page.title = '重学 Java 设计模式：实战适配器模式「从多个MQ消息体中，抽取指定字段值场景」';
+    };
+    var disqus_loaded = false;
+    $(function() {
+        $('.show_disqus_comment').on('click', function() { // DON'T EDIT BELOW THIS LINE
+            $(this).html('加载中...');
+            var that = this;
+            if (!disqus_loaded) {
+                var d = document, s = d.createElement('script');
+
+                s.type = 'text/javascript';
+                s.async = true;
+                var shortname = 'fuzhengwei';
+
+                s.src = '//' + shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+
+                disqus_loaded = true;
+            }
+            $(that).remove();
+        })
+    })
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  
+
+  
+        <div id="gitalk-container"></div>
+        <script src="/assets/js/gitalk.min.js"></script>
+        <script src="/assets/js/md5.js"></script>
+        <script>
+        var gitalk = new Gitalk({
+            id: md5(decodeURI('/itstack-demo-design/2020/06/02/%E9%87%8D%E5%AD%A6-Java-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F.html')),
+            clientID: 'df8beab2190bec20352a',
+            clientSecret: '7eeeb4369d699c933f02a026ae8bb1e2a9c80e90',
+            repo: 'CodeGuide',
+            owner: 'fuzhengwei',
+            admin: ['fuzhengwei'],
+            labels: ['gitment'],
+            perPage: 50,
+        })
+        gitalk.render('gitalk-container')
+        </script>
+  
+
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <h3>Post Directory</h3>
+<div id="post-directory-module">
+<section class="post-directory">
+    <!-- Links that trigger the jumping -->
+    <!-- Added by javascript below -->
+    <dl></dl>
+</section>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $( "article h2" ).each(function( index ) {
+            $(".post-directory dl").append("<dt><a class=\"jumper\" hre=#" +
+                    $(this).attr("id")
+                    + ">"
+                    + $(this).text()
+                    + "</a></dt>");
+
+            var children = $(this).nextUntil("h2", "h3")
+
+            children.each(function( index ) {
+                $(".post-directory dl").append("<dd><a class=\"jumper\" hre=#" +
+                        $(this).attr("id")
+                        + ">"
+                        + "&nbsp;&nbsp;- " + $(this).text()
+                        + "</a></dd>");
+            });
+        });
+
+        var fixmeTop = $('#post-directory-module').offset().top - 100;       // get initial position of the element
+
+        $(window).scroll(function() {                  // assign scroll event listener
+
+            var currentScroll = $(window).scrollTop(); // get current position
+
+            if (currentScroll >= fixmeTop) {           // apply position: fixed if you
+                $('#post-directory-module').css({      // scroll to that element or below it
+                    top: '100px',
+                    position: 'fixed',
+                    width: 'inherit'
+                });
+            } else {                                   // apply position: static
+                $('#post-directory-module').css({      // if you scroll above it
+                    position: 'inherit',
+                    width: 'inherit'
+                });
+            }
+
+        });
+
+        $("a.jumper").on("click", function( e ) {
+
+            e.preventDefault();
+
+            $("body, html").animate({
+                scrollTop: ($( $(this).attr('hre') ).offset().top - 100)
+            }, 600);
+
+        });
+    });
+
+</script>
+        </div>
+        
+
+    </div>
+    
+    <div class="asb-post-01">
+        <div class="mask"></div>
+			<div class="info">
+	    		<div>扫码或搜索：<span style="color: #E9405A; font-weight: bold;">bugstack虫洞栈</span></div>
+	    	<div>
+	        <span>发送 </span><span class="token" style="color: #e9415a; font-weight: bold; font-size: 17px; margin-bottom: 45px;">290992</span>
+	    	<div>
+	       	 	即可<span style="color: #e9415a; font-weight: bold;">立即永久</span>解锁本站全部文章
+	    	</div>
+	    	<img class="code-img" style="width: 300px;display:unset" src="/assets/images/qrcode.png">
+		</div>
+ 	</div>
+</article>
+
+        </div>
+
+    <footer class="container">
+    <div class="site-footer">
+        <div class="card text-center">
+            <ul class="list-inline" style="margin-left: 0;">
+                <li>
+                    <a target="_blank" href="https://github.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://www.zhihu.com/people/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-1x fa-inverse">知</i>
+                  </span>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://weibo.com/fuzhengwei">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="site-footer-links mobile-hidden">
+            
+            <a href="https://github.com/fuzhengwei" title="Git仓库" target="_blank">Git仓库</a>
+            
+            <a href="/gitchat.html" title="GitChat" target="_blank">GitChat</a>
+            
+        </div>
+        <div class="site-footer-icons">
+            <a href="http://beian.miit.gov.cn" target="_blank">京ICP备19031103号-1</a>
+        </div>
+        <div class="scrolltop">
+            bugstack虫洞栈
+            <a href="javascript:window.scrollTo(0,0)">TOP</a>
+        </div>
+        <div class="rss">
+            <a href="/feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a>
+            Power by <a href="https://github.com/DONGChuan/Yummy-Jekyll">Yummy Jekyll</a>
+        </div>
+    </div>
+    <!-- Third-Party JS -->
+    <script type="text/javascript" src="/bower_components/geopattern/js/geopattern.min.js"></script>
+    <!-- My JS -->
+    <script type="text/javascript" src="/assets/js/script.js"></script>
+    
+
+    <!-- 百度统计&友盟统计 -->
+    <div style="display:none">
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+              var hm = document.createElement("script");
+              hm.src = "https://hm.baidu.com/hm.js?0b31b4c146bf7126aed5009e1a4a11c8";
+              var s = document.getElementsByTagName("script")[0];
+              s.parentNode.insertBefore(hm, s);
+            })();
+
+        </script>
+
+        <script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1278232949&web_id=1278232949"></script>
+    </div>
+    <!-- 百度统计 -->
+</footer>
+
+
+    </body>
+
+</html>
