@@ -1,17 +1,9 @@
 # 说明
-涵盖了计算机科学的大部分知识，并且结合了面试笔试热点题目进行了充分的复习和梳理
+内容涵盖了计算机科学的大部分知识包括但不限于计算机网络、操作系统、数据库MySQL、常用设计模式等知识
 
-在数据结构与算法的项目进一步扩充，增加了包括但不限于计算机网络、操作系统、数据库MySQL、常用设计模式等知识
+语言栈目前有java，因此也包含了java基础+java集合+jvm等内容
 
-由于本人主要语言栈是java，所以语言知识部分是java基础+java集合+jvm+部分框架
-
-后续计划更新java并发部分，非关系数据库redis部分
-
-
-
-适用场景：需要学习或者梳理计算机基础知识等人群
-
-
+后续计划更新常用框架、中间件部分
 
 
 
@@ -44,10 +36,6 @@
 
 
 ## [数据结构与算法](https://github.com/MichaelDeSteven/CS-Note/blob/master/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/README.md)
-
-
-
-## [剑指offer全解](https://github.com/MichaelDeSteven/CS-Note/blob/master/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E5%89%91%E6%8C%87offer.md)
 
 
 
